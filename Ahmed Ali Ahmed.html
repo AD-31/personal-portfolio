@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmed Ali Ahmed — Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #071521;
+    --navy2:  #0C1E2E;
+    --navy3:  #132E44;
+    --cyan:   #0087B3;
+    --glow:   #78BBD0;
+    --hover-glow: #0077A8;
+    --white:  #F4F8FB;
+    --muted:  #9AB0BE;
+    --faint:  #25445B;
+    --paper:  #F5F8FB;
+    --ink:    #172333;
+    --ink2:   #43566B;
+    --line:   #DDE7EF;
+    --accent: #006D9C;
+    --soft:   #EAF7FB;
+  }
+
+  html, body {
+    min-height: 100%;
+    font-family: 'Inter', sans-serif;
+    background: #A7B4C2;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(4px, 1vw, 14px);
+    overflow-x: auto;
+  }
+
+  .screen-frame {
+    --scale: 1;
+    width: 794px;
+    height: 1123px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .page {
+    width: 794px;
+    height: 1123px;
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    box-shadow: none;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(var(--scale));
+    transform-origin: top left;
+  }
+
+  @media screen and (max-width: 340px) {
+    .screen-frame { --scale: .39; width: 310px; height: 438px; }
+  }
+
+  @media screen and (min-width: 341px) and (max-width: 370px) {
+    .screen-frame { --scale: .42; width: 333px; height: 472px; }
+  }
+
+  @media screen and (min-width: 371px) and (max-width: 400px) {
+    .screen-frame { --scale: .47; width: 373px; height: 528px; }
+  }
+
+  @media screen and (min-width: 401px) and (max-width: 430px) {
+    .screen-frame { --scale: .50; width: 397px; height: 562px; }
+  }
+
+  @media screen and (min-width: 431px) and (max-width: 500px) {
+    .screen-frame { --scale: .52; width: 413px; height: 584px; }
+  }
+
+  @media screen and (min-width: 501px) and (max-width: 620px) {
+    .screen-frame { --scale: .62; width: 492px; height: 696px; }
+  }
+
+  @media screen and (min-width: 621px) and (max-width: 720px) {
+    .screen-frame { --scale: .75; width: 596px; height: 842px; }
+  }
+
+  @media screen and (min-width: 721px) and (max-width: 840px) {
+    .screen-frame { --scale: .90; width: 715px; height: 1011px; }
+  }
+
+  @media screen and (min-width: 900px) {
+    .screen-frame { --scale: 1.12; width: 889px; height: 1258px; }
+  }
+
+  @media screen and (min-width: 1020px) {
+    .screen-frame { --scale: 1.26; width: 1000px; height: 1415px; }
+  }
+
+  @media screen and (min-width: 1180px) {
+    .screen-frame { --scale: 1.44; width: 1143px; height: 1617px; }
+  }
+
+  @media screen and (min-width: 1380px) {
+    .screen-frame { --scale: 1.65; width: 1310px; height: 1853px; }
+  }
+
+  @media screen and (min-width: 1600px) {
+    .screen-frame { --scale: 1.90; width: 1509px; height: 2134px; }
+  }
+
+  @media screen and (min-width: 2000px) {
+    .screen-frame { --scale: 2.35; width: 1866px; height: 2639px; }
+  }
+
+  /* ════ SIDEBAR ════ */
+  .sidebar {
+    background: var(--navy);
+    height: 1123px;
+    padding: 28px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar::before { display: none; }
+
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 3px; height: 100%;
+    background: var(--cyan);
+    opacity: 0.85;
+    box-shadow: none;
+  }
+
+  .sidebar > * { position: relative; z-index: 1; }
+
+  .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 23px; font-weight: 700;
+    color: var(--white); line-height: 1.06; letter-spacing: -0.2px;
+  }
+  .name span {
+    color: var(--glow);
+    text-shadow: none;
+  }
+
+  .name-line {
+    height: 2px; width: 0%;
+    background: var(--cyan);
+    margin-top: 5px; border-radius: 2px;
+    animation: scan 1.1s ease 0.4s forwards;
+  }
+  @keyframes scan { to { width: 100%; } }
+
+  .tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.8px; color: var(--glow);
+    letter-spacing: 1.55px; text-transform: uppercase;
+    margin-top: 6px; opacity: 0.8;
+  }
+
+  .signal-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 9px;
+  }
+  .signal-row span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    color: var(--white);
+    text-align: center;
+    border: 1px solid rgba(74,199,232,0.24);
+    background: rgba(5,17,29,0.34);
+    border-radius: 3px;
+    padding: 3px 2px;
+    transition: color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+
+  .sdiv { height: 1px; background: var(--faint); margin: 12px 0; }
+
+  /* CONTACT */
+  .contact { display: flex; flex-direction: column; gap: 6px; }
+  .ci {
+    display: flex; align-items: center; gap: 7px;
+    border-radius: 4px;
+    transition: color .18s ease, transform .18s ease, background .18s ease;
+  }
+  .ci svg {
+    width: 14px; height: 14px; flex-shrink: 0; color: var(--glow);
+    background: rgba(74,199,232,0.08);
+    border: 1px solid rgba(74,199,232,0.14);
+    border-radius: 4px;
+    padding: 2px;
+  }
+  .ci span, .ci a { font-size: 9.5px; color: var(--muted); text-decoration: none; line-height: 1.3; word-break: break-all; transition: color .18s ease; }
+  .ci a:hover { color: var(--cyan); }
+
+  .slabel {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 7.5px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--cyan);
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 9px; margin-top: 13px;
+  }
+  .slabel::after { content:''; flex:1; height:1px; background: var(--faint); }
+
+  .sgroup { margin-bottom: 8px; }
+  .sgcat {
+    font-size: 8px; font-weight: 600; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+  }
+  .pills { display: flex; flex-wrap: wrap; gap: 3px; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px; color: var(--white);
+    background: rgba(19,46,68,0.88);
+    border: 1px solid rgba(154,176,190,0.2);
+    border-radius: 3px; padding: 2px 6px;
+    transition: color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  .pill.hi { color: var(--glow); border-color: rgba(74,199,232,0.42); background: rgba(74,199,232,0.08); }
+
+  .edeg  { font-family:'Space Grotesk',sans-serif; font-size:11.5px; font-weight:600; color:var(--white); }
+  .esch  { font-size:9.5px; color:var(--cyan); margin-top:2px; }
+  .emeta { font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--muted); margin-top:2px; }
+
+  .badge {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(74,199,232,0.07);
+    border: 1px solid rgba(74,199,232,0.18);
+    border-radius: 4px;
+    padding: 4px 8px; margin-top: 5px;
+    font-size: 8.5px; color: var(--glow);
+    transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  .badge-k {
+    font-family:'JetBrains Mono',monospace;
+    font-size:6.8px;
+    color:var(--navy);
+    background:var(--glow);
+    border-radius:2px;
+    padding:1px 4px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+
+  .citem {
+    display:flex; align-items:flex-start; gap:6px; margin-bottom:7px;
+    border-radius:4px;
+    transition: transform .18s ease, background .18s ease;
+  }
+  .cdot  { width:5px; height:5px; border-radius:50%; background:var(--glow); margin-top:3px; flex-shrink:0; }
+  .ctxt  { font-size:9px; color:var(--muted); line-height:1.4; }
+  .ctxt strong { display:block; color:var(--white); font-size:9.5px; font-weight:500; }
+
+  /* "Also Experienced" block — more prominent */
+  .also-block {
+    background: rgba(0,168,214,0.075);
+    border: 1px solid rgba(0,168,214,0.24);
+    border-radius: 5px;
+    padding: 11px 12px;
+    margin-top: 12px;
+    box-shadow: none;
+    transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .also-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 7.5px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 8px;
+  }
+  .also-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .also-cat {
+    font-size: 7.5px; font-weight: 600;
+    color: var(--muted); letter-spacing: 1px;
+    text-transform: uppercase;
+    width: 100%; margin-top: 5px; margin-bottom: 3px;
+  }
+  .also-cat:first-of-type { margin-top: 0; }
+
+  /* ════ MAIN ════ */
+  .main {
+    background: var(--paper);
+    height: 1123px;
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .summary {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--cyan);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 13px 11px;
+    margin-bottom: 13px;
+    flex-shrink: 0;
+    box-shadow: none;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
+  }
+  .summary p { font-size: 9.7px; color: var(--ink2); line-height: 1.58; }
+
+  .msec { flex-shrink: 0; margin-bottom: 12px; }
+  .msec.grow { flex: 1; display: flex; flex-direction: column; margin-bottom: 0; }
+
+  .mlabel {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 8px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 9px;
+  }
+  .mlabel::after { content:''; flex:1; height:1.5px; background: var(--line); }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 10px; }
+
+  .tcard {
+    display: grid; grid-template-columns: auto 1fr; gap: 0 11px;
+    transition: transform .18s ease;
+  }
+  .tline { display:flex; flex-direction:column; align-items:center; padding-top:4px; }
+  .tdot  {
+    width:9px; height:9px; border-radius:50%; border:2px solid var(--cyan); background:var(--paper); flex-shrink:0; box-shadow:none;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
+  }
+  .tbar  { width:1.5px; flex:1; background:var(--line); margin-top:3px; min-height:8px; }
+
+  .theader { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1px; }
+  .ttitle  { font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; color:var(--ink); }
+  .tdate   { font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--accent); background:#E6F4FA; padding:1px 7px; border-radius:20px; white-space:nowrap; transition: color .18s ease, background .18s ease; }
+  .torg    { font-size:9.5px; color:var(--accent); font-weight:500; margin-bottom:5px; }
+  .tbullets { list-style:none; }
+  .tbullets li { font-size:9.5px; color:var(--ink2); line-height:1.65; padding-left:11px; position:relative; margin-bottom:3px; }
+  .tbullets li::before { content:'›'; position:absolute; left:0; color:var(--cyan); font-size:11px; line-height:1.45; font-weight:700; }
+
+  /* PROJECT GRID */
+  .pgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .pcard {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 5px 5px 0;
+    padding: 9px 10px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: none;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  .pcard::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:var(--accent);
+    opacity:.55;
+  }
+  .pcard.featured {
+    border-left-color: var(--accent);
+    background: rgba(255,255,255,0.96);
+    box-shadow: none;
+  }
+  .pcard.featured::before {
+    background:var(--accent);
+    opacity:.55;
+  }
+
+  @media screen {
+    .summary:hover {
+      border-left-color: var(--hover-glow);
+      background: #FFFFFF;
+      box-shadow: none;
+      transform: translateY(-1px);
+    }
+
+    .ci:hover,
+    .citem:hover {
+      background: rgba(74,199,232,0.055);
+      transform: translateX(2px);
+    }
+    .ci:hover span,
+    .ci:hover a,
+    .ci:hover svg {
+      color: var(--white);
+    }
+
+    .pill:hover,
+    .badge:hover,
+    .signal-row span:hover {
+      color: var(--white);
+      border-color: rgba(0,180,216,0.44);
+      background: rgba(0,180,216,0.10);
+      box-shadow: none;
+      transform: translateY(-1px);
+    }
+
+    .also-block:hover {
+      border-color: rgba(0,180,216,0.34);
+      background: rgba(0,168,214,0.09);
+      box-shadow: none;
+    }
+
+    .tcard:hover {
+      transform: translateX(2px);
+    }
+    .tcard:hover .tdot {
+      border-color: var(--hover-glow);
+      background: #FFFFFF;
+      box-shadow: none;
+    }
+    .tcard:hover .tdate {
+      color: #075F64;
+      background: #E6F4FA;
+    }
+
+    .pcard:hover {
+      border-left-color: var(--hover-glow);
+      background: #FFFFFF;
+      box-shadow: none;
+      transform: translateY(-1px);
+    }
+    .pcard:hover::before {
+      background: var(--hover-glow);
+      opacity: .85;
+    }
+    .pcard:hover .ptag {
+      color: #075F64;
+      border-color: rgba(0,119,168,0.20);
+      background: #EAF7FB;
+    }
+  }
+  .pheader { display:flex; justify-content:space-between; align-items:flex-start; gap:4px; margin-bottom:2px; }
+  .ptitle  { font-family:'Space Grotesk',sans-serif; font-size:10.2px; font-weight:700; color:var(--ink); line-height:1.22; }
+  .pyear   { font-family:'JetBrains Mono',monospace; font-size:7.8px; color:var(--accent); background:#E6F4FA; border-radius:20px; padding:1px 6px; white-space:nowrap; }
+  .ptype   { font-size:8px; color:var(--accent); margin-bottom:5px; font-weight:600; }
+  .pdesc   { font-size:9px; color:var(--ink2); line-height:1.7; flex:1; }
+  .ptags   { display:flex; flex-wrap:wrap; gap:3px; margin-top:7px; }
+  .ptag    { font-family:'JetBrains Mono',monospace; font-size:7.3px; color:var(--accent); background:#EAF7FB; border:1px solid rgba(0,109,156,0.12); border-radius:2px; padding:1px 5px; transition: color .18s ease, border-color .18s ease, background .18s ease; }
+
+  /* project bullet points */
+  .pbullets { list-style:none; flex:1; }
+  .pbullets li {
+    font-size:8.7px; color:var(--ink2); line-height:1.55;
+    padding-left:11px; position:relative; margin-bottom:4px;
+  }
+  .pbullets li::before {
+    content:'›'; position:absolute; left:0;
+    color:var(--cyan); font-size:11px; line-height:1.4; font-weight:700;
+  }
+
+  @media print {
+    html, body { background:white !important; padding:0 !important; margin:0 !important; display:block !important; }
+    .screen-frame { width:210mm !important; height:297mm !important; }
+    .page { width:210mm !important; height:297mm !important; box-shadow:none !important; margin:0 !important; position:static !important; transform:none !important; }
+    .sidebar, .main { height:297mm !important; }
+    @page { size:A4; margin:0; }
+  }
+</style>
+</head>
+<body>
+<div class="screen-frame">
+<div class="page">
+
+  <!-- ══════ SIDEBAR ══════ -->
+  <aside class="sidebar">
+
+    <div class="name">Ahmed <span>Ali</span> Ahmed</div>
+    <div class="name-line"></div>
+    <div class="tagline">// SOC Analyst / Detection Engineering</div>
+    <div class="signal-row">
+      <span>SIEM</span>
+      <span>MITRE</span>
+      <span>Cloud</span>
+    </div>
+
+    <div class="sdiv"></div>
+
+    <div class="contact">
+      <div class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        <a href="mailto:ahmed.ali.ahmed3110@gmail.com">ahmed.ali.ahmed3110@gmail.com</a>
+      </div>
+      <div class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21 16l.92.92z"/></svg>
+        <span>+973 39 593 464</span>
+      </div>
+      <div class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <a href="https://linkedin.com/in/ahmed-ali-ahmed-a91664334">linkedin.com/in/ahmed-ali-ahmed</a>
+      </div>
+      <div class="ci">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Manama, Bahrain</span>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="slabel">Skills</div>
+
+    <div class="sgroup">
+      <div class="sgcat">SIEM & Detection</div>
+      <div class="pills">
+        <span class="pill hi">Wazuh</span><span class="pill hi">OSSEC</span>
+        <span class="pill">Log Analysis</span><span class="pill">Alert Tuning</span>
+        <span class="pill">IOC Matching</span><span class="pill">FIM</span>
+      </div>
+    </div>
+
+    <div class="sgroup">
+      <div class="sgcat">Offensive Security</div>
+      <div class="pills">
+        <span class="pill">Metasploit</span><span class="pill">Burp Suite</span>
+        <span class="pill">Nmap</span><span class="pill">BloodHound</span>
+        <span class="pill">GoPhish</span><span class="pill">NetExec</span>
+        <span class="pill">Wireshark</span>
+      </div>
+    </div>
+
+    <div class="sgroup">
+      <div class="sgcat">Cloud & Infrastructure</div>
+      <div class="pills">
+        <span class="pill hi">AWS</span><span class="pill hi">Azure</span>
+        <span class="pill">Docker</span><span class="pill">Proxmox</span>
+        <span class="pill">Linux</span><span class="pill">Windows</span>
+      </div>
+    </div>
+
+    <div class="sgroup">
+      <div class="sgcat">Frameworks & Intel</div>
+      <div class="pills">
+        <span class="pill hi">MITRE ATT&CK</span><span class="pill">MISP</span>
+        <span class="pill">CALDERA</span><span class="pill">Tetragon</span>
+      </div>
+    </div>
+
+    <div class="sgroup">
+      <div class="sgcat">Languages</div>
+      <div class="pills">
+        <span class="pill">Python</span><span class="pill">SQL</span>
+        <span class="pill">JavaScript</span><span class="pill">Java</span>
+        <span class="pill">JSON / XML</span>
+      </div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="slabel">Education</div>
+    <div class="edeg">BSc Cybersecurity</div>
+    <div class="esch">Bahrain Polytechnic</div>
+    <div class="emeta">2022 – 2026 &nbsp;·&nbsp; GPA 3.5 / 4.0</div>
+    <div class="badge"><span class="badge-k">Award</span>Cyber Guards Hackathon, 2025</div>
+    <div class="badge" style="margin-top:4px"><span class="badge-k">PMI</span>Injaz Internship, 2025</div>
+
+    <!-- CERTIFICATIONS -->
+    <div class="slabel">Certifications</div>
+    <div class="citem">
+      <div class="cdot"></div>
+      <div class="ctxt"><strong>AWS Cloud Security Foundation</strong>Amazon Web Services</div>
+    </div>
+    <div class="citem" style="margin-bottom:0">
+      <div class="cdot"></div>
+      <div class="ctxt"><strong>PL-400 Power Platform Developer</strong>Microsoft</div>
+    </div>
+
+    <!-- ALSO EXPERIENCED IN — full prominent block -->
+    <div class="also-block">
+      <div class="also-title">Also Experienced In</div>
+
+      <div class="also-cat">Networking & Simulation</div>
+      <div class="also-row">
+        <span class="pill">GNS3</span>
+        <span class="pill">Cisco Packet Tracer</span>
+        <span class="pill">Network Segmentation</span>
+      </div>
+
+      <div class="also-cat">Machine Learning</div>
+      <div class="also-row">
+        <span class="pill">Supervised ML</span>
+        <span class="pill">Model Evaluation</span>
+        <span class="pill">Feature Selection</span>
+        <span class="pill">Unsupervised ML</span>
+      </div>
+
+      <div class="also-cat">Low-Code & Automation</div>
+      <div class="also-row">
+        <span class="pill hi">Power Apps</span>
+        <span class="pill hi">Power Automate</span>
+        <span class="pill">Power Platform</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══════ MAIN ══════ -->
+  <main class="main">
+
+    <!-- SUMMARY -->
+    <div class="summary">
+      <p>Cybersecurity graduate (GPA 3.5) with hands-on SOC experience at NGN International, where I engineered 100+ custom Wazuh detection rules, tuned alert pipelines, and validated threat-intelligence IOCs across Linux environments. I build detection systems that cut noise without losing coverage — from SIEM labs and Active Directory attack simulations to ML-based DDoS classifiers — and I document everything so teams can operate confidently without constant hand-holding.</p>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="msec">
+      <div class="mlabel">Experience</div>
+      <div class="timeline">
+
+        <div class="tcard">
+          <div class="tline"><div class="tdot"></div><div class="tbar"></div></div>
+          <div class="tcontent">
+            <div class="theader">
+              <div class="ttitle">SOC Analyst Intern</div>
+              <div class="tdate">Feb 2026 – May 2026</div>
+            </div>
+            <div class="torg">NGN International · Bahrain</div>
+            <ul class="tbullets">
+              <li>Engineered 100+ custom Wazuh detection rules and decoders by mapping Linux telemetry to SSH brute-force, privilege escalation, file integrity changes, IOC matches, and persistence techniques, resulting in reduced low-value alert noise while preserving high-fidelity detections.</li>
+              <li>Performed daily triage on Linux security events, validating detections against threat-intelligence IOCs and malicious hashes using a MITRE ATT&CK-aligned methodology across the full kill chain.</li>
+              <li>Delivered SOP-style runbooks and analyst dashboards that standardised detection workflows, improved coverage visibility, and reduced onboarding time for incoming team members.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tline"><div class="tdot"></div></div>
+          <div class="tcontent">
+            <div class="theader">
+              <div class="ttitle">IT Support Technician</div>
+              <div class="tdate">2022</div>
+            </div>
+            <div class="torg">Nexcel Computer Solution · Bahrain</div>
+            <ul class="tbullets">
+              <li>Configured routers, switches, and Wi-Fi-enabled printers; provided end-user support for internet connectivity, device access, and peripheral setup across multi-device office environments.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="msec grow">
+      <div class="mlabel">Projects</div>
+      <div class="pgrid">
+
+        <div class="pcard featured">
+          <div class="pheader">
+            <div class="ptitle">Wazuh SIEM Detection Lab</div>
+            <div class="pyear">2026</div>
+          </div>
+          <div class="ptype">Detection Engineering · Industry Project</div>
+          <ul class="pbullets">
+            <li>Built a production-style SOC lab using Wazuh by engineering 100+ custom detection rules for SSH, FIM, privilege escalation, IOC matching, and persistence, resulting in measurably reduced alert noise without losing critical coverage.</li>
+            <li>Validated IOC matching and threat-intel detections by simulating real attack scenarios, resulting in a MITRE ATT&CK-mapped coverage report usable as a live SOC reference.</li>
+            <li>Documented SOP-style runbooks and analyst dashboards, enabling any incoming analyst to operate the detection pipeline independently from day one.</li>
+          </ul>
+          <div class="ptags">
+            <span class="ptag">Wazuh</span><span class="ptag">SIEM</span><span class="ptag">Linux</span><span class="ptag">MITRE ATT&CK</span><span class="ptag">IOC</span><span class="ptag">FIM</span><span class="ptag">Detection Rules</span>
+          </div>
+        </div>
+
+        <div class="pcard">
+          <div class="pheader">
+            <div class="ptitle">Ransomware Protection — Pentest Lab</div>
+            <div class="pyear">2025</div>
+          </div>
+          <div class="ptype">Red Team · Active Directory · Adversary Emulation</div>
+          <ul class="pbullets">
+            <li>Designed a segmented enterprise lab in Proxmox by configuring isolated network zones, resulting in a validated environment that safely contained simulated ransomware impact.</li>
+            <li>Executed a full attack chain using GoPhish, NetExec, and BloodHound by mapping AD attack paths and emulating adversary behaviour via CALDERA, resulting in a structured pentest report aligned to MITRE ATT&CK.</li>
+            <li>Developed a benign file encryptor PoC by replicating ransomware encryption logic safely, resulting in realistic impact simulation without risk to live systems.</li>
+          </ul>
+          <div class="ptags">
+            <span class="ptag">Proxmox</span><span class="ptag">GoPhish</span><span class="ptag">BloodHound</span><span class="ptag">CALDERA</span><span class="ptag">NetExec</span><span class="ptag">Active Directory</span><span class="ptag">Red Team</span>
+          </div>
+        </div>
+
+        <div class="pcard">
+          <div class="pheader">
+            <div class="ptitle">ML Model — DDoS Traffic Classification</div>
+            <div class="pyear">2024</div>
+          </div>
+          <div class="ptype">Machine Learning · Network Security</div>
+          <ul class="pbullets">
+            <li>Preprocessed DDoS attack datasets by removing noise and engineering meaningful features, resulting in cleaner inputs that improved model training stability.</li>
+            <li>Trained and compared multiple supervised classifiers by applying iterative feature selection and hyperparameter tuning, resulting in improved accuracy, precision, and recall across all evaluated models.</li>
+            <li>Demonstrated automated threat detection at scale by applying ML to network traffic classification, resulting in a working proof-of-concept for AI-assisted SOC triage.</li>
+          </ul>
+          <div class="ptags">
+            <span class="ptag">Python</span><span class="ptag">Supervised ML</span><span class="ptag">DDoS</span><span class="ptag">Feature Selection</span><span class="ptag">Network Security</span><span class="ptag">Model Evaluation</span>
+          </div>
+        </div>
+
+        <div class="pcard">
+          <div class="pheader">
+            <div class="ptitle">Host Intrusion Detection System (RHIDPS)</div>
+            <div class="pyear">2023</div>
+          </div>
+          <div class="ptype">HIDPS · OSSEC · Linux</div>
+          <ul class="pbullets">
+            <li>Deployed an OSSEC-based HIDPS in manager-agent architecture on Linux by configuring monitoring rules and alert thresholds, resulting in continuous host-level visibility across all monitored endpoints.</li>
+            <li>Simulated a range of attack scenarios by executing real threat techniques against the monitored environment, resulting in validated detection coverage across multiple attack vectors.</li>
+            <li>Integrated alert outputs into a centralised dashboard by aggregating OSSEC events in real time, resulting in a unified view enabling faster incident triage and analyst response.</li>
+          </ul>
+          <div class="ptags">
+            <span class="ptag">OSSEC</span><span class="ptag">Linux</span><span class="ptag">HIDPS</span><span class="ptag">Agent Monitoring</span><span class="ptag">Dashboard</span><span class="ptag">Incident Response</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+</body>
+</html>
