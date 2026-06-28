@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmed Ali Ahmed — Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:    #0D1B2A;
+    --navy2:   #152234;
+    --navy3:   #1C2E44;
+    --cyan:    #00B4D8;
+    --glow:    #00FFC8;
+    --white:   #F0F4F8;
+    --muted:   #8FA3B1;
+    --faint:   #2C3E52;
+    --paper:   #F7F9FC;
+    --ink:     #1A2535;
+    --ink2:    #3D5166;
+    --line:    #E2E8F0;
+    --accent:  #0077A8;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #CBD5E1;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px 16px;
+  }
+
+  /* ── PAGE SHELL ─────────────────────────────────── */
+  .page {
+    width: 900px;
+    min-height: 1180px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  /* ── LEFT SIDEBAR ───────────────────────────────── */
+  .sidebar {
+    background: var(--navy);
+    padding: 44px 28px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  /* vertical glow line */
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, var(--cyan) 20%, var(--glow) 50%, var(--cyan) 80%, transparent 100%);
+    opacity: 0.5;
+  }
+
+  /* ── NAME BLOCK ─────────────────────────────────── */
+  .name-block { margin-bottom: 28px; }
+
+  .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .name span {
+    color: var(--cyan);
+  }
+
+  .name-underline {
+    display: block;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, var(--cyan), var(--glow));
+    margin-top: 6px;
+    border-radius: 2px;
+    animation: scanIn 1.2s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+  }
+
+  @keyframes scanIn {
+    from { width: 0; opacity: 0.4; }
+    to   { width: 100%; opacity: 1; }
+  }
+
+  .role-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--glow);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    opacity: 0.85;
+  }
+
+  /* ── CONTACT ────────────────────────────────────── */
+  .contact-block { margin-bottom: 32px; }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .contact-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--cyan);
+  }
+
+  .contact-text {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.4;
+    word-break: break-all;
+  }
+
+  .contact-text a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .contact-text a:hover { color: var(--cyan); }
+
+  /* ── SIDEBAR SECTIONS ───────────────────────────── */
+  .s-section { margin-bottom: 30px; }
+
+  .s-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .s-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--faint);
+  }
+
+  /* skill pills */
+  .skill-group { margin-bottom: 14px; }
+
+  .skill-category {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .pill {
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--white);
+    background: var(--navy3);
+    border: 1px solid var(--faint);
+    border-radius: 3px;
+    padding: 3px 8px;
+    line-height: 1.4;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .pill:hover { border-color: var(--cyan); color: var(--cyan); }
+  .pill.hi { border-color: var(--cyan); color: var(--cyan); background: rgba(0,180,216,0.07); }
+
+  /* cert items */
+  .cert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .cert-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--glow);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .cert-text {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .cert-text strong {
+    display: block;
+    color: var(--white);
+    font-weight: 500;
+    font-size: 11.5px;
+  }
+
+  /* education sidebar */
+  .edu-item { margin-bottom: 14px; }
+
+  .edu-deg {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+  }
+
+  .edu-school {
+    font-size: 11px;
+    color: var(--cyan);
+    margin-top: 2px;
+  }
+
+  .edu-meta {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* award badge */
+  .award {
+    background: linear-gradient(135deg, rgba(0,255,200,0.08), rgba(0,180,216,0.04));
+    border: 1px solid rgba(0,255,200,0.2);
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-top: 8px;
+  }
+
+  .award-title {
+    font-size: 10.5px;
+    color: var(--glow);
+    font-weight: 500;
+  }
+
+  .award-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── RIGHT MAIN ─────────────────────────────────── */
+  .main {
+    background: var(--paper);
+    padding: 44px 38px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* summary */
+  .summary {
+    background: linear-gradient(135deg, #EFF6FF, #F0F9FF);
+    border-left: 3px solid var(--cyan);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin-bottom: 32px;
+  }
+
+  .summary p {
+    font-size: 12px;
+    color: var(--ink2);
+    line-height: 1.7;
+  }
+
+  /* section headers */
+  .m-section { margin-bottom: 28px; }
+
+  .m-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .m-label::after {
+    content: '';
+    flex: 1;
+    height: 1.5px;
+    background: var(--line);
+  }
+
+  /* experience card */
+  .exp-card {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 22px;
+  }
+
+  .exp-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px;
+    bottom: -14px;
+    width: 1.5px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+  }
+
+  .exp-card:last-child::before { display: none; }
+
+  .exp-dot {
+    position: absolute;
+    left: -4.5px; top: 5px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--cyan);
+  }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .exp-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .exp-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: #EDF2F7;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .exp-org {
+    font-size: 11.5px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .exp-bullets { list-style: none; }
+
+  .exp-bullets li {
+    font-size: 11.5px;
+    color: var(--ink2);
+    line-height: 1.65;
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 5px;
+  }
+
+  .exp-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* project card */
+  .proj-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--accent);
+    transition: box-shadow 0.2s, border-left-color 0.2s;
+  }
+
+  .proj-card:hover {
+    box-shadow: 0 4px 18px rgba(0,119,168,0.1);
+    border-left-color: var(--cyan);
+  }
+
+  .proj-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .proj-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .proj-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .proj-type {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  .proj-desc {
+    font-size: 11px;
+    color: var(--ink2);
+    line-height: 1.65;
+  }
+
+  .proj-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .tag {
+    font-size: 9.5px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    background: #EBF4FA;
+    border-radius: 3px;
+    padding: 2px 7px;
+  }
+
+  /* print */
+  @media print {
+    body { background: white; padding: 0; }
+    .page { box-shadow: none; width: 100%; }
+    .pill:hover, .proj-card:hover { border-color: inherit; box-shadow: none; }
+    @page { margin: 0; size: A4; }
+  }
+
+  @media (max-width: 700px) {
+    .page { grid-template-columns: 1fr; width: 100%; }
+    .sidebar::after { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <aside class="sidebar">
+
+    <div class="name-block">
+      <div class="name">Ahmed <span>Ali</span> Ahmed</div>
+      <span class="name-underline"></span>
+      <div class="role-tag">// Cybersecurity</div>
+    </div>
+
+    <div class="contact-block">
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        <div class="contact-text"><a href="mailto:ahmed.ali.ahmed3110@gmail.com">ahmed.ali.ahmed3110@gmail.com</a></div>
+      </div>
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.1 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16l.92.92z"/></svg>
+        <div class="contact-text">+973 39 593 464</div>
+      </div>
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <div class="contact-text"><a href="https://linkedin.com/in/ahmed-ali-ahmed-a91664334" target="_blank">linkedin.com/in/ahmed-ali-ahmed</a></div>
+      </div>
+      <div class="contact-item">
+        <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div class="contact-text">Manama, Bahrain</div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="s-section">
+      <div class="s-label">Skills</div>
+
+      <div class="skill-group">
+        <div class="skill-category">SIEM & Detection</div>
+        <div class="pill-row">
+          <span class="pill hi">Wazuh</span>
+          <span class="pill hi">OSSEC</span>
+          <span class="pill">Log Analysis</span>
+          <span class="pill">Alert Tuning</span>
+          <span class="pill">IOC Matching</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-category">Offensive Security</div>
+        <div class="pill-row">
+          <span class="pill">Metasploit</span>
+          <span class="pill">Burp Suite</span>
+          <span class="pill">Nmap</span>
+          <span class="pill">BloodHound</span>
+          <span class="pill">GoPhish</span>
+          <span class="pill">NetExec</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-category">Cloud & Infrastructure</div>
+        <div class="pill-row">
+          <span class="pill hi">AWS</span>
+          <span class="pill hi">Azure</span>
+          <span class="pill">Docker</span>
+          <span class="pill">Proxmox</span>
+          <span class="pill">Linux</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-category">Languages</div>
+        <div class="pill-row">
+          <span class="pill">Python</span>
+          <span class="pill">SQL</span>
+          <span class="pill">JavaScript</span>
+          <span class="pill">Java</span>
+          <span class="pill">JSON</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-category">Frameworks</div>
+        <div class="pill-row">
+          <span class="pill hi">MITRE ATT&CK</span>
+          <span class="pill">MISP</span>
+          <span class="pill">Wireshark</span>
+          <span class="pill">Tetragon</span>
+          <span class="pill">CALDERA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="s-section">
+      <div class="s-label">Education</div>
+      <div class="edu-item">
+        <div class="edu-deg">BSc Cybersecurity</div>
+        <div class="edu-school">Bahrain Polytechnic</div>
+        <div class="edu-meta">2022 – 2026 · GPA 3.5 / 4.0</div>
+        <div class="award">
+          <div class="award-title">🏅 Cyber Guards Hackathon</div>
+          <div class="award-sub">Certificate of Participation, 2025</div>
+        </div>
+        <div class="award" style="margin-top:6px">
+          <div class="award-title">📋 Injaz PMI Internship</div>
+          <div class="award-sub">Certificate of Participation, 2025</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATIONS -->
+    <div class="s-section">
+      <div class="s-label">Certifications</div>
+      <div class="cert-item">
+        <div class="cert-dot"></div>
+        <div class="cert-text">
+          <strong>AWS Cloud Security Foundation</strong>
+          Amazon Web Services
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-dot"></div>
+        <div class="cert-text">
+          <strong>PL-400 Power Platform Developer</strong>
+          Microsoft
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════ MAIN ═══════════════ -->
+  <main class="main">
+
+    <!-- SUMMARY -->
+    <div class="summary">
+      <p>Cybersecurity graduate (GPA 3.5) with real-world SOC experience at NGN International, where I engineered custom Wazuh detection rules, tuned alert pipelines, and validated threat-intelligence IOCs across Linux environments. I build things that reduce noise without losing coverage — from SIEM labs to AD attack simulations — and I document everything so teammates can follow the logic.</p>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="m-section">
+      <div class="m-label">Experience</div>
+
+      <div class="exp-card">
+        <div class="exp-dot"></div>
+        <div class="exp-header">
+          <div class="exp-title">SOC Analyst Intern</div>
+          <div class="exp-date">Feb 2026 – May 2026</div>
+        </div>
+        <div class="exp-org">NGN International · Bahrain</div>
+        <ul class="exp-bullets">
+          <li>Engineered 15+ custom Wazuh rules and decoders — reducing low-value alert noise while preserving high-fidelity detections for SSH, privilege escalation, file integrity, and persistence.</li>
+          <li>Performed daily triage on Linux security events, validating detections against threat-intelligence IOCs and malicious hashes using MITRE ATT&CK-aligned methodology.</li>
+          <li>Produced SOP-style documentation and dashboards that reduced analyst onboarding time and standardised detection workflows across the team.</li>
+        </ul>
+      </div>
+
+      <div class="exp-card" style="margin-bottom:0">
+        <div class="exp-dot"></div>
+        <div class="exp-header">
+          <div class="exp-title">IT Support Technician</div>
+          <div class="exp-date">2022</div>
+        </div>
+        <div class="exp-org">Nexcel Computer Solution · Bahrain</div>
+        <ul class="exp-bullets">
+          <li>Configured routers, switches, and networked printers across office environments, providing end-user support for connectivity and device access.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="m-section">
+      <div class="m-label">Projects</div>
+
+      <div class="proj-card">
+        <div class="proj-header">
+          <div class="proj-title">Wazuh SIEM Detection Engineering Lab</div>
+          <div class="proj-year">2026 · Final Year</div>
+        </div>
+        <div class="proj-type">Detection Engineering · SOC Monitoring</div>
+        <div class="proj-desc">Built a production-style SOC lab focused on detection engineering, alert tuning, and analyst workflows. Created and tested rules for SSH threats, FIM, privilege escalation, persistence, and IOC matching — all mapped to real-world use cases with dashboards and ATT&CK coverage reporting.</div>
+        <div class="proj-tags">
+          <span class="tag">Wazuh</span><span class="tag">SIEM</span><span class="tag">Linux</span><span class="tag">MITRE ATT&CK</span><span class="tag">IOC</span><span class="tag">FIM</span><span class="tag">Detection Rules</span>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-header">
+          <div class="proj-title">Ransomware Protection — Penetration Testing Lab</div>
+          <div class="proj-year">2025</div>
+        </div>
+        <div class="proj-type">Red Team · Active Directory · Adversary Emulation</div>
+        <div class="proj-desc">Built a segmented enterprise environment in Proxmox, simulated phishing-led initial access with GoPhish, enumerated Active Directory with NetExec and BloodHound, then executed ATT&CK-aligned adversary emulation via MITRE CALDERA. Developed a benign encryptor PoC for safe ransomware impact simulation.</div>
+        <div class="proj-tags">
+          <span class="tag">Proxmox</span><span class="tag">GoPhish</span><span class="tag">BloodHound</span><span class="tag">NetExec</span><span class="tag">CALDERA</span><span class="tag">Active Directory</span><span class="tag">Red Team</span>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-header">
+          <div class="proj-title">ML Model for DDoS Traffic Classification</div>
+          <div class="proj-year">2024</div>
+        </div>
+        <div class="proj-type">Machine Learning · Network Security</div>
+        <div class="proj-desc">Preprocessed DDoS attack datasets, trained supervised classification models, and improved performance through iterative feature selection and hyperparameter tuning — evaluated against accuracy, precision, and recall metrics.</div>
+        <div class="proj-tags">
+          <span class="tag">Python</span><span class="tag">Supervised ML</span><span class="tag">DDoS</span><span class="tag">Feature Selection</span><span class="tag">Network Security</span>
+        </div>
+      </div>
+
+      <div class="proj-card" style="margin-bottom:0">
+        <div class="proj-header">
+          <div class="proj-title">Host Intrusion Detection & Prevention System</div>
+          <div class="proj-year">2023</div>
+        </div>
+        <div class="proj-type">HIDPS · OSSEC · Linux</div>
+        <div class="proj-desc">Deployed an OSSEC-based HIDPS with manager-agent architecture on Linux, simulated attack scenarios, and integrated alerts into a centralised dashboard for real-time monitoring and response.</div>
+        <div class="proj-tags">
+          <span class="tag">OSSEC</span><span class="tag">Linux</span><span class="tag">HIDPS</span><span class="tag">Agent Monitoring</span><span class="tag">Dashboard</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>
