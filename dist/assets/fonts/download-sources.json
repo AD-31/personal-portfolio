@@ -1,0 +1,110 @@
+{
+  "css_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+  "assets": [
+    {
+      "file": "google-fonts.css",
+      "source": "https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400..500;1,500&family=IBM+Plex+Mono:wght@400&display=swap",
+      "response_url": "https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400..500;1,500&family=IBM+Plex+Mono:wght@400&display=swap",
+      "content_type": "text/css; charset=utf-8",
+      "bytes": 3717,
+      "sha256": "8225bef00bb51927b6fcb106216c8e25620bc0970a528ca6b80c39786aaeee3e"
+    },
+    {
+      "file": "DM-Sans-OFL.txt",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmsans/OFL.txt",
+      "response_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dmsans/OFL.txt",
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 4482,
+      "sha256": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1",
+      "license": "SIL Open Font License 1.1"
+    },
+    {
+      "file": "IBM-Plex-Mono-OFL.txt",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexmono/OFL.txt",
+      "response_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexmono/OFL.txt",
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 4456,
+      "sha256": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da",
+      "license": "SIL Open Font License 1.1"
+    }
+  ],
+  "fonts": [
+    {
+      "file": "dm-sans-latin-italic-500.woff2",
+      "family": "DM Sans",
+      "style": "italic",
+      "css_weight": "500",
+      "source": "https://fonts.gstatic.com/s/dmsans/v17/rP2rp2ywxg089UriCZaSExd86J3t9jz86Mvy4qCRAL19DksVat-7DV30TGc.woff2",
+      "subset": "latin",
+      "bytes": 15272,
+      "sha256": "a44f40e9bafa2b7c9abd0bccd85305778c48326f5c5bf731d43db6e4993c63a3",
+      "content_type": "font/woff2",
+      "validation": {
+        "file": "dm-sans-latin-italic-500.woff2",
+        "valid_woff2": true,
+        "tables": 16,
+        "variable": false,
+        "axes": [],
+        "os2_weight": 500,
+        "italic": true
+      }
+    },
+    {
+      "file": "dm-sans-latin-normal-400-500.woff2",
+      "family": "DM Sans",
+      "style": "normal",
+      "css_weight": "400 500",
+      "source": "https://fonts.gstatic.com/s/dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K4.woff2",
+      "subset": "latin",
+      "bytes": 36932,
+      "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543",
+      "content_type": "font/woff2",
+      "validation": {
+        "file": "dm-sans-latin-normal-400-500.woff2",
+        "valid_woff2": true,
+        "tables": 20,
+        "variable": true,
+        "axes": [
+          {
+            "tag": "wght",
+            "minimum": 100,
+            "default": 400,
+            "maximum": 1000
+          }
+        ],
+        "os2_weight": 400,
+        "italic": false
+      }
+    },
+    {
+      "file": "ibm-plex-mono-latin-400.woff2",
+      "family": "IBM Plex Mono",
+      "style": "normal",
+      "css_weight": "400",
+      "source": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2",
+      "subset": "latin",
+      "bytes": 14708,
+      "sha256": "08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7",
+      "content_type": "font/woff2",
+      "validation": {
+        "file": "ibm-plex-mono-latin-400.woff2",
+        "valid_woff2": true,
+        "tables": 17,
+        "variable": false,
+        "axes": [],
+        "os2_weight": 400,
+        "italic": false
+      }
+    }
+  ],
+  "validation_method": "WOFF2 header and Brotli table stream parsed locally with Node.js built-ins; fvar axis records, OS/2 weight, and head italic bit inspected. No font bytes altered.",
+  "fonts_total_bytes": 66912,
+  "license_repository": "https://github.com/google/fonts",
+  "notes": [
+    "Font files are unmodified Latin WOFF2 subsets fetched from the official Google Fonts CSS response using the recorded modern browser user agent.",
+    "DM Sans normal contains a real wght axis spanning 100-1000. The supplied @font-face intentionally exposes only the existing required 400-500 range.",
+    "DM Sans italic is a static 500 face; IBM Plex Mono is a static normal 400 face.",
+    "fonts.css uses paths relative to itself. Copy it alongside the three WOFF2 files, or adjust only its asset URLs when integrating elsewhere.",
+    "Retain both complete OFL license files with redistributed font assets. No production source or distribution files were modified by this staging task."
+  ]
+}

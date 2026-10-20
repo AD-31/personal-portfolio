@@ -1,0 +1,14 @@
+/* Original pointer treatment; a small local canvas never receives input. */
+.neon-cursor {
+  position:fixed; left:0; top:0; width:160px; height:160px;
+  pointer-events:none; z-index:25; contain:strict;}
+.neon-cursor[hidden] { display:none;}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  html.neon-cursor-active, html.neon-cursor-active * { cursor:none!important;}
+}
+@media (hover:none), (pointer:coarse), (prefers-reduced-motion:reduce), (forced-colors:active) {
+  .neon-cursor { display:none!important;}
+  html.neon-cursor-active, html.neon-cursor-active * { cursor:revert!important;}
+}
+.motion-off .neon-cursor { display:none!important;}
+.motion-off.neon-cursor-active, .motion-off.neon-cursor-active * { cursor:revert!important;}

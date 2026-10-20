@@ -1,0 +1,7 @@
+/* No scroll reveals, parallax, progress wipes, or hidden reading content. */
+html { scrollbar-gutter:stable; }
+.case-dialog { transform-origin:center; }
+.motion-off *,.motion-off *::before,.motion-off *::after { transition:none!important; animation:none!important; }
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { transition:none!important; animation:none!important; scroll-behavior:auto!important; }
+}

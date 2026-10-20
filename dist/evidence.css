@@ -1,0 +1,47 @@
+/* One original figure in normal flow; no automatic slideshow or image cropping. */
+.project-evidence-library { margin-top:2rem; }
+.evidence-browser { display:flex; align-items:end; justify-content:space-between; gap:1.5rem; margin-bottom:1.25rem; }
+.evidence-browser>div:first-child { flex:1; min-width:0; max-width:38rem; }
+.evidence-browser label { display:block; color:var(--ink); font-size:var(--type-card); font-weight:500; margin-bottom:.625rem; }
+.evidence-browser select { max-width:100%; width:100%; min-height:var(--control-height); padding:.625rem 2rem .625rem .75rem; border:1px solid var(--color-border-strong); border-radius:var(--radius-control); background:var(--panel-2); font-size:var(--text-sm); color:var(--ink); }
+.evidence-navigation { display:flex; align-items:center; gap:.75rem; flex-shrink:0; }
+.evidence-navigation button { width:44px; padding:.5rem; font-size:1.125rem; }
+.evidence-navigation span { font:400 var(--text-xs)/1.6 var(--font-mono); min-width:3.5rem; text-align:center; }
+.evidence-paged .evidence-figure { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); column-gap:2rem; }
+.evidence-paged .evidence-heading,.evidence-paged .evidence-figure-heading { grid-column:2; grid-row:1; }
+.evidence-paged .evidence-image { grid-column:1; grid-row:1/3; }
+.evidence-paged .evidence-figure figcaption { grid-column:2; grid-row:2; align-self:start; margin-top:.75rem; }
+.evidence-figure h4 { font-size:var(--type-item); }
+.evidence-image { display:block; width:100%; padding:0; background:transparent; color:var(--accent); text-align:left; cursor:zoom-in; }
+.evidence-image img { width:100%; height:auto; max-height:260px; object-fit:contain; object-position:left top; }
+.evidence-action { display:block; min-height:44px; padding:.625rem 0; font-size:var(--text-sm); text-decoration:underline; text-underline-offset:4px; }
+.evidence-action span { display:none; }
+.evidence-image:hover .evidence-action { color:var(--ink); }
+.evidence-figure figcaption { font-size:var(--text-sm); max-width:60ch; }
+.evidence-source { display:block; margin-top:.75rem; }
+.case-body .evidence-gallery { margin:2rem 0; }
+.case-body .evidence-slides { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+.case-body .evidence-figure h4 { margin-bottom:.75rem; }
+.case-body .evidence-figure img { max-height:260px; }
+.evidence-dialog { padding:0; width:min(1440px,calc(100% - 32px)); height:92dvh; max-width:none; max-height:92dvh; border:1px solid var(--color-border-strong); border-radius:var(--radius-dialog); background:var(--bg); color:var(--color-body); }
+.evidence-dialog[open] { display:flex; flex-direction:column; }
+.evidence-viewer-header { display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding:1rem 1.5rem; background:var(--panel); flex-shrink:0; }
+.evidence-viewer-header h2 { font-size:var(--type-card); line-height:1.35; }
+.evidence-viewer-header p { margin-top:.25rem; font:400 var(--text-xs)/1.6 var(--font-mono); color:var(--muted); }
+.evidence-viewer-controls { display:flex; flex-wrap:wrap; gap:.5rem; flex-shrink:0; }
+.evidence-viewer-stage { overflow:auto; flex:1; min-height:0; padding:1.25rem; overscroll-behavior:contain; background:var(--bg); }
+.evidence-viewer-stage img { display:block; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; margin:auto; }
+.evidence-viewer-stage.is-original img { width:var(--image-width); max-width:none; max-height:none; }
+.evidence-viewer-caption { flex-shrink:0; padding:1rem 1.5rem; background:var(--panel); font-size:var(--text-sm); }
+@media(max-width:650px) {
+  .evidence-browser { flex-wrap:wrap; gap:.75rem; }
+  .evidence-browser>div:first-child { flex-basis:100%; }
+  .evidence-paged .evidence-figure { display:flex; flex-direction:column; }
+  .evidence-paged .evidence-image { margin-top:.75rem; }
+  .evidence-image img { max-height:220px; }
+  .case-body .evidence-slides { grid-template-columns:1fr; }
+  .evidence-dialog { width:calc(100% - 16px); height:94dvh; max-height:94dvh; }
+  .evidence-viewer-header { flex-direction:column; align-items:start; gap:1rem; padding:1rem; }
+  .evidence-viewer-stage { padding:.75rem; }
+  .evidence-viewer-caption { padding:1rem; }
+}
