@@ -1,6 +1,23 @@
 /* The single signature interaction: machine models tied to real source figures. */
-.anatomy-region { margin-top:2rem; padding:var(--scene-padding); background:var(--bg); border-radius:var(--radius-panel); scroll-margin-top:calc(var(--header-height,80px) + 2 * var(--floating-gap)); }
-.anatomy-heading { display:flex; justify-content:space-between; align-items:baseline; gap:1.5rem; margin-bottom:1rem; }
+
+.anatomy-region {
+  margin-top: 2rem;
+  padding: var(--space-8) 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  scroll-margin-top: calc(
+    var(--header-height, 80px) + 2 * var(--floating-gap)
+  );
+}
+.anatomy-heading { 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:baseline; 
+  gap:1.5rem; 
+  margin-bottom:1rem; 
+}
 .anatomy-heading h3 { font-size:var(--type-card); }
 .anatomy-heading>p { font-size:var(--text-sm); color:var(--muted); }
 .anatomy-tabs { display:flex; gap:1.5rem; margin-bottom:1rem; }
