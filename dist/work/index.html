@@ -1,0 +1,651 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#142b3c">
+
+  <title>My Work — Ahmed Ali Ahmed</title>
+  <meta name="description" content="Explore Ahmed Ali Ahmed's work in detection engineering, security assessment, and DDoS traffic classification.">
+
+  <!-- Shared favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20width='40'%20height='40'%20rx='9'%20fill='%23142b3c'/%3E%3Cpath%20d='M8%2027%2020%209l12%2018M14%2023h12'%20fill='none'%20stroke='%23a6d9e2'%20stroke-width='3'/%3E%3C/svg%3E">
+
+  <!-- Existing local fonts -->
+  <link rel="preload" href="../assets/fonts/dm-sans-latin-normal-400-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/dm-sans-latin-italic-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/fonts/fonts.css?v=1b7c30ed4754">
+
+  <!-- Sitewide design system -->
+  <link rel="stylesheet" href="../design-system.css?v=943819c60783">
+  <link rel="stylesheet" href="../styles.css?v=aa0ddbeede66">
+  <link rel="stylesheet" href="../motion.css?v=d35a7f00db6d">
+  <link rel="stylesheet" href="../neon-cursor.css?v=0480ce5ff143">
+
+  <!-- Reuse homepage terminal -->
+  <link rel="stylesheet" href="../terminal-type.css?v=2">
+
+  <!-- My Work only -->
+  <link rel="stylesheet" href="work.css?v=work-3">
+
+  <script>
+    if (!window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches) {
+      document.documentElement.classList.add(
+        'hero-intro-pending'
+      );
+
+      // Never leave the introduction permanently pending.
+      window.setTimeout(() => {
+        if (document.documentElement.classList.contains(
+          'hero-intro-pending'
+        )) {
+          document.documentElement.classList.remove(
+            'hero-intro-pending'
+          );
+
+          document.documentElement.classList.add(
+            'hero-intro-finished'
+          );
+        }
+      }, 15000);
+    }
+  </script>
+
+  <!-- Existing shared scripts -->
+  <script defer src="../theme.js?v=17abee0d1726"></script>
+  <script defer src="../navigation.js?v=6347796ee4af"></script>
+  <script defer src="../neon-cursor.js?v=98288393cc1a"></script>
+  <script defer src="../terminal-type.js?v=3"></script>
+</head>
+
+<body class="page-work">
+
+  <a class="skip-link" href="#main">
+    Skip to content
+  </a>
+
+  <!-- Floating header: same as homepage -->
+  <header class="site-header dark-surface">
+
+    <a
+      class="identity"
+      href="../index.html#top"
+      aria-label="Ahmed Ali Ahmed, home"
+    >
+      <span class="monogram" aria-hidden="true">A.</span>
+
+      <span class="identity-type">
+        Ahmed Ali Ahmed
+        <small>Cybersecurity Specialist</small>
+      </span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      hidden
+    >
+      Menu
+    </button>
+
+    <nav id="primary-navigation" aria-label="Main navigation">
+      <a href="../index.html">Home</a>
+
+      <a href="index.html" aria-current="page">
+        My Work
+      </a>
+
+      <a href="#contact">Contact</a>
+
+      <a
+        class="nav-cv"
+        href="../assets/ahmed-ali-ahmed-cv.pdf"
+        download
+      >
+        Download CV
+      </a>
+    </nav>
+
+  </header>
+
+  <main id="main" tabindex="-1" class="work-main">
+
+    <!-- Terminal introduction -->
+    <section
+      class="work-intro section-shell"
+      aria-labelledby="work-title"
+    >
+      <div class="work-intro-copy hero-copy">
+
+        <p
+          class="terminal-command work-terminal-command"
+          data-terminal
+          aria-hidden="true"
+        ><span class="terminal-user">ahmed@portfolio</span>:<span class="terminal-path">~</span>$ cat work.txt</p>
+
+        <p class="eyebrow work-eyebrow" data-terminal>
+          SELECTED WORK / CYBERSECURITY
+        </p>
+
+        <h1 id="work-title">
+          <span
+            class="hero-heading-line work-heading-line"
+            data-terminal
+          >Explore the systems</span>
+
+          <em
+            class="hero-heading-line work-heading-line"
+            data-terminal
+          >behind the work.</em>
+        </h1>
+
+        <p class="hero-intro work-lede" data-terminal>Three technical projects exploring how security events are detected, systems are assessed, and network traffic is analyzed.</p>
+
+      </div>
+
+      <p class="work-count">
+        <span>03</span> projects
+      </p>
+    </section>
+
+    <!-- Three project selections -->
+    <section
+      class="work-gallery section-shell"
+      aria-label="Cybersecurity projects"
+    >
+      <div class="work-projects">
+
+        <!-- PROJECT 01: DETECTION ENGINEERING -->
+        <article class="work-project work-project--detection">
+
+          <a
+            class="work-project-link"
+            href="wazuh.html"
+            aria-labelledby="work-detection-title"
+          >
+
+            <div class="work-preview" aria-hidden="true">
+              <svg viewBox="0 0 360 260" focusable="false">
+
+                <!-- Endpoint -->
+                <g class="model-float model-float--a">
+                  <path d="M27 155L91 145L109 155L46 167Z"
+                    fill="#7799AA" opacity=".45"/>
+
+                  <rect x="37" y="86" width="72" height="63"
+                    rx="3" fill="#142B3C"/>
+
+                  <rect x="43" y="93" width="60" height="47"
+                    fill="#243F50"/>
+
+                  <path
+                    d="M50 102H89M50 111H80M50 120H94M50 129H75"
+                    stroke="#A6D9E2"
+                    stroke-width="2.2"
+                    opacity=".85"
+                  />
+
+                  <rect x="51" y="144" width="44" height="5"
+                    fill="#708DA0"/>
+
+                  <path d="M28 151L112 151L119 161L20 161Z"
+                    fill="#426176"/>
+
+                  <path d="M37 152H105"
+                    stroke="#A6D9E2" stroke-width="1"/>
+                </g>
+
+                <!-- Event connections -->
+                <path
+                  d="M118 126H144M245 126H268"
+                  stroke="#95ADB8"
+                  stroke-width="1.5"
+                  fill="none"
+                />
+
+                <path
+                  class="work-flow"
+                  d="M118 126H144M245 126H268"
+                  stroke="#CF924D"
+                  stroke-width="2"
+                  fill="none"
+                />
+
+                <!-- Detection processing -->
+                <g class="model-float model-float--b">
+                  <path d="M151 183L239 183L249 192L163 192Z"
+                    fill="#142B3C"/>
+
+                  <path d="M149 168L234 168L244 177L159 177Z"
+                    fill="#426176"/>
+
+                  <rect x="162" y="133" width="77" height="27"
+                    rx="2" fill="#142B3C"/>
+
+                  <path d="M172 141H196M172 147H219M172 153H205"
+                    stroke="#A6D9E2" stroke-width="2"/>
+
+                  <path d="M157 117L231 117L243 126L169 126Z"
+                    fill="#708DA0"/>
+
+                  <path d="M157 111L231 111L243 120L169 120Z"
+                    fill="#2B6678"/>
+
+                  <rect x="181" y="114" width="23" height="6"
+                    fill="#CF924D"/>
+
+                  <path d="M156 95L230 95L241 104L167 104Z"
+                    fill="#142B3C"/>
+
+                  <path d="M160 87L226 87L238 96L171 96Z"
+                    fill="#7F9BA9"/>
+
+                  <path d="M176 92H216"
+                    stroke="#A6D9E2"
+                    stroke-dasharray="3 4"
+                    stroke-width="2"/>
+
+                  <path d="M155 177L155 162M239 177L239 162"
+                    stroke="#8FA8B5" stroke-width="2"/>
+                </g>
+
+                <!-- Analyst display -->
+                <g class="model-float model-float--c">
+                  <rect x="267" y="96" width="71" height="65"
+                    rx="2" fill="#142B3C"/>
+
+                  <rect x="272" y="101" width="61" height="53"
+                    fill="#233F50"/>
+
+                  <path
+                    d="M279 109H312M279 117H325M279 125H303M279 133H321M279 141H294"
+                    stroke="#A6D9E2"
+                    stroke-width="2"
+                    opacity=".8"
+                  />
+
+                  <rect x="310" y="135" width="16" height="6"
+                    fill="#CF924D"/>
+
+                  <path d="M299 161V170M286 172H313"
+                    stroke="#426176" stroke-width="3"/>
+                </g>
+
+                <rect
+                  class="work-pulse"
+                  x="122" y="122"
+                  width="8" height="8"
+                  fill="#CF924D"
+                />
+
+              </svg>
+            </div>
+
+            <p class="work-project-kicker">
+              SECURITY OPERATIONS / DETECTION
+            </p>
+
+            <h2 id="work-detection-title">
+              Detection Engineering
+            </h2>
+
+            <p class="work-description">
+              Follow security telemetry through collection,
+              detection logic, and an analyst-facing alert.
+            </p>
+
+            <p class="work-tech">
+              Wazuh <span aria-hidden="true">·</span>
+              Tetragon <span aria-hidden="true">·</span>
+              MISP
+            </p>
+
+            <span class="work-explore">
+              Explore project
+              <span aria-hidden="true">↗</span>
+            </span>
+
+          </a>
+        </article>
+
+        <!-- PROJECT 02: SME SECURITY ASSESSMENT -->
+        <article class="work-project work-project--assessment">
+
+          <a
+            class="work-project-link"
+            href="assessment.html"
+            aria-labelledby="work-assessment-title"
+          >
+
+            <div class="work-preview" aria-hidden="true">
+              <svg viewBox="0 0 360 260" focusable="false">
+
+                <!-- Network zones -->
+                <path
+                  d="M37 179L106 162L139 177L70 194Z"
+                  fill="#E3EDF0"
+                  stroke="#9DB7C1"
+                  stroke-width="1.2"
+                />
+
+                <path
+                  d="M141 151L212 133L246 149L176 169Z"
+                  fill="#E3EDF0"
+                  stroke="#9DB7C1"
+                  stroke-width="1.2"
+                />
+
+                <path
+                  d="M247 184L316 167L337 184L269 201Z"
+                  fill="#E3EDF0"
+                  stroke="#9DB7C1"
+                  stroke-width="1.2"
+                />
+
+                <!-- Client -->
+                <g class="model-float model-float--a">
+                  <rect x="58" y="106" width="59" height="46"
+                    rx="2" fill="#142B3C"/>
+
+                  <rect x="63" y="111" width="49" height="36"
+                    fill="#345D70"/>
+
+                  <path d="M70 119H99M70 127H88M70 135H105"
+                    stroke="#A6D9E2" stroke-width="2"/>
+
+                  <path d="M83 152V160M69 162H99"
+                    stroke="#426176" stroke-width="3"/>
+                </g>
+
+                <!-- Firewall -->
+                <g class="model-float model-float--b">
+                  <path d="M150 105L213 90L236 107L172 124Z"
+                    fill="#7799AA"/>
+
+                  <path d="M150 105V148L172 165V124Z"
+                    fill="#426176"/>
+
+                  <path d="M172 124L236 107V149L172 165Z"
+                    fill="#142B3C"/>
+
+                  <path d="M184 136L223 126M184 144L213 136"
+                    stroke="#A6D9E2" stroke-width="2"/>
+
+                  <rect x="222" y="142" width="7" height="5"
+                    fill="#CF924D"/>
+                </g>
+
+                <!-- Server -->
+                <g class="model-float model-float--c">
+                  <path d="M262 106L309 96L325 106L277 119Z"
+                    fill="#708DA0"/>
+
+                  <path d="M262 106V164L277 176V119Z"
+                    fill="#426176"/>
+
+                  <path d="M277 119L325 106V165L277 176Z"
+                    fill="#142B3C"/>
+
+                  <path
+                    d="M285 131L316 124M285 141L316 134M285 151L316 144"
+                    stroke="#A6D9E2"
+                    stroke-width="2.4"
+                  />
+
+                  <rect x="309" y="153" width="7" height="5"
+                    fill="#CF924D"/>
+                </g>
+
+                <!-- Network connections -->
+                <path
+                  d="M119 135L145 135M234 135L256 135"
+                  stroke="#8DAAB5"
+                  stroke-width="1.5"
+                />
+
+                <path
+                  class="work-flow"
+                  d="M119 135L145 135M234 135L256 135"
+                  stroke="#CF924D"
+                  stroke-width="2"
+                />
+
+                <path
+                  d="M196 170L196 186L255 186"
+                  stroke="#9DB7C1"
+                  stroke-width="1"
+                  fill="none"
+                  stroke-dasharray="3 5"
+                />
+
+              </svg>
+            </div>
+
+            <p class="work-project-kicker">
+              OFFENSIVE SECURITY / NETWORKS
+            </p>
+
+            <h2 id="work-assessment-title">
+              SME Security Assessment
+            </h2>
+
+            <p class="work-description">
+              Examine network zones, exposed services,
+              and directory privilege relationships.
+            </p>
+
+            <p class="work-tech">
+              pfSense <span aria-hidden="true">·</span>
+              Active Directory <span aria-hidden="true">·</span>
+              BloodHound
+            </p>
+
+            <span class="work-explore">
+              Explore project
+              <span aria-hidden="true">↗</span>
+            </span>
+
+          </a>
+        </article>
+
+        <!-- PROJECT 03: DDOS CLASSIFICATION -->
+        <article class="work-project work-project--ddos">
+
+          <a
+            class="work-project-link"
+            href="ddos.html"
+            aria-labelledby="work-ddos-title"
+          >
+
+            <div class="work-preview" aria-hidden="true">
+              <svg viewBox="0 0 360 260" focusable="false">
+
+                <!-- Traffic input -->
+                <g class="model-float model-float--a">
+                  <path
+                    d="M20 115H78M20 127H67M20 139H79M20 151H57"
+                    stroke="#426176"
+                    stroke-width="2"
+                    stroke-dasharray="6 7"
+                  />
+
+                  <rect x="73" y="103" width="38" height="62"
+                    rx="2" fill="#142B3C"/>
+
+                  <rect x="80" y="112" width="24" height="4"
+                    fill="#A6D9E2"/>
+
+                  <rect x="80" y="123" width="18" height="4"
+                    fill="#A6D9E2"/>
+
+                  <rect x="80" y="134" width="24" height="4"
+                    fill="#A6D9E2"/>
+
+                  <rect x="80" y="145" width="13" height="4"
+                    fill="#CF924D"/>
+                </g>
+
+                <!-- Feature preparation -->
+                <g class="model-float model-float--b">
+                  <path
+                    d="M137 96L208 96L220 109L149 109Z"
+                    fill="#708DA0"
+                  />
+
+                  <rect x="149" y="109" width="71" height="61"
+                    rx="2" fill="#142B3C"/>
+
+                  <path
+                    d="M161 152V135H168V152M175 152V122H182V152M189 152V140H196V152M203 152V129H210V152"
+                    fill="none"
+                    stroke="#A6D9E2"
+                    stroke-width="5"
+                  />
+
+                  <path d="M161 158H209"
+                    stroke="#6C91A3"
+                    stroke-width="1.4"/>
+                </g>
+
+                <!-- Alternative models -->
+                <g class="model-float model-float--c">
+
+                  <rect x="273" y="69" width="61" height="38"
+                    rx="2" fill="#426176"/>
+
+                  <rect x="280" y="77" width="47" height="5"
+                    fill="#A6D9E2"/>
+
+                  <rect x="280" y="88" width="33" height="5"
+                    fill="#A6D9E2"/>
+
+                  <rect x="273" y="116" width="61" height="38"
+                    rx="2" fill="#142B3C"/>
+
+                  <rect x="280" y="124" width="47" height="5"
+                    fill="#A6D9E2"/>
+
+                  <rect x="280" y="135" width="38" height="5"
+                    fill="#CF924D"/>
+
+                  <rect x="273" y="163" width="61" height="38"
+                    rx="2" fill="#426176"/>
+
+                  <rect x="280" y="171" width="47" height="5"
+                    fill="#A6D9E2"/>
+
+                  <rect x="280" y="182" width="28" height="5"
+                    fill="#A6D9E2"/>
+                </g>
+
+                <!-- Processing branches -->
+                <path
+                  d="M111 133H149M220 139H246V88H273M246 139H273M246 139V182H273"
+                  fill="none"
+                  stroke="#94B0BA"
+                  stroke-width="1.5"
+                />
+
+                <path
+                  class="work-flow"
+                  d="M111 133H149M220 139H246V88H273M246 139H273M246 139V182H273"
+                  fill="none"
+                  stroke="#CF924D"
+                  stroke-width="2"
+                />
+
+              </svg>
+            </div>
+
+            <p class="work-project-kicker">
+              MACHINE LEARNING / NETWORK SECURITY
+            </p>
+
+            <h2 id="work-ddos-title">
+              DDoS Traffic Classification
+            </h2>
+
+            <p class="work-description">
+              Explore traffic preparation, feature engineering,
+              and comparison of alternative models.
+            </p>
+
+            <p class="work-tech">
+              Random Forest <span aria-hidden="true">·</span>
+              SVM <span aria-hidden="true">·</span>
+              XGBoost
+            </p>
+
+            <span class="work-explore">
+              Explore project
+              <span aria-hidden="true">↗</span>
+            </span>
+
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared footer -->
+  <footer
+    id="contact"
+    class="contact-section dark-surface"
+    aria-labelledby="contact-title"
+  >
+    <div class="contact-copy">
+      <p class="eyebrow">Contact</p>
+
+      <h2 id="contact-title">
+        Let's talk security.
+      </h2>
+
+      <div class="contact-actions">
+        <a
+          class="button primary"
+          href="mailto:ahmed.ali.ahmed3110@gmail.com"
+        >
+          Email Ahmed
+        </a>
+
+        <a
+          class="text-link"
+          href="https://www.linkedin.com/in/ahmed-ali-ahmed-a91664334"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn
+        </a>
+
+        <a
+          class="text-link"
+          href="../assets/ahmed-ali-ahmed-cv.pdf"
+          download
+        >
+          Download CV
+        </a>
+      </div>
+
+      <a
+        class="email-address"
+        href="mailto:ahmed.ali.ahmed3110@gmail.com"
+      >
+        ahmed.ali.ahmed3110@gmail.com
+      </a>
+    </div>
+
+    <div class="site-footer">
+      <span>Ahmed Ali Ahmed · Bahrain</span>
+    </div>
+  </footer>
+
+</body>
+</html>

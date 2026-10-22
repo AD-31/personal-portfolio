@@ -1,0 +1,964 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#142b3c">
+
+  <title>Wazuh Detection Engineering — Ahmed Ali Ahmed</title>
+
+  <meta name="description"
+    content="Wazuh detection engineering, Linux monitoring, custom detection rules, and security investigation.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20width='40'%20height='40'%20rx='9'%20fill='%23142b3c'/%3E%3Cpath%20d='M8%2027%2020%209l12%2018M14%2023h12'%20fill='none'%20stroke='%23a6d9e2'%20stroke-width='3'/%3E%3C/svg%3E">
+
+  <!-- Local fonts -->
+  <link rel="preload"
+    href="../assets/fonts/dm-sans-latin-normal-400-500.woff2"
+    as="font" type="font/woff2" crossorigin>
+
+  <link rel="preload"
+    href="../assets/fonts/dm-sans-latin-italic-500.woff2"
+    as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet"
+    href="../assets/fonts/fonts.css?v=1b7c30ed4754">
+
+  <!-- Shared design system -->
+  <link rel="stylesheet"
+    href="../design-system.css?v=943819c60783">
+
+  <link rel="stylesheet"
+    href="../styles.css?v=aa0ddbeede66">
+
+  <link rel="stylesheet"
+    href="../anatomy.css?v=bbf31ff46975">
+
+  <link rel="stylesheet"
+    href="../evidence.css?v=05144715aacf">
+
+  <link rel="stylesheet"
+    href="../motion.css?v=d35a7f00db6d">
+
+  <link rel="stylesheet"
+    href="../neon-cursor.css?v=0480ce5ff143">
+
+  <link rel="stylesheet"
+    href="../terminal-type.css?v=2">
+
+  <!-- Dedicated Wazuh CSS -->
+  <link rel="stylesheet"
+    href="wazuh.css?v=pipeline-2">
+
+  <!-- Existing terminal lifecycle -->
+  <script>
+    if (!window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches) {
+      document.documentElement.classList.add(
+        "hero-intro-pending"
+      );
+
+      window.setTimeout(() => {
+        const root = document.documentElement;
+
+        if (root.classList.contains("hero-intro-pending")) {
+          root.classList.remove("hero-intro-pending");
+          root.classList.add("hero-intro-finished");
+        }
+      }, 15000);
+    }
+  </script>
+
+  <!-- Repair nested asset paths created by older scripts -->
+  <script>
+    (() => {
+      function repairImage(image) {
+        if (!(image instanceof HTMLImageElement)) return;
+
+        const raw = image.getAttribute("src") || "";
+        let corrected = "";
+
+        if (raw.startsWith("assets/")) {
+          corrected = new URL("../" + raw, location.href).href;
+        } else if (raw.includes("/work/assets/")) {
+          corrected = new URL(raw, location.href)
+            .href.replace("/work/assets/", "/assets/");
+        }
+
+        if (corrected && image.src !== corrected) {
+          image.src = corrected;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("img").forEach(repairImage);
+
+        const observer = new MutationObserver(records => {
+          for (const record of records) {
+            if (record.type === "attributes") {
+              repairImage(record.target);
+              continue;
+            }
+
+            for (const node of record.addedNodes) {
+              if (!(node instanceof Element)) continue;
+              repairImage(node);
+              node.querySelectorAll("img").forEach(repairImage);
+            }
+          }
+        });
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["src"]
+        });
+      });
+    })();
+  </script>
+
+  <!-- Shared JavaScript -->
+  <script defer src="../theme.js?v=17abee0d1726"></script>
+  <script defer src="../navigation.js?v=6347796ee4af"></script>
+  <script defer src="../playback.js?v=8be236a47c98"></script>
+  <script defer src="../motion.js?v=56a2b57c645b"></script>
+
+  <!-- Existing Wazuh 3D renderer -->
+  <script defer src="../system-sequences.js?v=dcf7021eb7b0"></script>
+  <script defer src="../evidence.js?v=2364a87662d9"></script>
+  <script defer src="../anatomy.js?v=15a14fd4b4e6"></script>
+
+  <script defer src="../neon-cursor.js?v=98288393cc1a"></script>
+  <script defer src="../terminal-type.js?v=3"></script>
+</head>
+
+<body class="page-project page-wazuh">
+
+  <a class="skip-link" href="#main">
+    Skip to content
+  </a>
+
+  <!-- ======================================
+       SHARED FLOATING HEADER
+       ====================================== -->
+
+  <header class="site-header dark-surface">
+
+    <a class="identity"
+       href="../index.html#top"
+       aria-label="Ahmed Ali Ahmed, home">
+
+      <span class="monogram" aria-hidden="true">A.</span>
+
+      <span class="identity-type">
+        Ahmed Ali Ahmed
+        <small>Cybersecurity Specialist</small>
+      </span>
+
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      hidden>
+      Menu
+    </button>
+
+    <nav id="primary-navigation" aria-label="Main navigation">
+
+      <a href="../index.html">Home</a>
+      <a href="index.html">My Work</a>
+      <a href="#contact">Contact</a>
+
+      <a class="nav-cv"
+         href="../assets/ahmed-ali-ahmed-cv.pdf"
+         download>
+        Download CV
+      </a>
+
+    </nav>
+
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ======================================
+         HERO INTRODUCTION
+         ====================================== -->
+
+    <section
+      class="wazuh-intro section-shell"
+      id="top"
+      aria-labelledby="wazuh-title">
+
+      <a class="wazuh-breadcrumb" href="index.html">
+        ← Back to My Work
+      </a>
+
+      <div class="wazuh-intro-layout">
+
+        <!-- LEFT: TERMINAL INTRODUCTION -->
+        <div class="wazuh-intro-copy">
+
+          <p
+            class="terminal-command"
+            data-terminal
+            aria-hidden="true"><span class="terminal-user">ahmed@portfolio</span>:<span class="terminal-path">~</span>$ cat detection.txt</p>
+
+          <p class="eyebrow wazuh-eyebrow" data-terminal>
+            DETECTION ENGINEERING / SECURITY OPERATIONS
+          </p>
+
+          <h1 id="wazuh-title">
+
+            <span class="wazuh-heading-line"
+                  data-terminal>Wazuh Detection</span>
+
+            <em class="wazuh-heading-line"
+                data-terminal>Engineering.</em>
+
+          </h1>
+
+          <p class="wazuh-lede" data-terminal>I built a security monitoring workflow using Wazuh, custom detections, and Linux runtime telemetry to support security investigations.</p>
+
+          <p class="wazuh-tech">
+            Wazuh
+            <span aria-hidden="true">·</span>
+            Tetragon
+            <span aria-hidden="true">·</span>
+            MISP
+          </p>
+
+        </div>
+
+        <!-- ==================================
+             RIGHT: 3D DETECTION PIPELINE
+             ================================== -->
+
+        <aside
+          class="wazuh-pipeline"
+          aria-labelledby="wazuh-pipeline-title">
+
+          <p
+            class="wazuh-pipeline-eyebrow"
+            id="wazuh-pipeline-title">
+            DETECTION PIPELINE
+          </p>
+
+          <div
+            class="wazuh-pipeline-scene"
+            role="img"
+            aria-label="Conceptual detection pipeline. An event moves from collection through detection to analyst review.">
+
+            <!-- CONNECTOR 01 -->
+            <div
+              class="wazuh-pipeline-link
+                     wazuh-pipeline-link--first"
+              aria-hidden="true">
+
+              <span class="wazuh-pipeline-packet"></span>
+
+            </div>
+
+            <!-- CONNECTOR 02 -->
+            <div
+              class="wazuh-pipeline-link
+                     wazuh-pipeline-link--second"
+              aria-hidden="true">
+
+              <span class="wazuh-pipeline-packet"></span>
+
+            </div>
+
+            <!-- COLLECT MODULE -->
+            <div
+              class="wazuh-pipeline-node
+                     wazuh-pipeline-node--collect"
+              aria-hidden="true">
+
+              <div class="wazuh-pipeline-cube">
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--top"></div>
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--side"></div>
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--front">
+
+                  <span class="wazuh-pipeline-screen">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                  </span>
+
+                  <span class="wazuh-pipeline-led"></span>
+
+                </div>
+
+              </div>
+
+              <span class="wazuh-pipeline-label">
+                Collect
+              </span>
+
+              <span class="wazuh-pipeline-index">
+                01
+              </span>
+
+            </div>
+
+            <!-- DETECT MODULE -->
+            <div
+              class="wazuh-pipeline-node
+                     wazuh-pipeline-node--detect"
+              aria-hidden="true">
+
+              <div class="wazuh-pipeline-cube">
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--top"></div>
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--side"></div>
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--front">
+
+                  <span class="wazuh-pipeline-screen">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                  </span>
+
+                  <span class="wazuh-pipeline-led"></span>
+
+                </div>
+
+              </div>
+
+              <span class="wazuh-pipeline-label">
+                Detect
+              </span>
+
+              <span class="wazuh-pipeline-index">
+                02
+              </span>
+
+            </div>
+
+            <!-- REVIEW MODULE -->
+            <div
+              class="wazuh-pipeline-node
+                     wazuh-pipeline-node--review"
+              aria-hidden="true">
+
+              <div class="wazuh-pipeline-cube">
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--top"></div>
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--side"></div>
+
+                <div class="wazuh-pipeline-face
+                            wazuh-pipeline-face--front">
+
+                  <span class="wazuh-pipeline-screen">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                  </span>
+
+                  <span class="wazuh-pipeline-led"></span>
+
+                </div>
+
+              </div>
+
+              <span class="wazuh-pipeline-label">
+                Review
+              </span>
+
+              <span class="wazuh-pipeline-index">
+                03
+              </span>
+
+            </div>
+
+          </div>
+
+          <p class="wazuh-pipeline-note">
+            Collect → Detect → Review
+          </p>
+
+        </aside>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================
+         MAIN INTERACTIVE 3D SYSTEM
+         ====================================== -->
+
+    <section
+      class="wazuh-model section-shell"
+      aria-labelledby="model-title">
+
+      <p class="wazuh-kicker">
+        EXPLORE THE SYSTEM
+      </p>
+
+      <section
+        class="anatomy-region"
+        id="system-anatomy"
+        aria-labelledby="model-title">
+
+        <div class="anatomy-heading">
+          <h2 id="model-title">
+            From event to investigation.
+          </h2>
+        </div>
+
+        <div class="anatomy-story">
+
+          <div
+            class="anatomy-shell"
+            id="anatomy-explorer">
+
+            <!-- Original renderer model selection -->
+            <div class="anatomy-tabs" hidden>
+
+              <button
+                type="button"
+                data-anatomy-model="detection"
+                aria-pressed="true">
+                Wazuh monitoring
+              </button>
+
+            </div>
+
+            <div class="anatomy-layout">
+
+              <!-- MAIN MODEL -->
+              <div class="anatomy-visual">
+
+                <div class="anatomy-stage">
+
+                  <canvas
+                    tabindex="0"
+                    role="img"
+                    aria-label="Interactive Wazuh system. Drag or use arrow keys to rotate. Press Home to reset."
+                    aria-describedby="anatomy-gesture-help">
+                  </canvas>
+
+                  <div class="anatomy-fallback">
+                    Telemetry → Collection → Detection → Review
+                  </div>
+
+                </div>
+
+                <!-- Renderer compatibility hooks -->
+                <div
+                  class="sequence-readout"
+                  aria-live="off"
+                  hidden>
+
+                  <p class="sequence-lineage"></p>
+
+                  <div class="sequence-title-row">
+
+                    <strong class="sequence-title">
+                      Follow the event
+                    </strong>
+
+                    <button
+                      class="sequence-source"
+                      type="button"
+                      data-evidence="wazuh-runtime-record">
+                      Inspect source
+                    </button>
+
+                  </div>
+
+                  <p class="sequence-description"></p>
+
+                  <p class="sequence-record">
+                    <strong class="sequence-form"></strong>
+                    <span class="sequence-fields"></span>
+                  </p>
+
+                  <details class="sequence-contract">
+
+                    <summary>
+                      Stage inputs and outputs
+                    </summary>
+
+                    <dl class="sequence-io">
+
+                      <div>
+                        <dt>Input</dt>
+                        <dd data-sequence-input></dd>
+                      </div>
+
+                      <div>
+                        <dt>Tool</dt>
+                        <dd data-sequence-tool></dd>
+                      </div>
+
+                      <div>
+                        <dt>Output</dt>
+                        <dd data-sequence-output></dd>
+                      </div>
+
+                    </dl>
+
+                  </details>
+
+                  <p class="sequence-citation"></p>
+
+                </div>
+
+                <!-- Hidden helper text for keyboard users -->
+                <p
+                  class="anatomy-gesture-hint"
+                  id="anatomy-gesture-help"
+                  hidden>
+                  Drag to rotate. Arrow keys rotate.
+                  Home resets the model.
+                </p>
+
+                <!-- Original orbit controls -->
+                <div class="anatomy-orbit" hidden>
+
+                  <div
+                    role="group"
+                    aria-label="Rotate system model">
+
+                    <button
+                      type="button"
+                      data-orbit="-1"
+                      aria-label="Rotate left">
+                      Rotate left
+                    </button>
+
+                    <button
+                      type="button"
+                      data-orbit="1"
+                      aria-label="Rotate right">
+                      Rotate right
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- COMPONENT INSPECTOR -->
+              <aside
+                class="anatomy-inspector"
+                aria-label="Inspect system components">
+
+                <p class="eyebrow">
+                  INSPECT COMPONENTS
+                </p>
+
+                <div
+                  class="anatomy-part-list"
+                  role="group"
+                  aria-label="System components">
+                </div>
+
+                <div
+                  class="anatomy-part-copy"
+                  aria-live="polite">
+
+                  <h4>Telemetry sources</h4>
+
+                  <p class="anatomy-description">
+                    Linux runtime telemetry.
+                  </p>
+
+                </div>
+
+                <button
+                  class="anatomy-evidence"
+                  type="button"
+                  data-evidence="wazuh-runtime-record">
+
+                  <img
+                    src="../assets/evidence/wazuh-runtime-record.png"
+                    width="894"
+                    height="850"
+                    alt="">
+
+                  <span>
+                    View evidence ↗
+                    <small>Original source</small>
+                  </span>
+
+                </button>
+
+                <div class="anatomy-relations"></div>
+
+              </aside>
+
+            </div>
+
+            <div class="anatomy-footer">
+
+              <p>
+                Conceptual workflow · Not live telemetry
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Original hidden transcript hooks -->
+        <div class="anatomy-text" hidden>
+
+          <ol class="sequence-transcript" hidden></ol>
+
+          <div
+            class="sequence-transcript-fallback"
+            hidden>
+          </div>
+
+        </div>
+
+      </section>
+
+    </section>
+
+    <!-- ======================================
+         WHAT I BUILT
+         ====================================== -->
+
+    <section
+      class="wazuh-achievements section-shell"
+      id="achievements"
+      aria-labelledby="achievements-title">
+
+      <p class="wazuh-kicker">
+        WHAT I BUILT
+      </p>
+
+      <h2 id="achievements-title">
+        Making security events useful.
+      </h2>
+
+      <div class="wazuh-columns">
+
+        <section>
+
+          <h3>Endpoint monitoring</h3>
+
+          <p>
+            Integrated Tetragon and Wazuh
+            to collect Linux runtime events.
+          </p>
+
+        </section>
+
+        <section>
+
+          <h3>Custom detections</h3>
+
+          <p>
+            Built detection rules and decoders
+            and improved alert relevance.
+          </p>
+
+        </section>
+
+        <section>
+
+          <h3>Security investigation</h3>
+
+          <p>
+            Connected monitoring with alert review
+            and threat-intelligence context.
+          </p>
+
+        </section>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================
+         WHAT I LEARNED
+         ====================================== -->
+
+    <section
+      class="wazuh-learning section-shell"
+      aria-labelledby="learning-title">
+
+      <p class="wazuh-kicker">
+        WHAT I LEARNED
+      </p>
+
+      <h2 id="learning-title">
+        Detection is more than a rule.
+      </h2>
+
+      <p class="wazuh-learning-copy">
+        I learned how log quality, decoding,
+        alert tuning, and investigation context
+        work together to make security monitoring effective.
+      </p>
+
+    </section>
+
+    <!-- ======================================
+         ORIGINAL EVIDENCE
+         ====================================== -->
+
+    <section
+      class="wazuh-evidence section-shell"
+      id="source-evidence"
+      aria-labelledby="evidence-title-section">
+
+      <p class="wazuh-kicker">
+        ORIGINAL EVIDENCE
+      </p>
+
+      <h2 id="evidence-title-section">
+        A look at the implementation.
+      </h2>
+
+      <div class="wazuh-proof-grid">
+
+        <!-- Captured alert -->
+        <a
+          class="wazuh-proof"
+          href="../assets/evidence/wazuh-runtime-record.png"
+          target="_blank"
+          rel="noopener noreferrer">
+
+          <img
+            src="../assets/evidence/wazuh-runtime-record.png"
+            width="894"
+            height="850"
+            loading="lazy"
+            decoding="async"
+            alt="Captured Wazuh runtime alert showing rule 732011.">
+
+          <span>
+            Recorded runtime alert ↗
+          </span>
+
+        </a>
+
+        <!-- Custom detections -->
+        <a
+          class="wazuh-proof"
+          href="../assets/wazuh-rule-evidence.png"
+          target="_blank"
+          rel="noopener noreferrer">
+
+          <img
+            src="../assets/wazuh-rule-evidence.png"
+            width="1419"
+            height="352"
+            loading="lazy"
+            decoding="async"
+            alt="Original Wazuh custom detection rules.">
+
+          <span>
+            Custom detection rules ↗
+          </span>
+
+        </a>
+
+        <!-- Decoder -->
+        <a
+          class="wazuh-proof"
+          href="../assets/evidence/wazuh-tetragon-decoder.png"
+          target="_blank"
+          rel="noopener noreferrer">
+
+          <img
+            src="../assets/evidence/wazuh-tetragon-decoder.png"
+            width="553"
+            height="157"
+            loading="lazy"
+            decoding="async"
+            alt="Tetragon JSON decoder configuration.">
+
+          <span>
+            Tetragon decoder ↗
+          </span>
+
+        </a>
+
+      </div>
+
+      <p class="wazuh-proof-note">
+        Original lab screenshots. The 3D visualizations
+        illustrate the workflow rather than live telemetry.
+      </p>
+
+    </section>
+
+    <!-- ======================================
+         PROJECT NAVIGATION
+         ====================================== -->
+
+    <nav
+      class="wazuh-next section-shell"
+      aria-label="Project navigation">
+
+      <a href="index.html">
+        ← Back to My Work
+      </a>
+
+      <a href="assessment.html">
+        Next: Security Assessment ↗
+      </a>
+
+      <a href="#top">
+        Back to top ↑
+      </a>
+
+    </nav>
+
+  </main>
+
+  <!-- ======================================
+       SHARED FOOTER
+       ====================================== -->
+
+  <footer
+    id="contact"
+    class="contact-section dark-surface"
+    aria-labelledby="contact-title">
+
+    <div class="contact-copy">
+
+      <p class="eyebrow">Contact</p>
+
+      <h2 id="contact-title">
+        Let's talk security.
+      </h2>
+
+      <div class="contact-actions">
+
+        <a
+          class="button primary"
+          href="mailto:ahmed.ali.ahmed3110@gmail.com">
+          Email Ahmed
+        </a>
+
+        <a
+          class="text-link"
+          href="https://www.linkedin.com/in/ahmed-ali-ahmed-a91664334"
+          target="_blank"
+          rel="noopener noreferrer">
+          LinkedIn
+        </a>
+
+        <a
+          class="text-link"
+          href="../assets/ahmed-ali-ahmed-cv.pdf"
+          download>
+          Download CV
+        </a>
+
+      </div>
+
+      <a
+        class="email-address"
+        href="mailto:ahmed.ali.ahmed3110@gmail.com">
+        ahmed.ali.ahmed3110@gmail.com
+      </a>
+
+    </div>
+
+    <div class="site-footer">
+      <span>Ahmed Ali Ahmed · Bahrain</span>
+    </div>
+
+  </footer>
+
+  <!-- Existing component evidence dialog -->
+  <dialog
+    class="evidence-dialog"
+    id="evidence-dialog"
+    aria-labelledby="evidence-title"
+    aria-describedby="evidence-caption">
+
+    <div class="evidence-viewer-header">
+
+      <div>
+
+        <h2 id="evidence-title">
+          Project evidence
+        </h2>
+
+        <p id="evidence-source"></p>
+
+      </div>
+
+      <div
+        class="evidence-viewer-controls"
+        role="group"
+        aria-label="Screenshot display">
+
+        <button
+          id="evidence-fit"
+          type="button"
+          aria-pressed="true">
+          Fit image
+        </button>
+
+        <button
+          id="evidence-original"
+          type="button"
+          aria-pressed="false">
+          Original size
+        </button>
+
+        <button
+          id="evidence-close"
+          type="button">
+          Close
+        </button>
+
+      </div>
+
+    </div>
+
+    <div
+      class="evidence-viewer-stage"
+      role="region"
+      tabindex="0"
+      aria-label="Screenshot viewer">
+
+      <img alt="">
+
+    </div>
+
+    <p
+      class="evidence-viewer-caption"
+      id="evidence-caption">
+    </p>
+
+  </dialog>
+
+</body>
+</html>

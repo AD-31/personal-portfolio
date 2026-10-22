@@ -1,246 +1,1318 @@
-/* An illustrative 3D network, projected onto Canvas. No telemetry is collected. */
+
+/*
+ * Security Fieldnotes — Spherical Forensic Scan
+ *
+ * Sphere -> glass scan -> three grids
+ * -> moving signals -> sphere -> repeat.
+ *
+ * Canvas 2D projection of a 3D network.
+ * Conceptual visualization, not live telemetry.
+ *
+ * No external libraries required.
+ */
+
 (() => {
-  const theme=window.FieldnotesTheme?.light||window.FieldnotesTheme; if(!theme)return;
   const canvas = document.querySelector('#network-canvas');
-  const ctx = canvas?.getContext('2d');
-  if (!ctx) return;
-  const root = document.documentElement;
-  const visual = document.querySelector('.network-visual');
+  const figure = document.querySelector('.network-visual');
   const wrap = document.querySelector('.network-canvas-wrap');
-  const header = document.querySelector('.site-header');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
-  const lerp = (a, b, t) => a + (b - a) * t;
-  const smooth = x => { const t = clamp(x); return t * t * (3 - 2 * t); };
-  let seed = 7348;
-  const random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
-  let width = 600, height = 490, progress = 0;
-  let visible = !('IntersectionObserver' in window), frame = 0, lastFrame = 0, clock = 0, phase = -1;
-  const cue = window.FieldnotesPlayback.cue();
-  const pointerYaw=window.FieldnotesPlayback.spring(),pointerPitch=window.FieldnotesPlayback.spring();
-  let pointerX=0,pointerY=0;
-  const enabled = () => !reduce.matches && !root.classList.contains('motion-off');
-  const colors = theme.series.slice(0,3);
-  const centers = [[-.82, .44, 0], [.82, .44, 0], [0, -.7, 0]];
-  const nodes = Array.from({ length: 75 }, (_, i) => {
-    const group = Math.floor(i / 25), col = i % 5, row = Math.floor((i % 25) / 5);
+
+  if (!canvas || !figure || !wrap) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const root = document.documentElement;
+
+  const reduced = matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  );
+
+  const theme =
+    window.FieldnotesTheme?.light ||
+    window.FieldnotesTheme;
+
+  // ---------------------------------------------
+  // COLORS
+  // ---------------------------------------------
+
+  const rgb = (value, fallback) => {
+    if (typeof value !== 'string') return fallback;
+
+    const s = value.trim();
+
+    if (/^\d+\s*,\s*\d+\s*,\s*\d+$/.test(s)) {
+      return s;
+    }
+
+    const match = s.match(
+      /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i
+    );
+
+    if (match) {
+      return `${match[1]},${match[2]},${match[3]}`;
+    }
+
+    const h = s.replace(/^#/, '');
+
+    if (/^[\da-f]{6}$/i.test(h)) {
+      return [0, 2, 4]
+        .map(i => parseInt(h.slice(i, i + 2), 16))
+        .join(',');
+    }
+
+    return fallback;
+  };
+
+  const colors = [
+    rgb(theme?.series?.[0], '58,115,137'),
+    rgb(theme?.series?.[1], '96,143,168'),
+    rgb(theme?.series?.[2], '67,128,135')
+  ];
+
+  const cyan = rgb(
+    theme?.rgb?.cyan,
+    '166,217,226'
+  );
+
+  const amber = rgb(
+    theme?.rgb?.amber,
+    '211,141,65'
+  );
+
+  const ink = rgb(
+    theme?.rgb?.ink,
+    '20,43,60'
+  );
+
+  const paper = rgb(
+    theme?.rgb?.bg,
+    '247,249,250'
+  );
+
+  const mono = theme?.fontMono || 'monospace';
+
+  // ---------------------------------------------
+  // MATH
+  // ---------------------------------------------
+
+  const clamp = (v, a = 0, b = 1) =>
+    Math.max(a, Math.min(b, v));
+
+  const mix = (a, b, t) =>
+    a + (b - a) * t;
+
+  const ease = v => {
+    const t = clamp(v);
+    return t * t * (3 - 2 * t);
+  };
+
+  const motion = () =>
+    !reduced.matches &&
+    !root.classList.contains('motion-off');
+
+  // ---------------------------------------------
+  // TIMING
+  // ---------------------------------------------
+
+  const INITIAL_REVEAL = 1600;
+  const HERO_ENTRANCE = 850;
+
+  const DURATIONS = [
+    3600, // Sphere -> glass scan -> grids
+    2200, // Endpoint signal
+    2200, // Network signal
+    2200, // Identity signal
+    5000  // Gather into sphere and hold
+  ];
+
+  const LOOP = DURATIONS.reduce(
+    (a, b) => a + b,
+    0
+  );
+
+  // ---------------------------------------------
+  // GEOMETRY
+  // ---------------------------------------------
+
+  const centers = [
+    [-.77, .39, 0],
+    [.77, .39, 0],
+    [0, -.60, 0]
+  ];
+
+  const radius = .84;
+
+  // Each group contains a flat 5 x 5 grid.
+  // All grid nodes share Z = 0.
+
+  const nodes = Array.from(
+    { length: 75 },
+    (_, i) => {
+      const group = Math.floor(i / 25);
+      const local = i % 25;
+
+      const col = local % 5;
+      const row = Math.floor(local / 5);
+
+      // Fibonacci sphere coordinates.
+      const y = 1 - i / 74 * 2;
+
+      const ring = Math.sqrt(
+        Math.max(0, 1 - y * y)
+      );
+
+      const a =
+        i * Math.PI * (3 - Math.sqrt(5));
+
+      return {
+        group,
+        key: local === 12,
+
+        grid: [
+          centers[group][0] +
+            (col - 2) * .112,
+
+          centers[group][1] +
+            (row - 2) * .096,
+
+          0
+        ],
+
+        globe: [
+          Math.cos(a) * ring * radius,
+          y * radius,
+          Math.sin(a) * ring * radius
+        ]
+      };
+    }
+  );
+
+  // ---------------------------------------------
+  // GRID CONNECTIONS
+  // ---------------------------------------------
+
+  const gridEdges = [];
+
+  nodes.forEach((_, i) => {
+    if (i % 5 < 4) {
+      gridEdges.push([i, i + 1]);
+    }
+
+    if (i % 25 < 20) {
+      gridEdges.push([i, i + 5]);
+    }
+  });
+
+  // ---------------------------------------------
+  // SPHERICAL CONNECTIONS
+  // ---------------------------------------------
+
+  // Use nearby nodes instead of stretching grid
+  // connections across the spherical surface.
+
+  const globeEdges = [];
+
+  nodes.forEach((n, i) => {
+    const near = nodes
+      .map((m, j) => ({
+        j,
+
+        d:
+          (n.globe[0] - m.globe[0]) ** 2 +
+          (n.globe[1] - m.globe[1]) ** 2 +
+          (n.globe[2] - m.globe[2]) ** 2
+      }))
+      .filter(v => v.j !== i)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 3);
+
+    near.forEach(({ j }) => {
+      if (i < j) {
+        globeEdges.push([i, j]);
+      }
+    });
+  });
+
+  // ---------------------------------------------
+  // STATE
+  // ---------------------------------------------
+
+  let w = 600;
+  let h = 440;
+
+  let raf = 0;
+  let lastFrame = 0;
+
+  let boot = 0;
+  let elapsed = 0;
+
+  let globeAngle = .15;
+
+  let visible =
+    !('IntersectionObserver' in window);
+
+  let introDone =
+    !root.classList.contains(
+      'hero-intro-pending'
+    );
+
+  let startScheduled = introDone;
+
+  let yaw = 0;
+  let pitch = 0;
+
+  let targetYaw = 0;
+  let targetPitch = 0;
+
+  // Remove narrative captions.
+  figure.querySelector(
+    '.network-caption'
+  )?.remove();
+
+  figure.setAttribute(
+    'aria-label',
+    'Illustrative 3D network. A sphere opens through a glass-like scan into Endpoint, Network, and Identity grids. The grids connect to evidence and gather back into a sphere. Not live telemetry.'
+  );
+
+  // ---------------------------------------------
+  // TIMELINE
+  // ---------------------------------------------
+
+  function phaseAt(t) {
+    let time = t % LOOP;
+
+    for (
+      let index = 0;
+      index < DURATIONS.length;
+      index++
+    ) {
+      if (time < DURATIONS[index]) {
+        return {
+          index,
+          t: time / DURATIONS[index]
+        };
+      }
+
+      time -= DURATIONS[index];
+    }
+
     return {
-      group, key: i % 25 === 12,
-      cloud: [(random() - .5) * 2.7, (random() - .5) * 2, (random() - .5) * 2],
-      layer: [(col - 2) * .45, (group - 1) * .78, (row - 2) * .4],
-      cluster: [centers[group][0] + (col - 2) * .11, centers[group][1] + (row - 2) * .085, (random() - .5) * .15]
+      index: 4,
+      t: 1
     };
-  });
-  const edges = [];
-  nodes.forEach((node, i) => {
-    if (i % 5 < 4) edges.push([i, i + 1]);
-    if (i % 25 < 20) edges.push([i, i + 5]);
-    if (i < 50 && i % 6 === 0) edges.push([i, i + 25]);
-  });
-  const dust = Array.from({ length: 500 }, (_, i) => ({
-    node: i % nodes.length, offset: [(random() - .5) * .5, (random() - .5) * .5, (random() - .5) * .5],
-    size: .35 + random() * .8, phase: random() * Math.PI * 2
-  }));
-  const route = [2, 7, 12, 37, 62];
-
-  function setChapter(next) {
-    if (next === phase) return;
-    phase = next;
-    visual.dataset.phase = String(next);
   }
 
-  function requestFrame() {
-    if (!frame && visible && !document.hidden) frame = requestAnimationFrame(tick);
+  // ---------------------------------------------
+  // 3D ROTATION
+  // ---------------------------------------------
+
+  function turn(p, angle) {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+
+    return [
+      p[0] * c + p[2] * s,
+      p[1],
+      p[2] * c - p[0] * s
+    ];
   }
 
-  function resize() {
-    const bounds = wrap.getBoundingClientRect();
-    width = Math.max(1, bounds.width);
-    height = Math.max(1, bounds.height);
-    const ratio = Math.min(window.devicePixelRatio || 1, 1.75);
-    canvas.width = Math.round(width * ratio);
-    canvas.height = Math.round(height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    const headerHeight = header.getBoundingClientRect().height;
-    root.style.setProperty('--header-height', `${headerHeight}px`);
-    progress = enabled() ? window.FieldnotesPlayback.hero(clock) : .48;
-    draw();
-    requestFrame();
+  // ---------------------------------------------
+  // CAMERA
+  // ---------------------------------------------
+
+  function project([px, py, pz], scale) {
+    // Restrained camera perspective.
+    const a = -.10 + yaw;
+    const e = .18 + pitch;
+
+    const x =
+      px * Math.cos(a) +
+      pz * Math.sin(a);
+
+    const zz =
+      pz * Math.cos(a) -
+      px * Math.sin(a);
+
+    const y =
+      py * Math.cos(e) -
+      zz * Math.sin(e);
+
+    const z =
+      py * Math.sin(e) +
+      zz * Math.cos(e);
+
+    const depth = 5 / (5 - z);
+
+    return {
+      x: w / 2 + x * scale * depth,
+      y: h / 2 - y * scale * depth,
+      z,
+      depth
+    };
   }
 
-  function project(point, yaw, pitch, scale) {
-    const x = point[0] * Math.cos(yaw) + point[2] * Math.sin(yaw);
-    const z0 = point[2] * Math.cos(yaw) - point[0] * Math.sin(yaw);
-    const y = point[1] * Math.cos(pitch) - z0 * Math.sin(pitch);
-    const z = point[1] * Math.sin(pitch) + z0 * Math.cos(pitch);
-    const perspective = 4.4 / (4.4 - z);
-    return { x: width * .5 + x * scale * perspective, y: height * .5 - y * scale * perspective, z, size: perspective };
+  // ---------------------------------------------
+  // DRAWING HELPERS
+  // ---------------------------------------------
+
+  function line(
+    a,
+    b,
+    color,
+    alpha = .4,
+    thickness = 1
+  ) {
+    if (alpha <= .005) return;
+
+    ctx.beginPath();
+
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+
+    ctx.strokeStyle =
+      `rgba(${color},${clamp(alpha)})`;
+
+    ctx.lineWidth = thickness;
+    ctx.stroke();
   }
 
-  function stroke(a, b, color, alpha, thickness = 1) {
-    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-    ctx.strokeStyle = `rgba(${color},${clamp(alpha)})`; ctx.lineWidth = thickness; ctx.stroke();
+  function square(
+    p,
+    half,
+    color,
+    alpha = 1,
+    outline = null,
+    width = 1
+  ) {
+    if (alpha <= .005) return;
+
+    ctx.fillStyle =
+      `rgba(${color},${clamp(alpha)})`;
+
+    ctx.fillRect(
+      p.x - half,
+      p.y - half,
+      half * 2,
+      half * 2
+    );
+
+    if (outline) {
+      ctx.strokeStyle =
+        `rgba(${outline},${clamp(alpha)})`;
+
+      ctx.lineWidth = width;
+
+      ctx.strokeRect(
+        p.x - half,
+        p.y - half,
+        half * 2,
+        half * 2
+      );
+    }
   }
 
-  function signalMark(point, color, size, alpha) {
-    ctx.beginPath(); ctx.arc(point.x, point.y, Math.min(5,size*.15), 0, Math.PI*2);
-    ctx.fillStyle = `rgba(${color},${alpha})`; ctx.fill();
+  function label(text, at, color) {
+    ctx.font = `10px ${mono}`;
+
+    const width = ctx.measureText(text).width;
+
+    const x = clamp(
+      at.x + 15,
+      8,
+      Math.max(8, w - width - 9)
+    );
+
+    const y = clamp(
+      at.y - 12,
+      15,
+      h - 8
+    );
+
+    ctx.fillStyle =
+      `rgba(${paper},.91)`;
+
+    ctx.fillRect(
+      x - 3,
+      y - 12,
+      width + 6,
+      16
+    );
+
+    ctx.fillStyle = `rgb(${color})`;
+    ctx.fillText(text, x, y);
   }
 
-  function label(text, point, color, offset = 18) {
-    ctx.font = `${theme.metaSize}px ${theme.fontMono}`;
-    const textWidth = ctx.measureText(text).width;
-    const x = clamp(point.x + offset, 10, Math.max(10, width - textWidth - 20));
-    const y = clamp(point.y - 12, 18, height - 16);
-    ctx.fillStyle = `rgba(${theme.rgb['bg']},.9)`; ctx.fillRect(x - 6, y - 13, textWidth + 12, 21);
-    ctx.fillStyle = `rgb(${color})`; ctx.fillText(text, x, y + 2);
+  function signal(a, b, t, color) {
+    const p = {
+      x: mix(a.x, b.x, t),
+      y: mix(a.y, b.y, t)
+    };
+
+    const tail = clamp(t - .16);
+
+    line(
+      {
+        x: mix(a.x, b.x, tail),
+        y: mix(a.y, b.y, tail)
+      },
+      p,
+      color,
+      .88,
+      1.8
+    );
+
+    square(p, 6.5, color, .13);
+    square(p, 3, color, .97);
   }
+
+  // ---------------------------------------------
+  // GLASS SCANNING PLANE
+  // ---------------------------------------------
+
+  function scanPlane(x, scale, opacity) {
+    if (opacity <= .005) return;
+
+    const v = [
+      [x, -1.04, -.89],
+      [x, 1.04, -.89],
+      [x, 1.04, .89],
+      [x, -1.04, .89]
+    ].map(p => project(p, scale));
+
+    ctx.beginPath();
+
+    v.forEach((p, i) => {
+      if (i) {
+        ctx.lineTo(p.x, p.y);
+      } else {
+        ctx.moveTo(p.x, p.y);
+      }
+    });
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+      `rgba(${cyan},${.10 * opacity})`;
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+      `rgba(${cyan},${.53 * opacity})`;
+
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    line(
+      project([x, -1.04, -.89], scale),
+      project([x, 1.04, -.89], scale),
+      cyan,
+      .78 * opacity,
+      1.5
+    );
+
+    line(
+      project([x, -1.04, .89], scale),
+      project([x, 1.04, .89], scale),
+      cyan,
+      .30 * opacity,
+      1
+    );
+  }
+
+  // ---------------------------------------------
+  // SPHERICAL RINGS
+  // ---------------------------------------------
+
+  function drawRing(
+    latitude,
+    scale,
+    angle,
+    opacity
+  ) {
+    let last = null;
+
+    for (let i = 0; i <= 48; i++) {
+      const a =
+        i / 48 * Math.PI * 2;
+
+      const r =
+        radius * Math.cos(latitude);
+
+      const p = project(
+        turn(
+          [
+            r * Math.cos(a),
+            radius * Math.sin(latitude),
+            r * Math.sin(a)
+          ],
+          angle
+        ),
+        scale
+      );
+
+      if (last) {
+        line(
+          last,
+          p,
+          cyan,
+          .12 * opacity,
+          .8
+        );
+      }
+
+      last = p;
+    }
+  }
+
+  // ---------------------------------------------
+  // MAIN RENDERER
+  // ---------------------------------------------
 
   function draw() {
-    ctx.clearRect(0, 0, width, height);
-    const unfold = smooth(progress / .52);
-    const converge = smooth((progress - .56) / .44);
-    const idle = enabled() ? Math.sin(clock * Math.PI * 2 / 18000) * .075 : 0;
-    const yaw = lerp(-.68 + unfold * .4 + idle, 0, converge) + pointerX;
-    const pitch = lerp(.42 + unfold * .09 + idle * .4, 0, converge) + pointerY;
-    let scale = Math.min(width * .325, height * .35) * lerp(.96, 1.08, converge);
-    const p3 = nodes.map(node => node.cloud.map((value, axis) => lerp(lerp(value, node.layer[axis], unfold), node.cluster[axis], converge)));
-    const planeAlpha = unfold * (1 - converge);
-    const bounds=p3.slice();
-    if(planeAlpha>.01)for(let group=0;group<3;group++)for(const x of [-1.05,1.05])for(const z of [-.95,.95])bounds.push([x,(group-1)*.78,z]);
-    let extentX=1,extentY=1;
-    bounds.forEach(point=>{const p=project(point,yaw,pitch,scale);extentX=Math.max(extentX,Math.abs(p.x-width/2));extentY=Math.max(extentY,Math.abs(p.y-height/2));});
-    scale*=Math.min(1,Math.max(1,width/2-24)/extentX,Math.max(1,height/2-24)/extentY);
-    const points = p3.map(point => project(point, yaw, pitch, scale));
-    // Three transparent planes reveal the layers behind a flat network map.
-    if (planeAlpha > .01) {
-      [0, 1, 2].forEach(group => {
-        const y = (group - 1) * .78;
-        const corners = [[-1.05, y, -.95], [1.05, y, -.95], [1.05, y, .95], [-1.05, y, .95]].map(p => project(p, yaw, pitch, scale));
-        ctx.beginPath(); corners.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
-        ctx.fillStyle = `rgba(${colors[group]},${.075 * planeAlpha})`; ctx.fill();
-        ctx.strokeStyle = `rgba(${colors[group]},${.48 * planeAlpha})`; ctx.lineWidth = 1; ctx.stroke();
+    ctx.clearRect(0, 0, w, h);
+
+    const still = !motion();
+
+    const booting =
+      !still &&
+      boot < INITIAL_REVEAL;
+
+    const reveal = still
+      ? 1
+      : ease(boot / INITIAL_REVEAL);
+
+    const phase = still
+      ? { index: 2, t: .5 }
+      : phaseAt(elapsed);
+
+    const { index, t } = phase;
+
+    // -----------------------------------------
+    // MORPH TIMING
+    // -----------------------------------------
+
+    const scanProgress =
+      index === 0
+        ? ease((t - .18) / .65)
+        : 1;
+
+    const scanX = mix(
+      -1.40,
+      1.40,
+      scanProgress
+    );
+
+    // How spherical each individual node is.
+    const weights = nodes.map(node => {
+      if (still) return 0;
+
+      // Start with a full sphere.
+      if (booting) return 1;
+
+      // Final stage gathers back into a sphere.
+      if (index === 4) {
+        return ease(
+          (t - .02) / .43
+        );
+      }
+
+      // Scan uncovers the destination grid.
+      if (index === 0) {
+        const uncovered = ease(
+          (scanX - node.grid[0] + .12) / .24
+        );
+
+        return 1 - uncovered;
+      }
+
+      return 0;
+    });
+
+    const sphereAmount = still
+      ? 0
+      : booting
+        ? 1
+        : index === 0
+          ? 1 - ease(
+              (scanProgress - .10) / .75
+            )
+          : index === 4
+            ? ease(
+                (t - .02) / .43
+              )
+            : 0;
+
+    // -----------------------------------------
+    // SPHERE / GRID COORDINATES
+    // -----------------------------------------
+
+    const coords = nodes.map((node, i) => {
+      const sphere = turn(
+        node.globe,
+        globeAngle
+      );
+
+      return node.grid.map(
+        (n, axis) =>
+          mix(
+            n,
+            sphere[axis],
+            weights[i]
+          )
+      );
+    });
+
+    // -----------------------------------------
+    // RESPONSIVE CAMERA FIT
+    // -----------------------------------------
+
+    // Fixed fit across both geometric states.
+    // Prevents zooming in and out every loop.
+
+    const base = Math.min(
+      w * .47,
+      h * .72
+    );
+
+    let ex = 1;
+    let ey = 1;
+
+    for (const n of nodes) {
+      for (const shape of [
+        n.grid,
+        n.globe
+      ]) {
+        const p = project(
+          shape,
+          base
+        );
+
+        ex = Math.max(
+          ex,
+          Math.abs(p.x - w / 2)
+        );
+
+        ey = Math.max(
+          ey,
+          Math.abs(p.y - h / 2)
+        );
+      }
+    }
+
+    const scale = base * Math.min(
+      1,
+      (w / 2 - 40) / ex,
+      (h / 2 - 35) / ey
+    );
+
+    const pts = coords.map(
+      p => project(p, scale)
+    );
+
+    const keys = [
+      pts[12],
+      pts[37],
+      pts[62]
+    ];
+
+    const evidence = project(
+      [0, -.025, .04],
+      scale
+    );
+
+    const gridAmount =
+      1 - sphereAmount;
+
+    figure.dataset.phase = String(
+      booting ? -1 : index
+    );
+
+    // -----------------------------------------
+    // SPHERICAL GUIDES
+    // -----------------------------------------
+
+    if (sphereAmount > .015) {
+      [-.50, 0, .50].forEach(lat => {
+        drawRing(
+          lat,
+          scale,
+          globeAngle,
+          sphereAmount * reveal
+        );
       });
-      const scanY = enabled()?Math.sin(clock*Math.PI*2/9000)*.9:0;
-      const scan = [[-1.05, scanY, -.95], [1.05, scanY, -.95], [1.05, scanY, .95], [-1.05, scanY, .95]].map(p => project(p, yaw, pitch, scale));
-      ctx.beginPath(); scan.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath();
-      ctx.fillStyle = `rgba(${theme.rgb['cyan']},${planeAlpha * .035})`; ctx.fill();
-      ctx.strokeStyle = `rgba(${theme.rgb['cyan']},${planeAlpha * .5})`; ctx.lineWidth = 1.5; ctx.stroke();
     }
-    edges.forEach(([a, b]) => {
-      const depth = clamp((points[a].z + 2) / 4, .2, 1);
-      stroke(points[a], points[b], colors[nodes[a].group], (.12 + depth * .2) * (1 - converge * .3) + cue.strength * .22, .7 + cue.strength * .7);
+
+    // -----------------------------------------
+    // SPHERICAL CONNECTIONS
+    // -----------------------------------------
+
+    globeEdges.forEach(([a, b]) => {
+      line(
+        pts[a],
+        pts[b],
+        cyan,
+
+        .28 *
+          sphereAmount *
+          reveal,
+
+        .85
+      );
     });
-    // Signal traces travel along existing links instead of free-floating ornaments.
-    const movingTime = enabled() ? clock : 3200;
-    edges.forEach(([a, b], i) => {
-      if (i % 7 !== 0) return;
-      const part = cue.active ? cue.progress : (movingTime * .00015 + i * .137) % 1;
-      const end = { x: lerp(points[a].x, points[b].x, part), y: lerp(points[a].y, points[b].y, part) };
-      const tail = { x: lerp(points[a].x, points[b].x, Math.max(0, part - .12)), y: lerp(points[a].y, points[b].y, Math.max(0, part - .12)) };
-      stroke(tail, end, colors[nodes[a].group], .8, 1.2);
-      ctx.fillStyle = theme.color['paper']; ctx.fillRect(end.x - 1, end.y - 1, 2, 2);
+
+    // -----------------------------------------
+    // GRID CONNECTIONS
+    // -----------------------------------------
+
+    gridEdges.forEach(([a, b]) => {
+      line(
+        pts[a],
+        pts[b],
+        colors[nodes[a].group],
+
+        .35 *
+          (
+            1 -
+            (weights[a] + weights[b]) / 2
+          ) *
+          reveal,
+
+        .85
+      );
     });
-    const dustCount = width < 450 ? 240 : dust.length;
-    const dispersion = lerp(1, .45, unfold);
-    for (let i = 0; i < dustCount; i++) {
-      const particle = dust[i], center = p3[particle.node];
-      const drift = enabled() ? Math.sin(clock * .00045 + particle.phase) * .015 : 0;
-      const p = project(center.map((n, axis) => n + particle.offset[axis] * dispersion + (axis === 1 ? drift : 0)), yaw, pitch, scale);
-      const alpha = clamp((p.z + 2) / 4.5, .14, .72) * (1 - converge * .25);
-      ctx.fillStyle = `rgba(${colors[nodes[particle.node].group]},${alpha})`;
-      const size = particle.size * p.size;
-      ctx.fillRect(p.x, p.y, size, size);
-    }
-    // A warm route is the selected event, not a claim of a detected attack.
-    const gold = theme.rgb.amber;
-    for (let i = 0; i < route.length - 1; i++) {
-      stroke(points[route[i]], points[route[i + 1]], gold, .55 * (1 - converge), 1.15);
-    }
-    const travel = (movingTime * .00025) % (route.length - 1);
-    const a = points[route[Math.floor(travel)]], b = points[route[Math.floor(travel) + 1]];
-    if (converge < .95) signalMark({ x: lerp(a.x, b.x, travel % 1), y: lerp(a.y, b.y, travel % 1) }, gold, 17, .75 * (1 - converge));
-    points.map((p, i) => ({ ...p, i })).sort((a, b) => a.z - b.z).forEach(p => {
-      const node = nodes[p.i], radius = (node.key ? 5.6 : 2.3) * p.size;
-      const color = node.key ? gold : colors[node.group];
-      if (node.key) signalMark(p, color, 28, .48);
-      ctx.strokeStyle = `rgba(${color},${node.key ? .95 : .65})`;
-      ctx.fillStyle = theme.color['surface']; ctx.lineWidth = node.key ? 1.3 : .8;
-      ctx.beginPath(); ctx.rect(p.x - radius, p.y - radius, radius * 2, radius * 2); ctx.fill(); ctx.stroke();
-      if (node.key) { ctx.fillStyle = `rgb(${color})`; ctx.fillRect(p.x - 1.4, p.y - 1.4, 2.8, 2.8); }
-    });
-    if (progress > .22) {
-      const labels = ['ENDPOINT', 'NETWORK', 'IDENTITY'];
-      labels.forEach((text, group) => label(text, points[group * 25 + 12], colors[group], converge > .5 ? 14 : 20));
-    } else {
-      label('SELECTED EVENT', points[12], gold);
-    }
-    if (converge > .02) {
-      const hub = project([0, -.02, .2], yaw, pitch, scale);
-      [12, 37, 62].forEach((i, group) => {
-        stroke(points[i], hub, colors[group], converge * .7, 1.4);
-        const t = (movingTime * .00024 + group / 3) % 1;
-        const signal = { x: lerp(points[i].x, hub.x, t), y: lerp(points[i].y, hub.y, t) };
-        signalMark(signal, colors[group], 9, converge * .8);
+
+    // -----------------------------------------
+    // SQUARE GROUP FRAMES
+    // -----------------------------------------
+
+    centers.forEach((c, group) => {
+      const alpha =
+        gridAmount * reveal;
+
+      if (alpha < .02) return;
+
+      const corners = [
+        [c[0] - .31, c[1] - .27, 0],
+        [c[0] + .31, c[1] - .27, 0],
+        [c[0] + .31, c[1] + .27, 0],
+        [c[0] - .31, c[1] + .27, 0]
+      ].map(v => project(v, scale));
+
+      corners.forEach((p, i) => {
+        line(
+          p,
+          corners[(i + 1) % 4],
+          colors[group],
+          .21 * alpha,
+          .9
+        );
+
+        square(
+          p,
+          1.6,
+          colors[group],
+          .55 * alpha
+        );
       });
-      signalMark(hub, theme.rgb.cyan, 56, converge * .7);
-      ctx.strokeStyle = `rgba(${theme.rgb['paper']},${converge})`; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(hub.x, hub.y - 10); ctx.lineTo(hub.x + 10, hub.y); ctx.lineTo(hub.x, hub.y + 10); ctx.lineTo(hub.x - 10, hub.y); ctx.closePath(); ctx.stroke();
-      if (converge > .75) label('EVIDENCE', { x: hub.x - 33, y: hub.y + 42 }, theme.rgb.ink, 0);
+    });
+
+    // -----------------------------------------
+    // EVIDENCE CONNECTIONS
+    // -----------------------------------------
+
+    keys.forEach((from, i) => {
+      line(
+        from,
+        evidence,
+        colors[i],
+
+        .26 *
+          gridAmount *
+          reveal,
+
+        1
+      );
+    });
+
+    // -----------------------------------------
+    // MOVING SQUARE SIGNALS
+    // -----------------------------------------
+
+    if (
+      !booting &&
+      !still &&
+      index >= 1 &&
+      index <= 3
+    ) {
+      if (index === 1) {
+        const u = ease(t) * 2;
+
+        const seg = Math.min(
+          1,
+          Math.floor(u)
+        );
+
+        const route = [
+          pts[2],
+          pts[7],
+          pts[12]
+        ];
+
+        signal(
+          route[seg],
+          route[seg + 1],
+          u - seg,
+          amber
+        );
+
+      } else if (index === 2) {
+        signal(
+          keys[1],
+          evidence,
+          ease(t),
+          cyan
+        );
+
+      } else {
+        signal(
+          keys[2],
+          evidence,
+          ease(t),
+          cyan
+        );
+      }
     }
-    setChapter(progress < .29 ? 0 : progress < .76 ? 1 : 2);
+
+    // -----------------------------------------
+    // GLASS SCAN
+    // -----------------------------------------
+
+    if (
+      !booting &&
+      !still &&
+      index === 0 &&
+      t > .12 &&
+      t < .91
+    ) {
+      const fade =
+        ease((t - .12) / .08) *
+        (
+          1 - ease(
+            (t - .82) / .09
+          )
+        );
+
+      scanPlane(
+        scanX,
+        scale,
+        fade
+      );
+    }
+
+    // -----------------------------------------
+    // DEPTH-SORTED SQUARE NODES
+    // -----------------------------------------
+
+    pts
+      .map((p, i) => ({
+        ...p,
+        i
+      }))
+      .sort((a, b) => a.z - b.z)
+      .forEach(p => {
+        const n = nodes[p.i];
+
+        const half = (
+          n.key ? 5.2 : 2.0
+        ) * p.depth;
+
+        const alpha = reveal;
+        const col = colors[n.group];
+
+        // Highlight the active main square.
+        if (
+          n.key &&
+          index === n.group + 1 &&
+          !booting &&
+          !still
+        ) {
+          ctx.strokeStyle =
+            `rgba(${amber},.48)`;
+
+          ctx.lineWidth = 1;
+
+          ctx.strokeRect(
+            p.x - half - 4,
+            p.y - half - 4,
+            half * 2 + 8,
+            half * 2 + 8
+          );
+        }
+
+        square(
+          p,
+          half,
+          paper,
+          alpha,
+          col,
+          n.key ? 1.45 : .9
+        );
+
+        if (n.key) {
+          square(
+            p,
+            2.1 * p.depth,
+            col,
+            alpha
+          );
+        }
+      });
+
+    // -----------------------------------------
+    // LABELS
+    // -----------------------------------------
+
+    // Labels fade away when the sphere forms.
+    if (
+      gridAmount > .2 &&
+      reveal > .25
+    ) {
+      ctx.save();
+
+      ctx.globalAlpha =
+        ease(
+          (gridAmount - .2) / .5
+        ) * reveal;
+
+      [
+        'ENDPOINT',
+        'NETWORK',
+        'IDENTITY'
+      ].forEach((name, i) => {
+        label(
+          name,
+          keys[i],
+          colors[i]
+        );
+      });
+
+      square(
+        evidence,
+        6.6,
+        paper,
+        1,
+        amber,
+        1.4
+      );
+
+      label(
+        'EVIDENCE',
+        {
+          x: evidence.x - 52,
+          y: evidence.y + 25
+        },
+        ink
+      );
+
+      ctx.restore();
+    }
   }
 
-  function tick(time) {
-    frame = 0;
-    if (!visible || document.hidden) { lastFrame = 0; return; }
-    if (!enabled()) { progress = .48; draw(); lastFrame = 0; return; }
-    if (!lastFrame || time - lastFrame >= 15) {
-      const dt = lastFrame ? Math.min(time - lastFrame, 50) : 16.67;
-      clock += dt; cue.step(dt);
-      pointerX=pointerYaw.step(dt);pointerY=pointerPitch.step(dt);
-      progress = window.FieldnotesPlayback.hero(clock);
-      lastFrame = time;
-      draw();
+  // ---------------------------------------------
+  // FRAME SCHEDULER
+  // ---------------------------------------------
+
+  function queue() {
+    if (
+      !raf &&
+      introDone &&
+      visible &&
+      !document.hidden &&
+      motion()
+    ) {
+      raf = requestAnimationFrame(tick);
     }
-    requestFrame();
   }
+
+  function tick(now) {
+    raf = 0;
+
+    if (
+      !introDone ||
+      !visible ||
+      document.hidden
+    ) {
+      lastFrame = 0;
+      return;
+    }
+
+    const dt = lastFrame
+      ? Math.min(now - lastFrame, 60)
+      : 16.7;
+
+    lastFrame = now;
+
+    if (boot < INITIAL_REVEAL) {
+      const step = Math.min(
+        dt,
+        INITIAL_REVEAL - boot
+      );
+
+      boot += step;
+
+      elapsed = (
+        elapsed + dt - step
+      ) % LOOP;
+
+    } else {
+      elapsed = (
+        elapsed + dt
+      ) % LOOP;
+    }
+
+    // Maintain continuous sphere rotation.
+    // The angle never resets at loop boundaries.
+    globeAngle += dt * .00016;
+
+    yaw = mix(
+      yaw,
+      targetYaw,
+      .075
+    );
+
+    pitch = mix(
+      pitch,
+      targetPitch,
+      .075
+    );
+
+    draw();
+    queue();
+  }
+
+  // ---------------------------------------------
+  // RESPONSIVE RESIZE
+  // ---------------------------------------------
+
+  function resize() {
+    const r =
+      wrap.getBoundingClientRect();
+
+    w = Math.max(1, r.width);
+    h = Math.max(1, r.height);
+
+    const dpr = Math.min(
+      devicePixelRatio || 1,
+      1.6
+    );
+
+    canvas.width = Math.round(
+      w * dpr
+    );
+
+    canvas.height = Math.round(
+      h * dpr
+    );
+
+    ctx.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+
+    draw();
+    queue();
+  }
+
+  // ---------------------------------------------
+  // TERMINAL SYNCHRONIZATION
+  // ---------------------------------------------
+
+  function begin() {
+    if (startScheduled) return;
+
+    startScheduled = true;
+
+    setTimeout(() => {
+      introDone = true;
+      lastFrame = 0;
+
+      draw();
+      queue();
+
+    }, motion() ? HERO_ENTRANCE : 0);
+  }
+
+  window.addEventListener(
+    'hero:intro-complete',
+    begin,
+    { once: true }
+  );
+
+  // Fallback if the completion event is missed.
+  setTimeout(() => {
+    if (
+      !introDone &&
+      !root.classList.contains(
+        'hero-intro-pending'
+      )
+    ) {
+      begin();
+    }
+  }, 15500);
+
+  // ---------------------------------------------
+  // REMOVE STATIC HTML FALLBACK
+  // ---------------------------------------------
+
+  const fallback = figure.querySelector(
+    '.network-fallback'
+  );
+
+  if (fallback) {
+    fallback.style.display = 'none';
+  }
+
+  root.classList.add('network-ready');
+
+  // ---------------------------------------------
+  // CAMERA INTERACTION
+  // ---------------------------------------------
+
+  figure.addEventListener(
+    'pointermove',
+    e => {
+      if (
+        !motion() ||
+        e.pointerType !== 'mouse'
+      ) return;
+
+      const r =
+        figure.getBoundingClientRect();
+
+      targetYaw = (
+        clamp(
+          (e.clientX - r.left) /
+          r.width
+        ) - .5
+      ) * .22;
+
+      targetPitch = (
+        clamp(
+          (e.clientY - r.top) /
+          r.height
+        ) - .5
+      ) * .13;
+
+      queue();
+    },
+    { passive: true }
+  );
+
+  figure.addEventListener(
+    'pointerleave',
+    () => {
+      targetYaw = 0;
+      targetPitch = 0;
+
+      queue();
+    }
+  );
+
+  // ---------------------------------------------
+  // VISIBILITY MANAGEMENT
+  // ---------------------------------------------
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(
+      entries => {
+        visible =
+          entries[0].isIntersecting;
+
+        if (!visible && raf) {
+          cancelAnimationFrame(raf);
+
+          raf = 0;
+          lastFrame = 0;
+        } else {
+          queue();
+        }
+      },
+      {
+        rootMargin: '80px'
+      }
+    ).observe(wrap);
+  }
+
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(
+      resize
+    ).observe(wrap);
+  } else {
+    window.addEventListener(
+      'resize',
+      resize,
+      { passive: true }
+    );
+  }
+
+  document.addEventListener(
+    'visibilitychange',
+    () => {
+      if (
+        document.hidden &&
+        raf
+      ) {
+        cancelAnimationFrame(raf);
+
+        raf = 0;
+        lastFrame = 0;
+      } else {
+        queue();
+      }
+    }
+  );
+
+  window.addEventListener(
+    'pageshow',
+    queue
+  );
+
+  // ---------------------------------------------
+  // MOTION PREFERENCES
+  // ---------------------------------------------
 
   function preference() {
-    root.classList.toggle('network-motion', enabled());
-    pointerX = 0; pointerY = 0; pointerYaw.reset();pointerPitch.reset();cue.clear();
-    if (frame) cancelAnimationFrame(frame);
-    frame = 0; lastFrame = 0;
-    resize();
+    if (raf) {
+      cancelAnimationFrame(raf);
+    }
+
+    raf = 0;
+    lastFrame = 0;
+
+    root.classList.toggle(
+      'network-motion',
+      motion()
+    );
+
+    draw();
+    queue();
   }
-  root.classList.add('network-ready');
-  document.addEventListener('portfolio:motionchange', preference);
-  reduce.addEventListener('change', preference);
-  window.addEventListener('resize', resize, { passive: true });
-  window.addEventListener('pageshow', requestFrame);
-  window.FieldnotesPlayback.bindTap(canvas, (x,y) => {
-    if(enabled()){cue.trigger();pointerYaw.velocity+=((x/width)-.5)*.8;pointerPitch.velocity+=((y/height)-.5)*.35;requestFrame();}
-  });
-  visual.addEventListener('pointermove', event => {
-    if (!enabled() || event.pointerType !== 'mouse') return;
-    const bounds = visual.getBoundingClientRect();
-    pointerYaw.target = (clamp((event.clientX - bounds.left) / bounds.width) - .5) * .24;
-    pointerPitch.target = (clamp((event.clientY - bounds.top) / bounds.height) - .5) * .14;
-    requestFrame();
-  }, { passive: true });
-  visual.addEventListener('pointerleave', () => { pointerYaw.target=0;pointerPitch.target=0;requestFrame(); });
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && frame) { cancelAnimationFrame(frame); frame = 0; lastFrame = 0; }
-    else requestFrame();
-  });
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => {
-      const entering=entries[0].isIntersecting&&!visible;
-      visible = entries[0].isIntersecting;if(entering&&enabled())cue.trigger(null,false);
-      if (!visible && frame) { cancelAnimationFrame(frame); frame = 0; lastFrame = 0; }
-      else requestFrame();
-    }, { rootMargin: '80px' }).observe(wrap);
-  }
-  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(wrap);
-  preference();
+
+  reduced.addEventListener(
+    'change',
+    preference
+  );
+
+  document.addEventListener(
+    'portfolio:motionchange',
+    preference
+  );
+
+  // Initialize.
+  resize();
 })();

@@ -1,0 +1,1310 @@
+
+/*
+ * WAZUH DETECTION ENGINEERING
+ *
+ * White Canvas + Floating Navy
+ * Concept 2: Animated 3D Detection Pipeline
+ *
+ * Typography, spacing and colors follow
+ * the existing design-system.css.
+ */
+
+/* ==========================================
+   01. PAGE
+   ========================================== */
+
+.page-wazuh {
+  background: var(--color-bg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+}
+
+.page-wazuh main {
+  padding-block:
+    var(--space-10)
+    var(--space-12);
+}
+
+.page-wazuh main > .section-shell + .section-shell {
+  margin-top: var(--space-10);
+}
+
+.page-wazuh main [id] {
+  scroll-margin-top: calc(
+    var(--header-height, 80px) +
+    2 * var(--floating-gap) +
+    var(--space-4)
+  );
+}
+
+/* ==========================================
+   02. INTRODUCTION
+   ========================================== */
+
+.page-wazuh .wazuh-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: var(--control-height);
+  margin-bottom: var(--space-5);
+
+  color: var(--color-cyan);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.page-wazuh .wazuh-intro-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.65fr)
+    minmax(280px, .85fr);
+
+  align-items: center;
+  gap: var(--layout-gap);
+}
+
+.page-wazuh .wazuh-intro-copy {
+  min-width: 0;
+}
+
+.page-wazuh .terminal-command {
+  margin-bottom: var(--space-4);
+
+  font:
+    400 var(--text-sm)/var(--leading-meta)
+    var(--font-mono);
+}
+
+.page-wazuh .wazuh-eyebrow {
+  margin-bottom: var(--space-4);
+  color: var(--color-muted);
+}
+
+.page-wazuh .wazuh-intro h1 {
+  max-width: 24ch;
+  margin: 0 0 var(--space-5);
+
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--type-section)/var(--leading-title)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-title);
+}
+
+.page-wazuh .wazuh-heading-line {
+  display: block;
+  color: inherit;
+}
+
+.page-wazuh .wazuh-intro h1 em {
+  display: block;
+  margin-top: var(--space-2);
+
+  color: inherit;
+  font: inherit;
+  font-style: italic;
+}
+
+.page-wazuh .wazuh-lede {
+  max-width: var(--reading-width);
+
+  color: var(--color-body);
+
+  font:
+    var(--weight-body)
+    var(--text-base)/var(--leading-body)
+    var(--font-body);
+}
+
+.page-wazuh .wazuh-tech {
+  margin-top: var(--space-4);
+
+  color: var(--color-muted);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+}
+
+.page-wazuh .wazuh-tech span {
+  color: var(--color-cyan);
+}
+
+/* ==========================================
+   03. FLOATING 3D PIPELINE
+   ========================================== */
+
+.page-wazuh .wazuh-pipeline {
+  width: 100%;
+  max-width: 440px;
+
+  min-width: 0;
+  justify-self: end;
+  align-self: center;
+
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.page-wazuh .wazuh-pipeline-eyebrow {
+  margin: 0 0 var(--space-4);
+
+  color: var(--color-cyan);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+
+  letter-spacing: var(--tracking-label);
+}
+
+/* ------------------------------------------
+   3D SCENE
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-scene {
+  position: relative;
+
+  width: 100%;
+  height: 164px;
+
+  perspective: 850px;
+  perspective-origin: 50% 45%;
+
+  overflow: visible;
+  isolation: isolate;
+}
+
+/* ------------------------------------------
+   MODULE POSITIONS
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-node {
+  position: absolute;
+
+  top: 22px;
+
+  width: 30%;
+  height: 132px;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+  z-index: 2;
+}
+
+.page-wazuh .wazuh-pipeline-node--collect {
+  left: 16%;
+}
+
+.page-wazuh .wazuh-pipeline-node--detect {
+  left: 50%;
+}
+
+.page-wazuh .wazuh-pipeline-node--review {
+  left: 84%;
+}
+
+/* ------------------------------------------
+   CSS 3D MODULE
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-cube {
+  position: relative;
+
+  width: 76px;
+  height: 58px;
+
+  margin-inline: auto;
+
+  transform-style: preserve-3d;
+
+  transform:
+    rotateX(-24deg)
+    rotateY(-30deg);
+
+  animation:
+    wazuh-pipeline-float
+    7.5s ease-in-out infinite;
+}
+
+.page-wazuh
+.wazuh-pipeline-node--detect
+.wazuh-pipeline-cube {
+  animation-delay: -1.2s;
+}
+
+.page-wazuh
+.wazuh-pipeline-node--review
+.wazuh-pipeline-cube {
+  animation-delay: -2.4s;
+}
+
+/* ------------------------------------------
+   CUBE FACES
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-face {
+  position: absolute;
+  display: block;
+
+  box-sizing: border-box;
+  backface-visibility: hidden;
+}
+
+/* Front */
+
+.page-wazuh .wazuh-pipeline-face--front {
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+  justify-content: center;
+
+  gap: var(--space-2);
+
+  padding: 11px;
+
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-ink);
+
+  transform: translateZ(12px);
+}
+
+/* Top */
+
+.page-wazuh .wazuh-pipeline-face--top {
+  top: -12px;
+  left: 0;
+
+  width: 76px;
+  height: 24px;
+
+  border: 1px solid var(--color-border-strong);
+  background: rgb(var(--rgb-brand-accent));
+
+  transform: rotateX(90deg);
+}
+
+/* Right side */
+
+.page-wazuh .wazuh-pipeline-face--side {
+  top: 0;
+  right: -12px;
+
+  width: 24px;
+  height: 58px;
+
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-active);
+
+  transform: rotateY(90deg);
+}
+
+/* ------------------------------------------
+   FACE DETAILS
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-screen {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+  width: 100%;
+}
+
+.page-wazuh .wazuh-pipeline-screen i {
+  display: block;
+
+  width: 100%;
+  height: 3px;
+
+  background: rgb(var(--rgb-brand-accent));
+  opacity: .85;
+}
+
+.page-wazuh
+.wazuh-pipeline-screen i:nth-child(2) {
+  width: 70%;
+}
+
+.page-wazuh
+.wazuh-pipeline-screen i:nth-child(3) {
+  width: 45%;
+}
+
+.page-wazuh .wazuh-pipeline-led {
+  display: block;
+
+  width: 7px;
+  height: 7px;
+
+  background: var(--color-cyan);
+}
+
+/* ------------------------------------------
+   MODULE LABELS
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-label {
+  display: block;
+
+  margin-top: 25px;
+
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+}
+
+.page-wazuh .wazuh-pipeline-index {
+  display: block;
+
+  margin-top: var(--space-1);
+
+  color: var(--color-muted);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+}
+
+/* ------------------------------------------
+   EVENT CHANNELS
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-link {
+  position: absolute;
+
+  top: 52px;
+  height: 1px;
+
+  background: var(--color-border-strong);
+  z-index: 1;
+}
+
+.page-wazuh .wazuh-pipeline-link--first {
+  left: 27%;
+  width: 12%;
+}
+
+.page-wazuh .wazuh-pipeline-link--second {
+  left: 61%;
+  width: 12%;
+}
+
+/* Traveling event marker */
+
+.page-wazuh .wazuh-pipeline-packet {
+  position: absolute;
+
+  top: -4px;
+  left: 0;
+
+  width: 8px;
+  height: 8px;
+
+  background: var(--color-amber);
+  opacity: 0;
+}
+
+.page-wazuh
+.wazuh-pipeline-link--first
+.wazuh-pipeline-packet {
+  animation:
+    wazuh-packet-first
+    7.5s linear infinite;
+}
+
+.page-wazuh
+.wazuh-pipeline-link--second
+.wazuh-pipeline-packet {
+  animation:
+    wazuh-packet-second
+    7.5s linear infinite;
+}
+
+/* Sequential LEDs */
+
+.page-wazuh
+.wazuh-pipeline-node--collect
+.wazuh-pipeline-led {
+  animation:
+    wazuh-active-collect
+    7.5s linear infinite;
+}
+
+.page-wazuh
+.wazuh-pipeline-node--detect
+.wazuh-pipeline-led {
+  animation:
+    wazuh-active-detect
+    7.5s linear infinite;
+}
+
+.page-wazuh
+.wazuh-pipeline-node--review
+.wazuh-pipeline-led {
+  animation:
+    wazuh-active-review
+    7.5s linear infinite;
+}
+
+/* ------------------------------------------
+   ANIMATIONS
+   ------------------------------------------ */
+
+@keyframes wazuh-pipeline-float {
+  0%, 100% {
+    transform:
+      rotateX(-24deg)
+      rotateY(-30deg)
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      rotateX(-24deg)
+      rotateY(-30deg)
+      translateY(-4px);
+  }
+}
+
+@keyframes wazuh-packet-first {
+  0%, 14% {
+    left: 0;
+    opacity: 0;
+  }
+
+  17% {
+    left: 0;
+    opacity: 1;
+  }
+
+  37% {
+    left: calc(100% - 8px);
+    opacity: 1;
+  }
+
+  40%, 100% {
+    left: calc(100% - 8px);
+    opacity: 0;
+  }
+}
+
+@keyframes wazuh-packet-second {
+  0%, 48% {
+    left: 0;
+    opacity: 0;
+  }
+
+  51% {
+    left: 0;
+    opacity: 1;
+  }
+
+  74% {
+    left: calc(100% - 8px);
+    opacity: 1;
+  }
+
+  77%, 100% {
+    left: calc(100% - 8px);
+    opacity: 0;
+  }
+}
+
+@keyframes wazuh-active-collect {
+  0%, 28% {
+    background: var(--color-amber);
+  }
+
+  34%, 100% {
+    background: var(--color-cyan);
+  }
+}
+
+@keyframes wazuh-active-detect {
+  0%, 33% {
+    background: var(--color-cyan);
+  }
+
+  38%, 58% {
+    background: var(--color-amber);
+  }
+
+  63%, 100% {
+    background: var(--color-cyan);
+  }
+}
+
+@keyframes wazuh-active-review {
+  0%, 73% {
+    background: var(--color-cyan);
+  }
+
+  78%, 94% {
+    background: var(--color-amber);
+  }
+
+  100% {
+    background: var(--color-cyan);
+  }
+}
+
+/* ------------------------------------------
+   PIPELINE NOTE
+   ------------------------------------------ */
+
+.page-wazuh .wazuh-pipeline-note {
+  margin: 0;
+
+  color: var(--color-muted);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+
+  text-align: center;
+}
+
+/* ------------------------------------------
+   REVEAL AFTER TERMINAL
+   ------------------------------------------ */
+
+html.hero-intro-pending
+.page-wazuh .wazuh-pipeline {
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+}
+
+html.hero-intro-finished
+.page-wazuh .wazuh-pipeline {
+  animation:
+    wazuh-pipeline-enter
+    .75s cubic-bezier(.16, 1, .3, 1)
+    both;
+}
+
+@keyframes wazuh-pipeline-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   04. SHARED SECTION TYPOGRAPHY
+   ========================================== */
+
+.page-wazuh .wazuh-kicker {
+  margin-bottom: var(--space-3);
+
+  color: var(--color-cyan);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+
+  letter-spacing: var(--tracking-label);
+}
+
+.page-wazuh main h2 {
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--type-feature)/var(--leading-title)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-title);
+}
+
+.page-wazuh main h3,
+.page-wazuh .anatomy-part-copy h4 {
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--type-card)/var(--leading-card)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-card);
+}
+
+/* ==========================================
+   05. ORIGINAL 3D MODEL
+   ========================================== */
+
+.page-wazuh :is(
+  .anatomy-region,
+  .anatomy-story,
+  .anatomy-shell,
+  .anatomy-layout,
+  .anatomy-visual,
+  .anatomy-stage
+) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.page-wazuh :is(
+  .anatomy-region,
+  .anatomy-story,
+  .anatomy-shell
+) {
+  margin: 0;
+  padding: 0;
+
+  min-height: 0;
+  height: auto;
+
+  border-radius: 0;
+}
+
+.page-wazuh .anatomy-heading {
+  margin-bottom: var(--space-3);
+}
+
+.page-wazuh .anatomy-tabs {
+  display: none !important;
+}
+
+.page-wazuh .anatomy-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(230px, .65fr);
+
+  gap: var(--space-8);
+  align-items: start;
+
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.page-wazuh .anatomy-visual {
+  display: flex !important;
+  flex-direction: column !important;
+
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+
+  gap: 0 !important;
+
+  min-width: 0;
+  min-height: 0 !important;
+  height: auto !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ==========================================
+   06. MAIN CANVAS
+   ========================================== */
+
+.page-wazuh .anatomy-stage {
+  position: relative;
+
+  width: 100%;
+  height: clamp(370px, 36vw, 460px);
+
+  min-height: 0 !important;
+  flex: none !important;
+
+  overflow: hidden;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.page-wazuh .anatomy-stage canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+
+  touch-action: pan-y pinch-zoom;
+}
+
+.page-wazuh .anatomy-fallback {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-content: center;
+
+  padding: var(--space-5);
+
+  color: var(--color-muted);
+  text-align: center;
+
+  font:
+    400 var(--text-sm)/var(--leading-meta)
+    var(--font-mono);
+}
+
+.anatomy-ready .page-wazuh .anatomy-fallback,
+.page-wazuh .anatomy-ready .anatomy-fallback,
+.page-wazuh .anatomy-stage:has(
+  canvas[width]:not([width="300"])
+) .anatomy-fallback {
+  display: none;
+}
+
+/* ==========================================
+   07. NO EXTRA WORKFLOW SPACE
+   ========================================== */
+
+.page-wazuh .sequence-readout,
+.page-wazuh .anatomy-text {
+  display: none !important;
+
+  width: 0 !important;
+  height: 0 !important;
+
+  min-height: 0 !important;
+  max-height: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  overflow: hidden !important;
+}
+
+.page-wazuh .anatomy-gesture-hint {
+  display: none !important;
+}
+
+/* Original rotate buttons */
+
+.page-wazuh .anatomy-orbit {
+  position: static !important;
+
+  height: auto !important;
+  min-height: 0 !important;
+
+  margin: var(--space-3) 0 0 !important;
+  padding: 0 !important;
+}
+
+.page-wazuh .anatomy-orbit:not([hidden]) {
+  display: flex !important;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.page-wazuh .anatomy-orbit > div {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.page-wazuh .anatomy-orbit button {
+  min-height: var(--control-height);
+
+  padding: var(--space-2) var(--space-3);
+
+  font:
+    var(--weight-label)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+}
+
+/* ==========================================
+   08. COMPONENT INSPECTOR
+   ========================================== */
+
+.page-wazuh .anatomy-inspector {
+  min-width: 0;
+  min-height: 0 !important;
+  height: auto !important;
+
+  padding: var(--space-3) 0 0 var(--space-5);
+
+  border: 0;
+  border-left: 1px solid var(--color-border);
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-wazuh .anatomy-inspector .eyebrow {
+  margin-bottom: var(--space-3);
+}
+
+.page-wazuh .anatomy-part-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap:
+    var(--space-1)
+    var(--space-3);
+
+  margin: 0 0 var(--space-4);
+}
+
+.page-wazuh .anatomy-part-list button {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  min-width: 0;
+  min-height: var(--control-height);
+
+  margin: 0;
+  padding: var(--space-2) 0;
+
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+
+  color: var(--color-muted);
+
+  font:
+    var(--weight-label)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.page-wazuh .anatomy-part-list button:hover,
+.page-wazuh .anatomy-part-list button:is(
+  [aria-pressed="true"],
+  .is-active,
+  .active,
+  [data-active="true"]
+) {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-cyan);
+  background: transparent;
+}
+
+.page-wazuh .anatomy-part-copy {
+  margin: var(--space-3) 0;
+}
+
+.page-wazuh .anatomy-part-copy h4 {
+  margin: 0;
+}
+
+.page-wazuh .anatomy-description,
+.page-wazuh .anatomy-relations {
+  display: none !important;
+}
+
+.page-wazuh .anatomy-evidence {
+  display: inline-flex;
+  align-items: center;
+
+  width: auto;
+  min-height: var(--control-height);
+
+  margin-top: var(--space-3);
+  padding: var(--space-2) 0;
+
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+
+  color: var(--color-cyan);
+
+  font:
+    var(--weight-label)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+
+  text-align: left;
+}
+
+.page-wazuh .anatomy-evidence img,
+.page-wazuh .anatomy-evidence small {
+  display: none !important;
+}
+
+/* ==========================================
+   09. MODEL FOOTER
+   ========================================== */
+
+.page-wazuh .anatomy-footer {
+  display: flex;
+  align-items: center;
+
+  margin-top: var(--space-3) !important;
+  padding-top: var(--space-3) !important;
+
+  min-height: 0 !important;
+
+  border-top: 1px solid var(--color-border);
+
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+.page-wazuh .anatomy-footer p {
+  margin: 0;
+}
+
+/* ==========================================
+   10. WHAT I BUILT
+   ========================================== */
+
+.page-wazuh .wazuh-achievements > h2,
+.page-wazuh .wazuh-learning > h2 {
+  margin-bottom: var(--space-6);
+}
+
+.page-wazuh .wazuh-columns {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: var(--layout-gap);
+}
+
+.page-wazuh .wazuh-columns section {
+  padding-top: var(--space-4);
+
+  border-top: 1px solid var(--color-border);
+}
+
+.page-wazuh .wazuh-columns h3 {
+  margin-bottom: var(--space-3);
+}
+
+.page-wazuh .wazuh-columns p {
+  color: var(--color-muted);
+}
+
+/* ==========================================
+   11. WHAT I LEARNED
+   ========================================== */
+
+.page-wazuh .wazuh-learning-copy {
+  max-width: var(--reading-width);
+}
+
+/* ==========================================
+   12. EVIDENCE
+   ========================================== */
+
+.page-wazuh .wazuh-evidence > h2 {
+  margin-bottom: var(--space-6);
+}
+
+.page-wazuh .wazuh-proof-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: var(--layout-gap);
+}
+
+.page-wazuh .wazuh-proof {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-3);
+
+  min-width: 0;
+  min-height: var(--control-height);
+
+  color: var(--color-cyan);
+  text-decoration: none;
+}
+
+.page-wazuh .wazuh-proof img {
+  display: block;
+
+  width: 100%;
+  height: 175px;
+
+  object-fit: contain;
+  object-position: left center;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-wazuh .wazuh-proof span {
+  display: inline-block;
+  align-self: flex-start;
+
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid currentColor;
+
+  font:
+    var(--weight-label)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+}
+
+.page-wazuh .wazuh-proof:hover {
+  color: var(--color-ink);
+}
+
+.page-wazuh .wazuh-proof-note {
+  margin-top: var(--space-5);
+
+  color: var(--color-muted);
+
+  font:
+    400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+}
+
+/* ==========================================
+   13. PROJECT NAVIGATION
+   ========================================== */
+
+.page-wazuh .wazuh-next {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  flex-wrap: wrap;
+
+  gap:
+    var(--space-3)
+    var(--space-10);
+
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.page-wazuh .wazuh-next a {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: var(--control-height);
+
+  color: var(--color-cyan);
+
+  font:
+    var(--weight-label)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+}
+
+.page-wazuh .wazuh-next a:last-child {
+  margin-left: auto;
+}
+
+.page-wazuh .wazuh-next a:hover {
+  color: var(--color-ink);
+}
+
+/* ==========================================
+   14. NARROW DESKTOP
+   ========================================== */
+
+@media (max-width: 1100px) {
+
+  .page-wazuh .anatomy-layout {
+    grid-template-columns:
+      minmax(0, 1.65fr)
+      minmax(220px, .7fr);
+
+    gap: var(--space-6);
+  }
+
+  .page-wazuh .anatomy-stage {
+    height: 410px;
+  }
+}
+
+/* ==========================================
+   15. TABLET
+   ========================================== */
+
+@media (max-width: 900px) {
+
+  .page-wazuh .wazuh-intro-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .page-wazuh .wazuh-pipeline {
+    justify-self: start;
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 820px) {
+
+  .page-wazuh .anatomy-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page-wazuh .anatomy-stage {
+    height: 420px;
+  }
+
+  .page-wazuh .anatomy-inspector {
+    padding: var(--space-4) 0 0;
+
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .page-wazuh .anatomy-part-list {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .page-wazuh .wazuh-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .page-wazuh .wazuh-proof-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================
+   16. MOBILE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  .page-wazuh main {
+    padding-block:
+      var(--space-8)
+      var(--space-12);
+  }
+
+  .page-wazuh main > .section-shell + .section-shell {
+    margin-top: var(--space-8);
+  }
+
+  .page-wazuh .wazuh-intro-layout {
+    gap: var(--space-5);
+  }
+
+  .page-wazuh .wazuh-pipeline {
+    max-width: 100%;
+  }
+
+  .page-wazuh .wazuh-pipeline-scene {
+    height: 145px;
+  }
+
+  .page-wazuh .wazuh-pipeline-cube {
+    scale: .82;
+    transform-origin: center top;
+  }
+
+  .page-wazuh .wazuh-pipeline-label {
+    margin-top: 12px;
+  }
+
+  .page-wazuh .wazuh-pipeline-link {
+    top: 48px;
+  }
+
+  .page-wazuh .anatomy-stage {
+    height: 370px;
+  }
+
+  .page-wazuh .anatomy-part-list {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .page-wazuh .wazuh-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .page-wazuh .wazuh-proof {
+    gap: var(--space-2);
+  }
+
+  .page-wazuh .wazuh-proof img {
+    height: 190px;
+  }
+
+  .page-wazuh .wazuh-next {
+    gap:
+      var(--space-3)
+      var(--space-5);
+  }
+
+  .page-wazuh .wazuh-next a:last-child {
+    margin-left: 0;
+  }
+}
+
+/* ==========================================
+   17. REDUCED MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .page-wazuh *,
+  .page-wazuh *::before,
+  .page-wazuh *::after {
+    scroll-behavior: auto;
+  }
+
+  .page-wazuh .wazuh-pipeline,
+  .page-wazuh .wazuh-pipeline-cube,
+  .page-wazuh .wazuh-pipeline-packet,
+  .page-wazuh .wazuh-pipeline-led {
+    animation: none !important;
+  }
+
+  .page-wazuh .wazuh-pipeline {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .page-wazuh .wazuh-pipeline-cube {
+    transform:
+      rotateX(-24deg)
+      rotateY(-30deg);
+  }
+
+  .page-wazuh .wazuh-pipeline-packet {
+    opacity: 0 !important;
+  }
+}

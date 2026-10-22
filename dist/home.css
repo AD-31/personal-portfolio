@@ -1,0 +1,91 @@
+/* Homepage-only composition. Shared typography and navigation remain in existing CSS. */
+.page-home .network-story {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* Previous storytelling wrappers must not pin a multi-screen hero. */
+.page-home .network-pin {
+  position: static;
+  inset: auto;
+  min-height: 0;
+  height: auto;
+}
+
+/* No cards around the existing Canvas visualization. */
+.page-home .network-visual {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Larger hero visualization on desktop */
+@media (min-width: 1050px) {
+  .page-home .network-visual {
+    width: 112%;
+    max-width: none;
+    margin-left: -6%;
+  }
+}
+
+/* Keep the figure hidden during typing */
+html.hero-intro-pending .page-home .network-visual {
+  opacity: 0;
+  transform: translateY(36px) scale(.9);
+  pointer-events: none;
+}
+
+/* Reveal once the terminal sequence completes */
+html.hero-intro-finished .page-home .network-visual {
+  animation: hero-figure-enter .85s
+    cubic-bezier(.16, 1, .3, 1) both;
+  transform-origin: center center;
+}
+
+@keyframes hero-figure-enter {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html.hero-intro-pending .page-home .network-visual {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  html.hero-intro-finished .page-home .network-visual {
+    animation: none;
+  }
+}
+@media (min-width: 1050px) {
+  .page-home .network-visual {
+    width: 128%;
+    max-width: none;
+    margin-left: -14%;
+  }
+
+  .page-home .network-canvas-wrap {
+    min-height: 520px;
+  }
+}
+
+@media (min-width: 1350px) {
+  .page-home .network-visual {
+    width: 136%;
+    margin-left: -18%;
+  }
+
+  .page-home .network-canvas-wrap {
+    min-height: 560px;
+  }
+}

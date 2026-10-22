@@ -1,0 +1,419 @@
+
+/*
+ * My Work
+ * Uses existing sitewide design-system.css tokens.
+ * All selectors scoped to page-work.
+ */
+
+.page-work .work-main {
+  padding-block: var(--space-12) var(--space-24);
+}
+
+/* ------------------------------------------
+   INTRODUCTION
+   ------------------------------------------ */
+
+.page-work .work-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: var(--layout-gap);
+  row-gap: var(--space-5);
+  margin-bottom: var(--space-10);
+}
+
+.page-work .work-intro-copy {
+  min-width: 0;
+  max-width: 58rem;
+}
+
+.page-work .work-terminal-command {
+  margin: 0 0 var(--space-5);
+
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-meta);
+}
+
+.page-work .work-eyebrow {
+  margin: 0 0 var(--space-5);
+
+  font: 400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+
+  letter-spacing: var(--tracking-label);
+  color: var(--color-muted);
+}
+
+/* Same navy heading treatment as homepage */
+.page-work .work-intro h1 {
+  margin: 0 0 var(--space-8);
+
+  color: var(--color-ink);
+
+  font-family: var(--font-body);
+  font-size: var(--type-section);
+  font-weight: var(--weight-heading);
+
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-title);
+
+  text-wrap: balance;
+}
+
+.page-work .work-heading-line {
+  display: block;
+  color: inherit;
+}
+
+/* Italic emphasis, without changing color */
+.page-work .work-intro h1 em.work-heading-line {
+  display: block;
+  margin-top: var(--space-2);
+
+  color: inherit;
+  font-style: italic;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.page-work .work-lede {
+  max-width: var(--reading-width);
+
+  color: var(--color-body);
+
+  font: var(--weight-body)
+    var(--text-base)/var(--leading-body)
+    var(--font-body);
+}
+
+.page-work .work-count {
+  margin: 0 0 var(--space-2);
+
+  color: var(--color-muted);
+  white-space: nowrap;
+
+  font: 400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+}
+
+.page-work .work-count span {
+  margin-right: var(--space-2);
+  font-size: var(--type-stat);
+  color: var(--color-ink);
+}
+
+/* ------------------------------------------
+   PROJECT SHOWCASES
+   ------------------------------------------ */
+
+.page-work .work-projects {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--layout-gap);
+}
+
+.page-work .work-project {
+  min-width: 0;
+}
+
+.page-work .work-project-link {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  height: 100%;
+
+  color: inherit;
+  text-decoration: none;
+  outline-offset: 6px;
+}
+
+.page-work .work-project-link:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  border-radius: var(--radius-control);
+}
+
+/* ------------------------------------------
+   TECHNICAL PREVIEW GEOMETRY
+   ------------------------------------------ */
+
+.page-work .work-preview {
+  display: grid;
+  place-items: center;
+
+  width: 100%;
+  height: clamp(210px, 21vw, 282px);
+
+  margin-bottom: var(--space-5);
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-work .work-preview svg {
+  display: block;
+
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+
+  overflow: visible;
+
+  transition: transform .35s ease;
+}
+
+.page-work .work-project-link:is(
+  :hover,
+  :focus-visible
+) .work-preview svg {
+  transform: translateY(-4px);
+}
+
+/* ------------------------------------------
+   PROJECT TEXT
+   ------------------------------------------ */
+
+.page-work .work-project-kicker {
+  margin: 0 0 var(--space-3);
+
+  color: var(--color-cyan);
+
+  font: 400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+
+  letter-spacing: var(--tracking-label);
+}
+
+.page-work .work-project h2 {
+  margin: 0 0 var(--space-4);
+
+  color: var(--color-ink);
+
+  font: var(--weight-heading)
+    var(--type-feature)/var(--leading-title)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-title);
+}
+
+.page-work .work-description {
+  margin: 0 0 var(--space-5);
+
+  color: var(--color-muted);
+
+  font: var(--weight-body)
+    var(--text-base)/var(--leading-body)
+    var(--font-body);
+}
+
+.page-work .work-tech {
+  margin: auto 0 var(--space-5);
+
+  color: var(--color-muted);
+
+  font: 400 var(--text-xs)/var(--leading-meta)
+    var(--font-mono);
+}
+
+.page-work .work-tech span {
+  color: var(--color-cyan);
+}
+
+/* ------------------------------------------
+   EXPLORE LINK
+   ------------------------------------------ */
+
+.page-work .work-explore {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--space-3);
+
+  align-self: flex-start;
+  min-height: var(--control-height);
+
+  border-bottom: 1px solid currentColor;
+
+  color: var(--color-cyan);
+
+  font: 500 var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+
+  transition:
+    gap .25s ease,
+    color .25s ease;
+}
+
+.page-work .work-project-link:is(
+  :hover,
+  :focus-visible
+) .work-explore {
+  gap: var(--space-5);
+  color: var(--color-ink);
+}
+
+/* ------------------------------------------
+   RESTRAINED TECHNICAL ANIMATION
+   ------------------------------------------ */
+
+.page-work .model-float {
+  animation: work-float 6.5s ease-in-out infinite;
+}
+
+.page-work .model-float--b {
+  animation-delay: -2s;
+}
+
+.page-work .model-float--c {
+  animation-delay: -3.8s;
+}
+
+.page-work .work-flow {
+  stroke-dasharray: 6 15;
+  animation: work-flow 6s linear infinite;
+}
+
+.page-work .work-pulse {
+  animation: work-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes work-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes work-flow {
+  to {
+    stroke-dashoffset: -84;
+  }
+}
+
+@keyframes work-pulse {
+  0%, 100% {
+    opacity: .3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------
+   TABLET
+   ------------------------------------------ */
+
+@media (max-width: 900px) {
+
+  .page-work .work-projects {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+
+  .page-work .work-project-link {
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, .85fr)
+      minmax(0, 1fr);
+
+    column-gap: var(--layout-gap);
+    align-items: center;
+  }
+
+  .page-work .work-project + .work-project {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-8);
+  }
+
+  .page-work .work-preview {
+    grid-row: 1 / span 5;
+    height: 240px;
+    margin: 0;
+  }
+
+  .page-work .work-tech {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* ------------------------------------------
+   MOBILE
+   ------------------------------------------ */
+
+@media (max-width: 600px) {
+
+  .page-work .work-main {
+    padding-block:
+      var(--space-8)
+      var(--space-16);
+  }
+
+  .page-work .work-intro {
+    grid-template-columns: 1fr;
+    margin-bottom: var(--space-8);
+  }
+
+  .page-work .work-intro h1 {
+    margin-bottom: var(--space-6);
+  }
+
+  .page-work .work-count {
+    margin: 0;
+  }
+
+  .page-work .work-project-link {
+    display: flex;
+  }
+
+  .page-work .work-preview {
+    height: 215px;
+    margin-bottom: var(--space-3);
+  }
+
+  .page-work .work-projects {
+    gap: var(--space-8);
+  }
+
+  .page-work .work-project + .work-project {
+    padding-top: var(--space-6);
+  }
+
+  .page-work .work-tech {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* ------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .page-work .model-float,
+  .page-work .work-flow,
+  .page-work .work-pulse {
+    animation: none;
+  }
+
+  .page-work .work-preview svg,
+  .page-work .work-explore {
+    transition: none;
+  }
+
+  .page-work .work-project-link:is(
+    :hover,
+    :focus-visible
+  ) .work-preview svg {
+    transform: none;
+  }
+}

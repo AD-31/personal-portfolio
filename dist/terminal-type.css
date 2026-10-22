@@ -1,0 +1,47 @@
+
+/* Shared terminal-style entrance */
+.terminal-command {
+  font-family: var(--font-mono, "IBM Plex Mono", monospace);
+  font-size: 13px;
+  line-height: 1.6;
+  color: #526978;
+  margin-bottom: 1rem;
+}
+
+.terminal-user { color: #2B6678; font-weight: 600; }
+.terminal-path { color: #B37940; }
+
+.terminal-target {
+  position: relative;
+}
+
+.terminal-reserve {
+  display: block;
+  visibility: hidden;
+}
+
+.terminal-visual {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  pointer-events: none;
+}
+
+.terminal-caret {
+  display: inline-block;
+  width: .55ch;
+  height: .88em;
+  background: #2B6678;
+  vertical-align: -.09em;
+  margin-left: 2px;
+  animation: caret-blink .7s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-caret { animation: none; }
+}
