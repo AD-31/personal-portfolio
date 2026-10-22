@@ -1,48 +1,177 @@
 # Ahmed Ali Ahmed — Security Fieldnotes
 
-Buildless cybersecurity / IT portfolio. Serve `dist/` as a static website. Sites identity is in `.openai/hosting.json`. Read `design.md` before changing presentation.
+**Cybersecurity is about understanding what happens inside a system, recognizing what matters, and knowing how to respond.**
 
-## Current structure
+Security Fieldnotes is my personal cybersecurity portfolio, bringing together hands-on projects in detection engineering, security assessment, and network traffic analysis.
 
-Introduction → Selected work → Experience → Contact. The selected-work workspace shows one of three projects at a time. Wazuh uses its existing Anatomy machinery; the SME assessment offers network-zone and directory-permission models. ML keeps its separate CV-backed classification workflow and unchanged source limitations. Without JavaScript, all summaries and figures remain readable.
+Rather than simply listing the tools I've used, this website shows the systems I've worked with, how they operate, and what I learned while building and exploring them.
 
-All 20 original thesis figures are embedded. The selected project's inline evidence browser shows one at a time with a labeled select and previous/next controls. Every image opens in the same-page fit/original-size viewer; case studies retain the complete relevant evidence. Original bytes and captions are preserved. `evidence-sources.json` records provenance for the 18 additional figures; two featured figures remain unchanged.
+**[Explore the Portfolio](https://ad-31.github.io/personal-portfolio/dist/)**
 
-## Implementation
+---
 
-- `design-system.css` / `theme.js`: light canvas and scoped dark scene palette, shared type and control tokens; CSS loads before scoped styles.
-- `index.html` / `styles.css`: focused content, shared page edges, responsive layout, case-study reader.
-- `navigation.js`: floating header with an accessible mobile disclosure; contact is the matching page footer.
-- `workspace.js`: manual project tabs, keyboard navigation, original-figure selection, deep links.
-- `anatomy.js` / `anatomy.css`: source-linked models, original hardware silhouettes, component selection, rotation, directional activity, and permanently separated geometry and repeating causal records/relationships.
-- `system-sequences.js`: source-backed input/tool/transformation/output contracts, active paths and independent per-model clocks.
-- `network.js`: retained signal/layer/evidence hero with flat colors and spring-smoothed motion.
-- `project-diagrams.js` / `project-diagrams.css`: abstract ML workflow with three alternative candidates, depth rotation and a complete CV-backed transcript.
-- `evidence.js` / `evidence.css`: original-figure viewer and compact inline composition.
-- `app.js`: case studies and retained illustrative examples, clearly separated from measured project results.
-- `playback.js`, `motion.js`, `motion.css`: elapsed-time loops, preference handling, and short reader transitions.
-- `neon-cursor.js` / `neon-cursor.css`: precise cyan pointer and restrained single-color feedback with native fallbacks.
+## The Work
 
-## Motion and accessibility
+Three projects, each exploring a different part of cybersecurity.
 
-The 18-second hero keeps its existing motion and uses contrasting materials on the light canvas. Wazuh (48s), one DMZ service check (31s), directory relationships (44s), and ML (30s per alternative) run independently of scroll. Components remain separated; only the active record or relationship repeats. Inspection and rotation do not pause the model. A source-linked explanation sits beneath the model, and the full process is available as a static transcript. Desktop uses a wide composition; narrow scenes arrange hosts in depth rows and prioritize relevant labels. No Motion or Play/Pause buttons. System reduced motion supplies stable views, while hidden/offscreen scenes preserve their clocks without rendering. All reading content is immediately available. Project and source-figure navigation are manual and never auto-advance.
+### 01 — Wazuh Detection Engineering
 
-Project tabs support Left/Right/Up/Down/Home/End. Mobile Menu supports Escape and same-page target focus. Component buttons and rotation controls have keyboard equivalents. Touch rotation preserves vertical scrolling and pinch gestures. Images retain their aspect ratio and can be inspected at original size. Native dialogs support Escape/focus restoration. The pointer yields to text selection, forms, dialogs, keyboard navigation, touch, high contrast, reduced motion, and 3D dragging.
+**From Linux activity to security investigation.**
 
-## Content boundaries
+Built a security monitoring workflow using Wazuh, Tetragon, custom detection rules, and runtime telemetry.
 
-Preserve cybersecurity/IT scope, source evidence, and claim limits. The models are illustrative logical systems, not hardware inventory, live telemetry, or attack replays. Preserve the ML claims because its source file is unavailable; its abstract process must not invent measurements or inference results. Detailed n8n workflows remain deferred. Complete thesis archives, unreviewed sensitive screenshots, and credentials are not public assets.
+The project explores how security events are collected, decoded, correlated, and presented for investigation.
 
-The existing native canvas architecture is retained; no production component, framework or dependency was added. Local QA-only canvas/DOM dependencies live under `.sites-runtime/process-review/`. Full-browser visual review was unavailable; source, interaction, contrast, and native canvas checks do not establish exact browser page height or device frame rates.
+**What I worked on:** Endpoint monitoring, rule and decoder development, alert tuning, and security investigation workflows.
 
-## Local review — not published
+[Explore Detection Engineering](dist/work/wazuh.html)
 
-Read [.sites-runtime/light-review/review.md](.sites-runtime/light-review/review.md) for the current design change, verification and changed files. The isolated Three.js prototype is at `.sites-runtime/light-review/wazuh-prototype/index.html`, outside production. Serve the workspace root on a separate localhost port to open that experiment with its relative dependencies.
+### 02 — SME Security Assessment
 
-Read [process-evidence.md](process-evidence.md) for each stage and its source limits. Open [dist/index.html](dist/index.html), or run `python -m http.server 8000 --bind 127.0.0.1 --directory dist` and visit http://127.0.0.1:8000/. Native desktop/mobile previews are in `.sites-runtime/light-review/index.html`. These are actual renderer frames, not browser screenshots. Full-browser and real-device review remains outstanding. No hosted site, deployment identity, published checkout or remote repository was changed.
+**Understanding exposure before it becomes a security problem.**
 
-## Publishing the complete static site (only after review)
+Assessed a simulated SME environment to investigate network accessibility, exposed services, and Active Directory privilege relationships.
 
-Deploy the entire contents of `dist/` together, including the local fonts and their OFL licenses in `assets/fonts/`. The GitHub Pages repository `AD-31/personal-portfolio` serves these files at its root; do not add an extra `dist/` folder there. Uploading only `index.html` leaves old typography and responsive rules in place.
+The project uses tools including pfSense, BloodHound, and CALDERA to explore network segmentation, directory permissions, and controlled security validation.
 
-Local stylesheet URLs include content hashes. Keep these URLs and their matching CSS files together. The existing Sites identity and private audience remain in `.openai/hosting.json`; that configuration is not needed in the public GitHub Pages directory.
+**What I worked on:** Network assessment, directory privilege analysis, and identifying potential security weaknesses.
+
+[Explore Security Assessment](dist/work/assessment.html)
+
+### 03 — DDoS Traffic Classification
+
+**Exploring how network traffic can be classified using machine learning.**
+
+Investigated preprocessing, feature engineering, and alternative machine-learning approaches for classifying DDoS-related network traffic.
+
+The workflow explores Random Forest, SVM, and XGBoost as separate model candidates, with attention to how classification performance should be evaluated.
+
+**What I worked on:** Traffic preparation, feature engineering, model comparison, and evaluation principles.
+
+[Explore Traffic Classification](dist/work/ddos.html)
+
+---
+
+## More Than Static Project Pages
+
+I wanted this portfolio to communicate the technical work visually, without turning each project into a lengthy report.
+
+Every project has its own visualization, designed to make the underlying security process easier to understand.
+
+- **Homepage:** An animated network transitions between a spherical structure and endpoint, network, and identity layers.
+- **Detection Engineering:** A monitoring architecture illustrates the relationship between telemetry sources, detection processing, and analyst investigation.
+- **Security Assessment:** Interactive views explore network zones and Active Directory privilege relationships.
+- **DDoS Classification:** An abstract 3D workflow illustrates traffic preparation, alternative classifiers, and evaluation.
+
+The visualizations are interactive, but they don't require interaction to understand the overall project.
+
+The portfolio uses a consistent design throughout: an off-white canvas, floating navy navigation, minimal content, and technical visuals presented without unnecessary interface clutter.
+
+## How It's Built
+
+The entire website is built with **HTML, CSS, and vanilla JavaScript**.
+
+There are no frontend frameworks, production package dependencies, databases, or backend services.
+
+| Technology | Purpose |
+|---|---|
+| HTML5 | Semantic page structure and accessible content |
+| CSS3 | Design system, responsive layouts, and animations |
+| JavaScript | Navigation, terminal introductions, and interaction |
+| Canvas API | Interactive technical visualizations |
+| SVG | Lightweight architectural illustrations |
+| DM Sans | Main typography |
+| IBM Plex Mono | Terminal and technical typography |
+
+The animations use the browser's native rendering capabilities. The website is designed to remain lightweight, responsive, and usable across desktop and mobile devices.
+
+Motion preferences are respected, and interactive visualizations provide accessible descriptions and keyboard support where applicable.
+
+## Portfolio Structure
+
+The website follows a straightforward five-page architecture.
+
+| Page | Purpose |
+|---|---|
+| `dist/index.html` | Homepage and introduction |
+| `dist/work/index.html` | Overview of the three projects |
+| `dist/work/wazuh.html` | Detection Engineering |
+| `dist/work/assessment.html` | SME Security Assessment |
+| `dist/work/ddos.html` | DDoS Traffic Classification |
+
+Shared styling, scripts, fonts, and assets live inside `dist/`.
+
+The main supporting files are:
+
+- `design.md` — Website-wide design specifications and approved decisions.
+- `dist/design-system.css` — Shared typography, colors, spacing, and controls.
+- `dist/anatomy.js` — Interactive Wazuh and assessment models.
+- `dist/project-diagrams.js` — Machine-learning workflow visualization.
+- `dist/network.js` — Animated homepage network.
+- `dist/system-sequences.js` — Technical visualization sequences.
+- `dist/assets/evidence/` — Original project screenshots and supporting visuals.
+- `evidence-sources.json` and `process-evidence.md` — Supporting evidence references and technical interpretation notes.
+
+## Run Locally
+
+No installation or build process is required.
+
+**1. Clone the repository**
+
+`git clone https://github.com/AD-31/personal-portfolio.git`
+
+**2. Enter the project folder**
+
+`cd personal-portfolio`
+
+**3. Start a local server**
+
+`python -m http.server 8000 --bind 127.0.0.1 --directory dist`
+
+**4. Open the website**
+
+[http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+Python is only used here to serve the static files locally. It is not part of the production website.
+
+## Evidence and Technical Accuracy
+
+The goal of this portfolio is to demonstrate actual technical work without overstating results.
+
+The visualizations are **illustrative representations of technical systems**, not live telemetry, physical hardware inventories, or captured attack replays.
+
+Original screenshots are included where available. Some supporting technical documentation is retained in the repository for context and provenance.
+
+For the DDoS project, the original implementation files are unavailable. The visualization therefore illustrates the documented workflow without inventing accuracy scores, predictions, or performance measurements.
+
+Security assessment findings are presented in the context of a controlled lab environment, without treating potential exposure as proof of exploitation.
+
+Sensitive configurations, credentials, and unrelated private research materials are not intended for publication.
+
+## Design Philosophy
+
+The website is built around three principles:
+
+**Show the work.** Technical visualizations should communicate meaningful processes rather than exist purely for decoration.
+
+**Keep it focused.** Short explanations, consistent layouts, and minimal distractions allow visitors to understand each project quickly.
+
+**Stay accurate.** Clearly distinguish implemented work, conceptual illustrations, original evidence, and lessons learned.
+
+The complete visual and interaction specification is maintained in [`design.md`](design.md).
+
+---
+
+## Connect
+
+I'm interested in cybersecurity, security operations, detection engineering, and the technologies that make security processes more effective.
+
+If you'd like to discuss the projects, share feedback, or connect professionally:
+
+- **Email:** [ahmed.ali.ahmed3110@gmail.com](mailto:ahmed.ali.ahmed3110@gmail.com)
+- **LinkedIn:** [Ahmed Ali Ahmed](https://www.linkedin.com/in/ahmed-ali-ahmed-a91664334)
+- **Portfolio:** [Security Fieldnotes](https://ad-31.github.io/personal-portfolio/dist/)
+
+---
+
+*Built and maintained by Ahmed Ali Ahmed · Bahrain*
