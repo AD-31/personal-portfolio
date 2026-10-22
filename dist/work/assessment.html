@@ -1,0 +1,610 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#142b3c">
+
+  <title>SME Security Assessment — Ahmed Ali Ahmed</title>
+  <meta name="description"
+    content="Security assessment covering network exposure, Active Directory privileges and validation in an SME-style lab.">
+
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20width='40'%20height='40'%20rx='9'%20fill='%23142b3c'/%3E%3Cpath%20d='M8%2027%2020%209l12%2018M14%2023h12'%20fill='none'%20stroke='%23a6d9e2'%20stroke-width='3'/%3E%3C/svg%3E">
+
+  <!-- Local fonts -->
+  <link rel="preload"
+    href="../assets/fonts/dm-sans-latin-normal-400-500.woff2"
+    as="font" type="font/woff2" crossorigin>
+
+  <link rel="preload"
+    href="../assets/fonts/dm-sans-latin-italic-500.woff2"
+    as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet"
+    href="../assets/fonts/fonts.css?v=1b7c30ed4754">
+
+  <!-- Sitewide styles -->
+  <link rel="stylesheet" href="../design-system.css?v=943819c60783">
+  <link rel="stylesheet" href="../styles.css?v=aa0ddbeede66">
+  <link rel="stylesheet" href="../anatomy.css?v=bbf31ff46975">
+  <link rel="stylesheet" href="../motion.css?v=d35a7f00db6d">
+  <link rel="stylesheet" href="../neon-cursor.css?v=0480ce5ff143">
+  <link rel="stylesheet" href="../terminal-type.css?v=2">
+
+  <!-- Shared project styles -->
+  <link rel="stylesheet"
+    href="case-studies.css?v=centered-model-1">
+
+  <!-- Terminal and model initialization -->
+  <script>
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("hero-intro-pending");
+
+      setTimeout(() => {
+        const root = document.documentElement;
+
+        if (root.classList.contains("hero-intro-pending")) {
+          root.classList.remove("hero-intro-pending");
+          root.classList.add("hero-intro-finished");
+        }
+      }, 15000);
+    }
+
+    document.documentElement.classList.add(
+      "assessment-initializing"
+    );
+  </script>
+
+  <!-- Shared scripts -->
+  <script defer src="../theme.js?v=17abee0d1726"></script>
+  <script defer src="../navigation.js?v=6347796ee4af"></script>
+  <script defer src="../playback.js?v=8be236a47c98"></script>
+  <script defer src="../motion.js?v=56a2b57c645b"></script>
+
+  <!-- Existing assessment renderer -->
+  <script defer src="../system-sequences.js?v=dcf7021eb7b0"></script>
+  <script defer src="../anatomy.js?v=15a14fd4b4e6"></script>
+
+  <script defer src="../neon-cursor.js?v=98288393cc1a"></script>
+  <script defer src="../terminal-type.js?v=3"></script>
+
+  <!-- Select Network Zones as the initial model -->
+  <script>
+    window.addEventListener("load", () => {
+      const root = document.documentElement;
+      const explorer = document.getElementById("anatomy-explorer");
+
+      const networkButton = explorer?.querySelector(
+        '[data-anatomy-model="network"]'
+      );
+
+      function reveal() {
+        root.classList.remove("assessment-initializing");
+      }
+
+      if (!networkButton) {
+        reveal();
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        networkButton.click();
+
+        requestAnimationFrame(reveal);
+      });
+
+      // Prevent a permanently hidden Canvas if
+      // initialization fails.
+      setTimeout(reveal, 2000);
+    }, { once: true });
+  </script>
+</head>
+
+<body class="page-project page-case page-assessment">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Shared floating header -->
+  <header class="site-header dark-surface">
+
+    <a class="identity"
+      href="../index.html#top"
+      aria-label="Ahmed Ali Ahmed, home">
+
+      <span class="monogram" aria-hidden="true">A.</span>
+
+      <span class="identity-type">
+        Ahmed Ali Ahmed
+        <small>Cybersecurity Specialist</small>
+      </span>
+    </a>
+
+    <button class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      hidden>
+      Menu
+    </button>
+
+    <nav id="primary-navigation" aria-label="Main navigation">
+      <a href="../index.html">Home</a>
+      <a href="index.html">My Work</a>
+      <a href="#contact">Contact</a>
+
+      <a class="nav-cv"
+        href="../assets/ahmed-ali-ahmed-cv.pdf"
+        download>
+        Download CV
+      </a>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- =====================================
+         INTRODUCTION
+         ===================================== -->
+
+    <section class="case-intro section-shell"
+      id="top"
+      aria-labelledby="project-title">
+
+      <div class="case-intro-layout">
+
+        <div class="case-intro-copy">
+
+          <p class="terminal-command"
+            data-terminal
+            aria-hidden="true"><span class="terminal-user">ahmed@portfolio</span>:<span class="terminal-path">~</span>$ cat assessment.txt</p>
+
+          <h1 id="project-title">
+            <span class="case-heading-line"
+              data-terminal>SME Security</span>
+
+            <em class="case-heading-line"
+              data-terminal>Assessment.</em>
+          </h1>
+
+          <p class="case-lede" data-terminal>I assessed an SME-style lab to identify exposed network services and examine Active Directory permissions and security risks.</p>
+
+        </div>
+
+        <!-- Minimal isometric hero illustration -->
+        <div class="case-mini case-mini--network"
+          role="img"
+          aria-label="Isometric LAN, firewall and DMZ network visualization.">
+
+          <svg viewBox="0 0 390 165"
+            aria-hidden="true"
+            focusable="false">
+
+            <!-- LAN -->
+            <g>
+              <path d="M12 86L94 47L145 71L63 110Z"
+                fill="#DCE8ED" stroke="#9CB5C1"/>
+
+              <path d="M63 110V121L12 97V86"
+                fill="#B4C9D1"/>
+
+              <path d="M63 110L145 71V82L63 121Z"
+                fill="#A4BCC8"/>
+
+              <rect x="61" y="66"
+                width="31" height="22"
+                fill="#142B3C"/>
+
+              <path d="M66 72H86M66 77H80"
+                stroke="#A6D9E2" stroke-width="2"/>
+            </g>
+
+            <!-- Firewall -->
+            <g>
+              <path d="M155 83L204 59L244 78L195 103Z"
+                fill="#7799A9"/>
+
+              <path d="M195 103V122L155 102V83"
+                fill="#34566B"/>
+
+              <path d="M195 103L244 78V98L195 122Z"
+                fill="#142B3C"/>
+
+              <path d="M185 97L219 81"
+                stroke="#A6D9E2" stroke-width="3"/>
+            </g>
+
+            <!-- DMZ -->
+            <g>
+              <path d="M253 86L335 47L382 71L300 110Z"
+                fill="#DCE8ED" stroke="#9CB5C1"/>
+
+              <path d="M300 110V121L253 97V86"
+                fill="#B4C9D1"/>
+
+              <path d="M300 110L382 71V82L300 121Z"
+                fill="#A4BCC8"/>
+
+              <path d="M303 66L329 53L350 63L324 76Z"
+                fill="#426176"/>
+
+              <path d="M324 76V90L303 79V66"
+                fill="#243F50"/>
+
+              <path d="M324 76L350 63V77L324 90Z"
+                fill="#142B3C"/>
+            </g>
+
+            <!-- Links -->
+            <path d="M112 87L163 99M238 99L285 86"
+              stroke="#7896A5"
+              stroke-width="1.5"
+              stroke-dasharray="4 5"
+              fill="none"/>
+
+            <rect class="zone-signal"
+              x="124" y="89"
+              width="7" height="7"
+              fill="#A87942"/>
+
+            <text x="79" y="145"
+              text-anchor="middle"
+              font-size="11"
+              fill="#142B3C">LAN</text>
+
+            <text x="200" y="145"
+              text-anchor="middle"
+              font-size="11"
+              fill="#142B3C">FIREWALL</text>
+
+            <text x="317" y="145"
+              text-anchor="middle"
+              font-size="11"
+              fill="#142B3C">DMZ</text>
+
+          </svg>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================
+         CENTERED ASSESSMENT VISUAL
+         ===================================== -->
+
+    <section class="case-visual section-shell"
+      aria-labelledby="assessment-model-title">
+
+      <h2 class="sr-only" id="assessment-model-title">
+        Network and Directory Assessment
+      </h2>
+
+      <div class="anatomy-region">
+        <div class="anatomy-story">
+          <div class="anatomy-shell"
+            id="anatomy-explorer">
+
+            <!--
+              Functional view controls.
+              These are not component inspectors.
+            -->
+            <div class="anatomy-tabs case-view-switch"
+              role="group"
+              aria-label="Assessment model">
+
+              <button type="button"
+                data-anatomy-model="network"
+                aria-pressed="true">
+                Network Zones
+              </button>
+
+              <button type="button"
+                data-anatomy-model="identity"
+                aria-pressed="false">
+                Directory Privileges
+              </button>
+
+            </div>
+
+            <div class="anatomy-layout">
+
+              <!-- Centered Canvas -->
+              <div class="anatomy-visual">
+
+                <div class="anatomy-stage">
+
+                  <canvas
+                    tabindex="0"
+                    role="img"
+                    aria-label="Interactive assessment model showing network zones or directory privilege relationships."
+                    aria-describedby="assessment-canvas-help">
+                  </canvas>
+
+                  <div class="anatomy-fallback" hidden>
+                    Assessment visualization
+                  </div>
+
+                </div>
+
+                <!-- Original renderer hooks -->
+                <div class="sequence-readout"
+                  hidden aria-live="off">
+
+                  <p class="sequence-lineage"></p>
+
+                  <div class="sequence-title-row">
+                    <strong class="sequence-title"></strong>
+
+                    <button class="sequence-source"
+                      type="button" hidden>
+                      Inspect source
+                    </button>
+                  </div>
+
+                  <p class="sequence-description"></p>
+
+                  <p class="sequence-record">
+                    <strong class="sequence-form"></strong>
+                    <span class="sequence-fields"></span>
+                  </p>
+
+                  <details class="sequence-contract">
+                    <summary>Stage details</summary>
+
+                    <dl class="sequence-io">
+                      <div>
+                        <dt>Input</dt>
+                        <dd data-sequence-input></dd>
+                      </div>
+
+                      <div>
+                        <dt>Tool</dt>
+                        <dd data-sequence-tool></dd>
+                      </div>
+
+                      <div>
+                        <dt>Output</dt>
+                        <dd data-sequence-output></dd>
+                      </div>
+                    </dl>
+                  </details>
+
+                  <p class="sequence-citation"></p>
+
+                </div>
+
+                <p class="sr-only anatomy-gesture-hint"
+                  id="assessment-canvas-help">
+                  Drag or use arrow keys to rotate.
+                  Press Home to reset the model.
+                </p>
+
+                <div class="anatomy-orbit" hidden>
+                  <div role="group"
+                    aria-label="Rotate assessment model">
+
+                    <button type="button" data-orbit="-1">
+                      Rotate left
+                    </button>
+
+                    <button type="button" data-orbit="1">
+                      Rotate right
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!--
+                Hidden component-inspector hooks.
+
+                The section occupies no layout space,
+                but remains available to anatomy.js.
+              -->
+              <aside class="anatomy-inspector"
+                hidden aria-hidden="true">
+
+                <div class="anatomy-part-list"></div>
+
+                <div class="anatomy-part-copy">
+                  <h4>Component</h4>
+                  <p class="anatomy-description"></p>
+                </div>
+
+                <button class="anatomy-evidence"
+                  type="button"
+                  data-evidence="assessment-dmz-services">
+                  Inspect evidence
+                </button>
+
+                <div class="anatomy-relations"></div>
+
+              </aside>
+
+            </div>
+
+            <div class="anatomy-footer" hidden></div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="anatomy-text" hidden>
+        <ol class="sequence-transcript" hidden></ol>
+        <div class="sequence-transcript-fallback" hidden></div>
+      </div>
+
+    </section>
+
+    <!-- =====================================
+         WHAT I BUILT
+         ===================================== -->
+
+    <section class="case-achievements section-shell"
+      aria-labelledby="assessment-built-title">
+
+      <h2 id="assessment-built-title">What I Built</h2>
+
+      <div class="case-columns">
+
+        <section>
+          <h3>Network Assessment</h3>
+
+          <p>
+            Examined segmented network zones
+            and identified reachable services.
+          </p>
+        </section>
+
+        <section>
+          <h3>Directory Analysis</h3>
+
+          <p>
+            Mapped privileged groups and access
+            relationships using BloodHound.
+          </p>
+        </section>
+
+        <section>
+          <h3>Security Validation</h3>
+
+          <p>
+            Used controlled discovery tools to
+            investigate potential security weaknesses.
+          </p>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- =====================================
+         WHAT I LEARNED
+         ===================================== -->
+
+    <section class="case-learning section-shell"
+      aria-labelledby="assessment-learning-title">
+
+      <h2 id="assessment-learning-title">What I Learned</h2>
+
+      <p class="case-learning-copy">
+        I learned to distinguish exposed services
+        and risky permissions from confirmed
+        vulnerabilities, and to validate findings
+        before drawing conclusions.
+      </p>
+
+    </section>
+
+    <!-- =====================================
+         ORIGINAL EVIDENCE
+         ===================================== -->
+
+    <section class="case-evidence section-shell"
+      aria-labelledby="assessment-evidence-title">
+
+      <h2 id="assessment-evidence-title">Evidence</h2>
+
+      <div class="case-proof-grid">
+
+        <a class="case-proof"
+          href="../assets/evidence/assessment-dmz-services.png"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open network service discovery evidence">
+
+          <img
+            src="../assets/evidence/assessment-dmz-services.png"
+            width="1121"
+            height="430"
+            loading="lazy"
+            decoding="async"
+            alt="Service discovery from the lab DMZ.">
+        </a>
+
+        <a class="case-proof"
+          href="../assets/evidence/assessment-directory-membership.png"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open directory membership evidence">
+
+          <img
+            src="../assets/evidence/assessment-directory-membership.png"
+            width="1144"
+            height="535"
+            loading="lazy"
+            decoding="async"
+            alt="BloodHound group membership relationships.">
+        </a>
+
+        <a class="case-proof"
+          href="../assets/evidence/assessment-directory-paths.png"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open directory privilege evidence">
+
+          <img
+            src="../assets/evidence/assessment-directory-paths.png"
+            width="982"
+            height="304"
+            loading="lazy"
+            decoding="async"
+            alt="Active Directory privilege relationship graph.">
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared footer -->
+  <footer id="contact"
+    class="contact-section dark-surface"
+    aria-labelledby="contact-title">
+
+    <div class="contact-copy">
+
+      <p class="eyebrow">Contact</p>
+
+      <h2 id="contact-title">
+        Let's talk security.
+      </h2>
+
+      <div class="contact-actions">
+
+        <a class="button primary"
+          href="mailto:ahmed.ali.ahmed3110@gmail.com">
+          Email Ahmed
+        </a>
+
+        <a class="text-link"
+          href="https://www.linkedin.com/in/ahmed-ali-ahmed-a91664334"
+          target="_blank"
+          rel="noopener noreferrer">
+          LinkedIn
+        </a>
+
+        <a class="text-link"
+          href="../assets/ahmed-ali-ahmed-cv.pdf"
+          download>
+          Download CV
+        </a>
+
+      </div>
+
+      <a class="email-address"
+        href="mailto:ahmed.ali.ahmed3110@gmail.com">
+        ahmed.ali.ahmed3110@gmail.com
+      </a>
+
+    </div>
+
+    <div class="site-footer">
+      <span>Ahmed Ali Ahmed · Bahrain</span>
+    </div>
+  </footer>
+
+</body>
+</html>

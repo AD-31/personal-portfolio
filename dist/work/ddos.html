@@ -1,0 +1,456 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#142b3c">
+
+  <title>DDoS Traffic Classification — Ahmed Ali Ahmed</title>
+  <meta name="description"
+    content="Machine-learning approaches to DDoS traffic classification, feature engineering and model evaluation.">
+
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20width='40'%20height='40'%20rx='9'%20fill='%23142b3c'/%3E%3Cpath%20d='M8%2027%2020%209l12%2018M14%2023h12'%20fill='none'%20stroke='%23a6d9e2'%20stroke-width='3'/%3E%3C/svg%3E">
+
+  <!-- Fonts -->
+  <link rel="preload"
+    href="../assets/fonts/dm-sans-latin-normal-400-500.woff2"
+    as="font" type="font/woff2" crossorigin>
+
+  <link rel="preload"
+    href="../assets/fonts/dm-sans-latin-italic-500.woff2"
+    as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet"
+    href="../assets/fonts/fonts.css?v=1b7c30ed4754">
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="../design-system.css?v=943819c60783">
+  <link rel="stylesheet" href="../styles.css?v=aa0ddbeede66">
+  <link rel="stylesheet" href="../project-diagrams.css?v=1d84c07cc7d4">
+  <link rel="stylesheet" href="../motion.css?v=d35a7f00db6d">
+  <link rel="stylesheet" href="../neon-cursor.css?v=0480ce5ff143">
+  <link rel="stylesheet" href="../terminal-type.css?v=2">
+
+  <!-- Shared project stylesheet -->
+  <link rel="stylesheet"
+    href="case-studies.css?v=centered-model-1">
+
+  <script>
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("hero-intro-pending");
+
+      setTimeout(() => {
+        const root = document.documentElement;
+
+        if (root.classList.contains("hero-intro-pending")) {
+          root.classList.remove("hero-intro-pending");
+          root.classList.add("hero-intro-finished");
+        }
+      }, 15000);
+    }
+  </script>
+
+  <!-- Shared scripts -->
+  <script defer src="../theme.js?v=17abee0d1726"></script>
+  <script defer src="../navigation.js?v=6347796ee4af"></script>
+  <script defer src="../playback.js?v=8be236a47c98"></script>
+  <script defer src="../motion.js?v=56a2b57c645b"></script>
+
+  <!-- Existing classifier renderer -->
+  <script defer src="../system-sequences.js?v=dcf7021eb7b0"></script>
+  <script defer src="../project-diagrams.js?v=d808028715f7"></script>
+
+  <script defer src="../neon-cursor.js?v=98288393cc1a"></script>
+  <script defer src="../terminal-type.js?v=3"></script>
+</head>
+
+<body class="page-project page-case page-ddos">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Shared floating header -->
+  <header class="site-header dark-surface">
+
+    <a class="identity"
+      href="../index.html#top"
+      aria-label="Ahmed Ali Ahmed, home">
+
+      <span class="monogram" aria-hidden="true">A.</span>
+
+      <span class="identity-type">
+        Ahmed Ali Ahmed
+        <small>Cybersecurity Specialist</small>
+      </span>
+    </a>
+
+    <button class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      hidden>
+      Menu
+    </button>
+
+    <nav id="primary-navigation" aria-label="Main navigation">
+      <a href="../index.html">Home</a>
+      <a href="index.html">My Work</a>
+      <a href="#contact">Contact</a>
+
+      <a class="nav-cv"
+        href="../assets/ahmed-ali-ahmed-cv.pdf"
+        download>
+        Download CV
+      </a>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- =====================================
+         INTRODUCTION
+         ===================================== -->
+
+    <section class="case-intro section-shell"
+      id="top"
+      aria-labelledby="project-title">
+
+      <div class="case-intro-layout">
+
+        <div class="case-intro-copy">
+
+          <p class="terminal-command"
+            data-terminal
+            aria-hidden="true"><span class="terminal-user">ahmed@portfolio</span>:<span class="terminal-path">~</span>$ cat classification.txt</p>
+
+          <h1 id="project-title">
+            <span class="case-heading-line"
+              data-terminal>DDoS Traffic</span>
+
+            <em class="case-heading-line"
+              data-terminal>Classification.</em>
+          </h1>
+
+          <p class="case-lede" data-terminal>I explored machine-learning methods for classifying DDoS-related traffic, including preprocessing, feature engineering and alternative model approaches.</p>
+
+        </div>
+
+        <!-- Small abstract ML preview -->
+        <div class="case-mini case-mini--ml"
+          role="img"
+          aria-label="Isometric traffic preparation, feature engineering and machine-learning model visualization.">
+
+          <svg viewBox="0 0 390 165"
+            aria-hidden="true"
+            focusable="false">
+
+            <!-- Traffic -->
+            <g>
+              <path d="M17 82L96 48L137 69L58 104Z"
+                fill="#C5D7E0" stroke="#9CB5C1"/>
+
+              <path d="M58 104V117L17 95V82"
+                fill="#7896A6"/>
+
+              <path d="M58 104L137 69V82L58 117Z"
+                fill="#A0BCC8"/>
+
+              <path d="M50 85L70 76M62 92L91 78M74 81L98 70"
+                stroke="#2B6678" stroke-width="2"/>
+            </g>
+
+            <!-- Features -->
+            <g>
+              <path d="M146 82L211 52L253 73L188 103Z"
+                fill="#718F9F"/>
+
+              <path d="M188 103V118L146 97V82"
+                fill="#34566B"/>
+
+              <path d="M188 103L253 73V89L188 118Z"
+                fill="#142B3C"/>
+
+              <circle cx="183" cy="80" r="3" fill="#A6D9E2"/>
+              <circle cx="194" cy="72" r="3" fill="#A6D9E2"/>
+              <circle cx="207" cy="81" r="3" fill="#A6D9E2"/>
+              <circle cx="219" cy="71" r="3" fill="#A6D9E2"/>
+            </g>
+
+            <!-- Alternative model candidates -->
+            <g>
+              <path d="M272 57L328 33L366 52L309 77Z"
+                fill="#9CB5C1"/>
+
+              <path d="M309 77V89L272 69V57"
+                fill="#4D7084"/>
+
+              <path d="M309 77L366 52V64L309 89Z"
+                fill="#142B3C"/>
+
+              <path d="M272 92L328 68L366 87L309 112Z"
+                fill="#A6D9E2"/>
+
+              <path d="M309 112V124L272 104V92"
+                fill="#4D7084"/>
+
+              <path d="M309 112L366 87V99L309 124Z"
+                fill="#243F50"/>
+            </g>
+
+            <!-- Data movement -->
+            <path d="M130 89L155 89M252 89L272 89"
+              stroke="#7794A2"
+              stroke-width="1.5"
+              stroke-dasharray="4 5"
+              fill="none"/>
+
+            <rect class="ml-signal"
+              x="132" y="85"
+              width="7" height="7"
+              fill="#A87942"/>
+
+            <text x="75" y="145"
+              text-anchor="middle"
+              font-size="11"
+              fill="#142B3C">TRAFFIC</text>
+
+            <text x="198" y="145"
+              text-anchor="middle"
+              font-size="11"
+              fill="#142B3C">FEATURES</text>
+
+            <text x="320" y="145"
+              text-anchor="middle"
+              font-size="11"
+              fill="#142B3C">MODELS</text>
+
+          </svg>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================
+         CENTERED 3D CLASSIFIER
+         ===================================== -->
+
+    <section class="case-visual section-shell"
+      aria-labelledby="ddos-visual-title">
+
+      <h2 class="sr-only" id="ddos-visual-title">
+        DDoS Classification Workflow
+      </h2>
+
+      <figure
+        class="project-diagram"
+        data-project-diagram="classifier"
+        aria-label="Interactive traffic classification workflow">
+
+        <div class="diagram-viewport">
+
+          <canvas
+            tabindex="0"
+            role="img"
+            aria-label="Abstract three-dimensional workflow showing traffic, preprocessing, features, alternative models and evaluation."
+            aria-describedby="classifier-diagram-help">
+          </canvas>
+
+          <!-- Hidden renderer fallback -->
+          <div class="diagram-fallback" hidden>
+            Traffic, preprocessing, feature engineering,
+            model candidates and evaluation.
+          </div>
+
+        </div>
+
+        <!-- Hidden original renderer controls -->
+        <div class="diagram-toolbar" hidden>
+
+          <div class="diagram-stages"
+            role="group"
+            aria-label="Workflow stages">
+
+            <button
+              type="button"
+              data-diagram-stage="0"
+              aria-pressed="true">
+              Prepare
+            </button>
+
+            <button
+              type="button"
+              data-diagram-stage="1"
+              aria-pressed="false">
+              Compare
+            </button>
+
+            <button
+              type="button"
+              data-diagram-stage="2"
+              aria-pressed="false">
+              Evaluate
+            </button>
+          </div>
+
+          <div class="diagram-rotation"
+            role="group"
+            aria-label="Rotate model">
+
+            <button
+              type="button"
+              data-diagram-rotate="left">
+              Rotate left
+            </button>
+
+            <button
+              type="button"
+              data-diagram-rotate="reset">
+              Reset
+            </button>
+
+            <button
+              type="button"
+              data-diagram-rotate="right">
+              Rotate right
+            </button>
+          </div>
+
+          <p class="sr-only"
+            id="classifier-diagram-help">
+            Drag or use arrow keys to rotate.
+            Press Home to reset the view.
+          </p>
+
+        </div>
+
+        <!-- Hidden sequence data hooks -->
+        <div class="diagram-insight"
+          hidden aria-live="off">
+
+          <strong>Traffic preparation</strong>
+
+          <p>Feature engineering and model comparison.</p>
+        </div>
+
+        <div class="diagram-process"
+          hidden aria-live="off">
+
+          <strong data-diagram-process-title></strong>
+          <p data-diagram-process-description></p>
+        </div>
+
+      </figure>
+    </section>
+
+    <!-- =====================================
+         WHAT I BUILT
+         ===================================== -->
+
+    <section class="case-achievements section-shell"
+      aria-labelledby="ddos-built-title">
+
+      <h2 id="ddos-built-title">What I Built</h2>
+
+      <div class="case-columns">
+
+        <section>
+          <h3>Traffic Preparation</h3>
+
+          <p>
+            Explored preprocessing and feature
+            engineering for network-traffic analysis.
+          </p>
+        </section>
+
+        <section>
+          <h3>Model Comparison</h3>
+
+          <p>
+            Worked with Random Forest, SVM and
+            XGBoost as alternative classifiers.
+          </p>
+        </section>
+
+        <section>
+          <h3>Evaluation</h3>
+
+          <p>
+            Studied classification evaluation using
+            accuracy, precision, recall and false positives.
+          </p>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- =====================================
+         WHAT I LEARNED
+         ===================================== -->
+
+    <section class="case-learning section-shell"
+      aria-labelledby="ddos-learning-title">
+
+      <h2 id="ddos-learning-title">What I Learned</h2>
+
+      <p class="case-learning-copy">
+        I learned how preprocessing and feature
+        selection influence classification, and why
+        false positives and missed detections matter
+        when evaluating security models.
+      </p>
+
+    </section>
+
+  </main>
+
+  <!-- Shared contact footer -->
+  <footer id="contact"
+    class="contact-section dark-surface"
+    aria-labelledby="contact-title">
+
+    <div class="contact-copy">
+
+      <p class="eyebrow">Contact</p>
+
+      <h2 id="contact-title">
+        Let's talk security.
+      </h2>
+
+      <div class="contact-actions">
+
+        <a class="button primary"
+          href="mailto:ahmed.ali.ahmed3110@gmail.com">
+          Email Ahmed
+        </a>
+
+        <a class="text-link"
+          href="https://www.linkedin.com/in/ahmed-ali-ahmed-a91664334"
+          target="_blank"
+          rel="noopener noreferrer">
+          LinkedIn
+        </a>
+
+        <a class="text-link"
+          href="../assets/ahmed-ali-ahmed-cv.pdf"
+          download>
+          Download CV
+        </a>
+
+      </div>
+
+      <a class="email-address"
+        href="mailto:ahmed.ali.ahmed3110@gmail.com">
+        ahmed.ali.ahmed3110@gmail.com
+      </a>
+
+    </div>
+
+    <div class="site-footer">
+      <span>Ahmed Ali Ahmed · Bahrain</span>
+    </div>
+  </footer>
+
+</body>
+</html>

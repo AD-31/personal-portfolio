@@ -1,0 +1,765 @@
+
+/*
+ * CYBERSECURITY PORTFOLIO
+ * SHARED CASE STUDIES
+ *
+ * Used by:
+ *   assessment.html
+ *   ddos.html
+ *
+ * White Canvas + Floating Navy
+ * DM Sans + IBM Plex Mono
+ *
+ * Shared design-system.css tokens are
+ * the source of truth.
+ */
+
+/* ==========================================
+   PAGE & SHARED ALIGNMENT
+   ========================================== */
+
+.page-case {
+  background: var(--color-bg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+}
+
+.page-case main {
+  padding-block:
+    var(--space-10)
+    var(--space-12);
+}
+
+.page-case main > .section-shell + .section-shell {
+  margin-top: var(--space-8);
+}
+
+.page-case main [id] {
+  scroll-margin-top: calc(
+    var(--header-height, 80px) +
+    2 * var(--floating-gap) +
+    var(--space-4)
+  );
+}
+
+/*
+ * Explicitly protect the shared page gutters.
+ * This prevents the SME Canvas or evidence
+ * from shifting toward the viewport edge.
+ */
+
+.page-case main > .section-shell {
+  width: 100%;
+  max-width: var(--page-max);
+
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   PROJECT INTRODUCTION
+   ========================================== */
+
+.page-case .case-intro-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.65fr)
+    minmax(280px, .85fr);
+
+  align-items: center;
+  gap: var(--layout-gap);
+}
+
+.page-case .case-intro-copy {
+  min-width: 0;
+}
+
+.page-case .terminal-command {
+  margin: 0 0 var(--space-5);
+
+  font:
+    400 var(--text-sm)/var(--leading-meta)
+    var(--font-mono);
+}
+
+.page-case .case-intro h1 {
+  max-width: 24ch;
+  margin: 0 0 var(--space-5);
+
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--type-section)/var(--leading-title)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-title);
+}
+
+.page-case .case-heading-line {
+  display: block;
+  color: inherit;
+}
+
+.page-case .case-intro h1 em {
+  display: block;
+  margin-top: var(--space-2);
+
+  color: inherit;
+  font: inherit;
+  font-style: italic;
+}
+
+.page-case .case-lede {
+  max-width: var(--reading-width);
+
+  color: var(--color-body);
+
+  font:
+    var(--weight-body)
+    var(--text-base)/var(--leading-body)
+    var(--font-body);
+}
+
+/* ==========================================
+   SMALL HERO VISUALIZATIONS
+   ========================================== */
+
+.page-case .case-mini {
+  width: 100%;
+  max-width: 440px;
+
+  min-width: 0;
+
+  justify-self: end;
+  align-self: center;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-case .case-mini svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  overflow: visible;
+}
+
+.page-case .case-mini svg text {
+  font-family: var(--font-mono);
+  letter-spacing: .04em;
+}
+
+/* Independent small signal loops */
+
+.page-assessment .zone-signal {
+  animation:
+    assessment-signal
+    8s linear infinite;
+}
+
+.page-ddos .ml-signal {
+  animation:
+    ml-signal-move
+    7.5s linear infinite;
+}
+
+@keyframes assessment-signal {
+  0%, 10% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  48% {
+    transform: translateX(95px);
+    opacity: 1;
+  }
+
+  83% {
+    transform: translateX(195px);
+    opacity: 1;
+  }
+
+  88%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ml-signal-move {
+  0%, 12% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  46% {
+    transform: translateX(85px);
+    opacity: 1;
+  }
+
+  80% {
+    transform: translateX(145px);
+    opacity: 1;
+  }
+
+  85%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Reveal after terminal introduction */
+
+html.hero-intro-pending .page-case .case-mini {
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+}
+
+html.hero-intro-finished .page-case .case-mini {
+  animation:
+    case-mini-enter
+    .75s cubic-bezier(.16, 1, .3, 1)
+    both;
+}
+
+@keyframes case-mini-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   SHARED CONTENT TYPOGRAPHY
+   ========================================== */
+
+.page-case main h2:not(.sr-only) {
+  margin: 0 0 var(--space-5);
+
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--type-feature)/var(--leading-title)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-title);
+}
+
+.page-case main h3 {
+  margin: 0 0 var(--space-3);
+
+  color: var(--color-ink);
+
+  font:
+    var(--weight-heading)
+    var(--type-card)/var(--leading-card)
+    var(--font-body);
+
+  letter-spacing: var(--tracking-card);
+}
+
+/* ==========================================
+   SHARED LARGE 3D PRESENTATION
+   ========================================== */
+
+/*
+ * The large model uses all available width.
+ *
+ * There is no right-hand component column.
+ * The stage is centered within the page gutter.
+ */
+
+.page-case .case-visual {
+  width: 100%;
+  max-width: var(--page-max);
+
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+/* ==========================================
+   SME — ANATOMY WRAPPERS
+   ========================================== */
+
+.page-assessment .case-visual :is(
+  .anatomy-region,
+  .anatomy-story,
+  .anatomy-shell
+) {
+  position: relative;
+
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 0;
+  height: auto;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ==========================================
+   SME — FUNCTIONAL MODEL SWITCH
+   ========================================== */
+
+/*
+ * These two controls remain because
+ * Network Zones and Directory Privileges
+ * are genuinely different model views.
+ */
+
+.page-assessment .case-view-switch {
+  display: flex !important;
+  flex-wrap: wrap;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-6);
+
+  width: 100%;
+  max-width: 1000px;
+
+  margin: 0 auto var(--space-3);
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+}
+
+.page-assessment .case-view-switch button {
+  min-height: var(--control-height);
+
+  margin: 0;
+  padding: var(--space-2) 0;
+
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+
+  color: var(--color-muted);
+
+  font:
+    var(--weight-label)
+    var(--text-sm)/var(--leading-ui)
+    var(--font-body);
+}
+
+.page-assessment .case-view-switch button:hover,
+.page-assessment .case-view-switch button[aria-pressed="true"] {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-cyan);
+
+  background: transparent;
+}
+
+/* Prevent initial Wazuh model flashing */
+
+html.assessment-initializing
+.page-assessment .anatomy-stage canvas {
+  visibility: hidden;
+}
+
+/* ==========================================
+   SME — CENTERED CANVAS
+   ========================================== */
+
+.page-assessment .anatomy-layout {
+  display: block !important;
+
+  width: 100%;
+  max-width: 100%;
+
+  min-width: 0;
+  min-height: 0 !important;
+  height: auto !important;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-assessment .anatomy-visual {
+  display: flex !important;
+  flex-direction: column !important;
+
+  justify-content: center !important;
+  align-items: center !important;
+
+  width: 100%;
+  max-width: 100%;
+
+  min-width: 0;
+  min-height: 0 !important;
+  height: auto !important;
+
+  margin: 0 auto !important;
+  padding: 0 !important;
+  gap: 0 !important;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-assessment .anatomy-stage {
+  position: relative;
+
+  width: 100%;
+  max-width: 1000px;
+
+  height: clamp(390px, 40vw, 520px);
+
+  min-height: 0 !important;
+  flex: none !important;
+
+  margin: 0 auto !important;
+  padding: 0 !important;
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-assessment .anatomy-stage canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+
+  margin: 0 auto;
+
+  touch-action: pan-y pinch-zoom;
+}
+
+/* ==========================================
+   SME — REMOVE COMPONENT INSPECTOR
+   ========================================== */
+
+/*
+ * No right panel, component list,
+ * description, technical readout,
+ * or extra reserved vertical space.
+ */
+
+.page-assessment :is(
+  .anatomy-inspector,
+  .anatomy-part-list,
+  .anatomy-part-copy,
+  .anatomy-description,
+  .anatomy-relations,
+  .anatomy-evidence,
+  .anatomy-fallback,
+  .sequence-readout,
+  .anatomy-text,
+  .anatomy-footer,
+  .anatomy-orbit
+) {
+  display: none !important;
+}
+
+/* ==========================================
+   DDOS — CENTERED 3D CLASSIFIER
+   ========================================== */
+
+.page-ddos .project-diagram {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  margin: 0 auto;
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-ddos .diagram-viewport {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  max-width: 1000px;
+
+  height: clamp(390px, 40vw, 520px);
+
+  min-height: 0;
+
+  margin: 0 auto;
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-ddos .diagram-viewport canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+
+  margin: 0 auto;
+
+  touch-action: pan-y pinch-zoom;
+}
+
+/* ==========================================
+   DDOS — REMOVE EXTRA UI
+   ========================================== */
+
+.page-ddos :is(
+  .diagram-fallback,
+  .diagram-toolbar,
+  .diagram-insight,
+  .diagram-process,
+  .diagram-stages,
+  .diagram-touch-hint,
+  .project-diagram figcaption
+) {
+  display: none !important;
+}
+
+/* ==========================================
+   WHAT I BUILT
+   ========================================== */
+
+.page-case .case-columns {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: var(--layout-gap);
+}
+
+.page-case .case-columns section {
+  min-width: 0;
+
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.page-case .case-columns p {
+  color: var(--color-muted);
+}
+
+/* ==========================================
+   WHAT I LEARNED
+   ========================================== */
+
+.page-case .case-learning-copy {
+  max-width: var(--reading-width);
+}
+
+/* ==========================================
+   ORIGINAL ASSESSMENT EVIDENCE
+   ========================================== */
+
+.page-case .case-proof-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: var(--layout-gap);
+}
+
+.page-case .case-proof {
+  display: block;
+
+  min-width: 0;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-case .case-proof img {
+  display: block;
+
+  width: 100%;
+  height: 190px;
+
+  object-fit: contain;
+  object-position: left center;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-case .case-proof:hover img {
+  opacity: .88;
+}
+
+.page-case .case-proof:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 4px;
+}
+
+/* ==========================================
+   NARROW DESKTOP
+   ========================================== */
+
+@media (max-width: 1100px) {
+  .page-assessment .anatomy-stage,
+  .page-ddos .diagram-viewport {
+    max-width: 100%;
+    height: 450px;
+  }
+}
+
+/* ==========================================
+   TABLET
+   ========================================== */
+
+@media (max-width: 900px) {
+  .page-case .case-intro-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .page-case .case-mini {
+    justify-self: start;
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 820px) {
+  .page-assessment .anatomy-stage,
+  .page-ddos .diagram-viewport {
+    height: 420px;
+  }
+
+  .page-case .case-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .page-case .case-proof-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 600px) {
+  .page-case main {
+    padding-block:
+      var(--space-8)
+      var(--space-12);
+  }
+
+  .page-case main > .section-shell + .section-shell {
+    margin-top: var(--space-8);
+  }
+
+  .page-case .case-intro-layout {
+    gap: var(--space-5);
+  }
+
+  .page-case .case-mini {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .page-assessment .case-view-switch {
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+
+  .page-assessment .anatomy-stage,
+  .page-ddos .diagram-viewport {
+    height: clamp(290px, 90vw, 380px);
+  }
+
+  .page-case .case-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .page-case .case-proof img {
+    height: 200px;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .page-case *,
+  .page-case *::before,
+  .page-case *::after {
+    scroll-behavior: auto;
+  }
+
+  .page-case .case-mini {
+    opacity: 1 !important;
+    transform: none !important;
+
+    animation: none !important;
+    pointer-events: auto !important;
+  }
+
+  .page-case .zone-signal,
+  .page-case .ml-signal {
+    animation: none !important;
+    opacity: 0;
+  }
+}

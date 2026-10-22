@@ -175,7 +175,7 @@
     const button=event.target.closest('[data-evidence]');if(!button)return;
     const item=items[button.dataset.evidence];if(!item)return;
     event.preventDefault();trigger=button;
-    dialog.querySelector('#evidence-title').textContent=item.title;
+    dialog.querySelector('#evidence-dialog-title').textContent = item.title;
     dialog.querySelector('#evidence-source').textContent=item.source;
     dialog.querySelector('#evidence-caption').textContent=item.caption;
     image.src=item.src;image.alt=item.alt;stage.style.setProperty('--image-width',`${item.width}px`);setSize(false);

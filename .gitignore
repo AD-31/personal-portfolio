@@ -1,6 +1,32 @@
+
+# Temporary development environments
 .sites-runtime/
 node_modules/
-.env
-*.zip
 qa/
-.gitignore
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Exported archives
+*.zip
+*.tar.gz
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local test output
+coverage/
+test-results/
+playwright-report/
