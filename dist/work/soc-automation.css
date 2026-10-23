@@ -2,12 +2,18 @@
 /*
  * SOC AUTOMATION — PROJECT STYLES
  *
- * Existing portfolio design:
  * White Canvas + Floating Navy
  * DM Sans + IBM Plex Mono
  *
- * Main scene is drawn by soc-automation.js.
- * No right-hand inspector or extra panels.
+ * Native 3D renderer:
+ * soc-automation.js
+ *
+ * Mobile design:
+ * - Two columns
+ * - Three workflow rows
+ * - Separate email branch
+ * - Larger vertical spacing
+ * - No component inspector
  */
 
 .page-soc {
@@ -17,7 +23,7 @@
 }
 
 /* ==========================================
-   INTRODUCTION PREVIEW
+   HERO PREVIEW
    ========================================== */
 
 .page-soc .soc-mini {
@@ -38,7 +44,6 @@
 
 .page-soc .soc-mini svg {
   display: block;
-
   width: 100%;
   height: auto;
   overflow: visible;
@@ -79,15 +84,17 @@
   }
 }
 
-/* Match existing terminal introduction reveal */
+/* Preserve the common terminal entrance */
 
-html.hero-intro-pending .page-soc .soc-mini {
+html.hero-intro-pending
+.page-soc .soc-mini {
   opacity: 0;
   transform: translateY(14px);
 }
 
-html.hero-intro-finished .page-soc .soc-mini {
-  animation: soc-mini-enter .75s ease-out both;
+html.hero-intro-finished
+.page-soc .soc-mini {
+  animation: soc-mini-enter .4s ease-out both;
 }
 
 @keyframes soc-mini-enter {
@@ -103,7 +110,7 @@ html.hero-intro-finished .page-soc .soc-mini {
 }
 
 /* ==========================================
-   CENTERED 3D CANVAS
+   MAIN CENTERED 3D VISUAL
    ========================================== */
 
 .page-soc .soc-system {
@@ -114,6 +121,7 @@ html.hero-intro-finished .page-soc .soc-mini {
   padding-inline: var(--page-gutter);
 
   min-width: 0;
+  box-sizing: border-box;
 }
 
 .page-soc .soc-render-stage {
@@ -121,7 +129,12 @@ html.hero-intro-finished .page-soc .soc-mini {
 
   width: 100%;
   max-width: 1180px;
-  height: clamp(430px, 45vw, 610px);
+
+  height: clamp(
+    430px,
+    45vw,
+    610px
+  );
 
   min-height: 0;
 
@@ -137,24 +150,28 @@ html.hero-intro-finished .page-soc .soc-mini {
   box-shadow: none;
 }
 
-/*
- * A clean white 3D environment.
- * No visible card, frame, or background box.
- */
-
 .page-soc .soc-render-stage canvas {
   display: block;
 
   width: 100%;
   height: 100%;
-
   max-width: 100%;
+
   margin: 0 auto;
 
   background: transparent;
 
   cursor: grab;
+
   outline-offset: -5px;
+
+  /*
+   * Horizontal gestures can interact with
+   * the 3D model.
+   *
+   * Vertical scrolling and pinch zoom
+   * remain available on touchscreens.
+   */
 
   touch-action: pan-y pinch-zoom;
 }
@@ -166,6 +183,10 @@ html.hero-intro-finished .page-soc .soc-mini {
 .page-soc .soc-render-stage canvas:focus-visible {
   outline: 2px solid var(--color-cyan);
 }
+
+/* ==========================================
+   FALLBACK TEXT
+   ========================================== */
 
 .page-soc .soc-render-fallback,
 .page-soc .soc-nojs {
@@ -182,21 +203,15 @@ html.hero-intro-finished .page-soc .soc-mini {
 }
 
 /* ==========================================
-   CONTENT
+   SHARED CONTENT
    ========================================== */
-
-/*
- * What I Built and What I Learned
- * inherit layout and typography from
- * case-studies.css.
- */
 
 .page-soc .case-learning-copy {
   max-width: var(--reading-width);
 }
 
 /* ==========================================
-   WORKFLOW SCREENSHOTS
+   ORIGINAL WORKFLOW EVIDENCE
    ========================================== */
 
 .page-soc .soc-proof-grid {
@@ -287,18 +302,50 @@ html.hero-intro-finished .page-soc .soc-mini {
 }
 
 /* ==========================================
-   MOBILE
+   MOBILE — REVISED 3D LAYOUT
    ========================================== */
 
 @media (max-width: 600px) {
   .page-soc .soc-mini {
     width: 100%;
     max-width: 100%;
+    justify-self: start;
   }
+
+  /*
+   * The previous mobile layout packed the
+   * module rows too closely.
+   *
+   * A taller but bounded scene gives labels
+   * and the email branch separate space.
+   */
 
   .page-soc .soc-render-stage {
     width: 100%;
-    height: 610px;
+    max-width: 100%;
+
+    height: clamp(
+      585px,
+      155vw,
+      680px
+    );
+
+    margin-inline: auto;
+    overflow: hidden;
+  }
+
+  .page-soc .soc-render-stage canvas {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    margin: 0 auto;
+  }
+
+  .page-soc .soc-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
   }
 
   .page-soc .soc-proof img {

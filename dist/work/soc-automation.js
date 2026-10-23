@@ -1,22 +1,22 @@
 
 /*
- * SOC AUTOMATION — 3D CANVAS RENDERER
+ * SOC AUTOMATION — NATIVE 3D CANVAS
  *
- * Native HTML Canvas.
- * No Three.js or external dependencies.
+ * Source-informed conceptual visualization.
+ * Not live telemetry or an execution trace.
  *
- * Illustrative stages:
- * 01 Wazuh
- * 02 n8n intake
- * 03 Triage and policy
- * 04 DFIR-IRIS
- * 05 Conditional IOC sync
- * 06 SOC-03 investigation handoff
+ * Desktop:
+ * - Six separated workflow modules
+ * - Independent SOC email branch
+ * - Technical annotations
  *
- * Separate high/critical SOC email branch.
+ * Mobile:
+ * - Three rows of two modules
+ * - Separate SOC email row
+ * - Larger vertical gaps
+ * - Clean component labels
  *
- * This visualization is conceptual;
- * it does not represent live SOC telemetry.
+ * No external libraries.
  */
 
 (() => {
@@ -41,32 +41,42 @@
     return;
   }
 
-  const motion = matchMedia(
+  const motionQuery = matchMedia(
     "(prefers-reduced-motion: reduce)"
   );
 
-  /* =====================================
-     MODELS
-     ===================================== */
+  const colors = {
+    front: "#183447",
+    side: "#34586d",
+    top: "#7898a7",
+    ink: "#142b3c",
+    muted: "#536c7a",
+    edge: "#87a7b5",
+    cyan: "#a6d9e2",
+    amber: "#cf924d",
+    paper: "#f7f9fa"
+  };
 
-  const stages = [
+  /* ==========================================
+     WORKFLOW COMPONENTS
+     ========================================== */
+
+  const baseNodes = [
     {
       id: "01",
       name: "WAZUH",
       note: "Alert detected",
       x: -5.85,
       y: 0.25,
-      z: -0.12,
-      type: "monitor"
+      z: -0.12
     },
     {
       id: "02",
       name: "n8n",
       note: "Normalize event",
-      x: -3.5,
+      x: -3.50,
       y: 0.48,
-      z: 0.32,
-      type: "pipes"
+      z: 0.32
     },
     {
       id: "03",
@@ -74,8 +84,7 @@
       note: "Risk and severity",
       x: -1.15,
       y: 0.18,
-      z: -0.28,
-      type: "decision"
+      z: -0.28
     },
     {
       id: "04",
@@ -83,8 +92,7 @@
       note: "Correlate cases",
       x: 1.25,
       y: 0.42,
-      z: 0.16,
-      type: "case"
+      z: 0.16
     },
     {
       id: "05",
@@ -92,8 +100,7 @@
       note: "Conditional write",
       x: 3.65,
       y: 0.12,
-      z: -0.25,
-      type: "ioc"
+      z: -0.25
     },
     {
       id: "06",
@@ -101,56 +108,44 @@
       note: "Context handoff",
       x: 5.95,
       y: 0.42,
-      z: 0.22,
-      type: "handoff"
+      z: 0.22
     }
   ];
 
-  const mail = {
-    id: "↳",
+  const desktopEmail = {
+    id: "07",
     name: "SOC EMAIL",
     note: "High / critical",
     x: -1.1,
     y: -2.05,
-    z: 1,
-    type: "mail"
+    z: 1
   };
 
   /*
-   * Mobile arrangement:
-   * three rows of two main modules,
-   * with the notification branch below.
+   * MOBILE ARRANGEMENT
+   *
+   * The previous layout used rows only 2.15
+   * world units apart. Model labels and notes
+   * collided at smaller screen widths.
+   *
+   * Rows are now 3.15 units apart.
    */
 
-  const mobile = [
-    [-1.65, 2.65, 0],
-    [1.65, 2.65, 0],
-    [-1.65, 0.5, 0],
-    [1.65, 0.5, 0],
-    [-1.65, -1.65, 0],
-    [1.65, -1.65, 0]
+  const phonePositions = [
+    [-1.72, 3.65, 0],
+    [ 1.72, 3.65, 0],
+
+    [-1.72, 0.50, 0],
+    [ 1.72, 0.50, 0],
+
+    [-1.72, -2.65, 0],
+    [ 1.72, -2.65, 0]
   ];
 
-  /* =====================================
-     VISUAL DESIGN TOKENS
-     ===================================== */
+  const LOOP_MS = 24000;
 
-  const C = {
-    front: "#183447",
-    side: "#34586d",
-    top: "#7193a3",
-    ink: "#142b3c",
-    muted: "#536c7a",
-    edge: "#87a7b5",
-    cyan: "#a6d9e2",
-    amber: "#cf924d",
-    white: "#f7f9fa"
-  };
-
-  const LOOP = 24000;
-
-  let width = 0;
-  let height = 0;
+  let width = 1;
+  let height = 1;
   let dpr = 1;
 
   let yaw = -0.28;
@@ -159,95 +154,106 @@
   let drag = null;
   let running = false;
   let visible = true;
-  let lastDraw = 0;
-  let reduced = motion.matches;
 
-  /* =====================================
-     RESPONSIVE WORLD POSITIONS
-     ===================================== */
+  let reduced = motionQuery.matches;
+  let lastFrame = 0;
 
-  function positions() {
+  const clamp = (value, min, max) =>
+    Math.max(min, Math.min(max, value));
+
+  /* ==========================================
+     RESPONSIVE SCENE
+     ========================================== */
+
+  function scene() {
     const compact = width < 720;
 
-    const items = stages.map((p, i) => {
-      if (!compact) return { ...p };
+    const nodes = baseNodes.map((item, index) => {
+      if (!compact) {
+        return { ...item };
+      }
 
       return {
-        ...p,
-        x: mobile[i][0],
-        y: mobile[i][1],
-        z: mobile[i][2]
+        ...item,
+        x: phonePositions[index][0],
+        y: phonePositions[index][1],
+        z: phonePositions[index][2]
       };
     });
 
+    const email = compact
+      ? {
+          ...desktopEmail,
+          x: 0,
+          y: -5.8,
+          z: 0
+        }
+      : {
+          ...desktopEmail
+        };
+
+    /*
+     * Mobile is scaled by both available width
+     * and height, preventing clipped modules.
+     */
+
+    const scale = compact
+      ? Math.min(
+          width / 7.7,
+          height / 12.6,
+          44
+        )
+      : Math.min(
+          width / 16,
+          height / 8.2,
+          70
+        );
+
     return {
-      items,
-
-      email: compact
-        ? {
-            ...mail,
-            x: 0,
-            y: -3.85,
-            z: 0
-          }
-        : { ...mail },
-
+      nodes,
+      email,
       compact,
-
-      scale: compact
-        ? Math.min(
-            width / 7.6,
-            height / 11.2,
-            48
-          )
-        : Math.min(
-            width / 16,
-            height / 8.2,
-            70
-          )
+      scale
     };
   }
 
-  /* =====================================
+  /* ==========================================
      PERSPECTIVE PROJECTION
-     ===================================== */
+     ========================================== */
 
-  function project(p, scale) {
+  function project(position, scale) {
     const cy = Math.cos(yaw);
     const sy = Math.sin(yaw);
 
     const cx = Math.cos(pitch);
     const sx = Math.sin(pitch);
 
-    // Rotate around Y.
     const x =
-      p.x * cy +
-      p.z * sy;
+      position.x * cy +
+      position.z * sy;
 
     const z =
-      -p.x * sy +
-      p.z * cy;
+      -position.x * sy +
+      position.z * cy;
 
-    // Rotate around X.
     const y =
-      p.y * cx -
+      position.y * cx -
       z * sx;
 
     const depth =
-      p.y * sx +
+      position.y * sx +
       z * cx;
 
-    // Perspective scale.
     const perspective =
       12 / (12 + depth * 0.32);
 
     return {
       x:
-        width / 2 +
+        width * 0.5 +
         x * scale * perspective,
 
       y:
-        height * 0.47 -
+        height * 0.49 -
         y * scale * perspective,
 
       depth,
@@ -255,9 +261,9 @@
     };
   }
 
-  /* =====================================
-     CANVAS DRAWING UTILITIES
-     ===================================== */
+  /* ==========================================
+     CANVAS HELPERS
+     ========================================== */
 
   function polygon(
     points,
@@ -271,17 +277,12 @@
     ctx.globalAlpha = alpha;
 
     ctx.beginPath();
-
     ctx.moveTo(
       points[0].x,
       points[0].y
     );
 
-    for (
-      let i = 1;
-      i < points.length;
-      i++
-    ) {
+    for (let i = 1; i < points.length; i++) {
       ctx.lineTo(
         points[i].x,
         points[i].y
@@ -305,7 +306,7 @@
   function line(
     points,
     color,
-    size = 1,
+    lineWidth = 1,
     dash = []
   ) {
     if (points.length < 2) return;
@@ -318,11 +319,14 @@
       points[0].y
     );
 
-    points.slice(1).forEach(p => {
-      ctx.lineTo(p.x, p.y);
-    });
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(
+        points[i].x,
+        points[i].y
+      );
+    }
 
-    ctx.lineWidth = size;
+    ctx.lineWidth = lineWidth;
     ctx.strokeStyle = color;
     ctx.setLineDash(dash);
     ctx.lineJoin = "miter";
@@ -331,50 +335,157 @@
     ctx.restore();
   }
 
-  /* =====================================
-     SQUARE-CORNER SIGNAL PATHS
-     ===================================== */
+  function vertex(
+    node,
+    dx,
+    dy,
+    dz,
+    scale
+  ) {
+    return project(
+      {
+        x: node.x + dx,
+        y: node.y + dy,
+        z: node.z + dz
+      },
+      scale
+    );
+  }
+
+  /* ==========================================
+     SQUARE-CORNER CONNECTIONS
+     ========================================== */
 
   function pathBetween(
     a,
     b,
     compact,
-    scale
+    scale,
+    branch = false
   ) {
-    const a0 = {
-      x: a.x,
-      y: a.y - 0.12,
-      z: a.z
-    };
+    /*
+     * Desktop: use clean orthogonal connectors.
+     */
 
-    const b0 = {
-      x: b.x,
-      y: b.y - 0.12,
-      z: b.z
-    };
+    if (!compact) {
+      const midpoint =
+        (a.x + b.x) / 2;
 
-    const bend =
-      compact && a.x > b.x
-        ? a.x + 0.48
-        : (a.x + b.x) / 2;
+      return [
+        {
+          x: a.x,
+          y: a.y - 0.12,
+          z: a.z
+        },
+        {
+          x: midpoint,
+          y: a.y - 0.12,
+          z: a.z
+        },
+        {
+          x: midpoint,
+          y: b.y - 0.12,
+          z: b.z
+        },
+        {
+          x: b.x,
+          y: b.y - 0.12,
+          z: b.z
+        }
+      ].map(
+        p => project(p, scale)
+      );
+    }
+
+    /*
+     * Mobile notification branch:
+     * route around the left side.
+     */
+
+    if (branch) {
+      const outer = -2.65;
+
+      return [
+        {
+          x: a.x,
+          y: a.y - 0.15,
+          z: 0
+        },
+        {
+          x: outer,
+          y: a.y - 0.15,
+          z: 0
+        },
+        {
+          x: outer,
+          y: b.y,
+          z: 0
+        },
+        {
+          x: b.x,
+          y: b.y,
+          z: 0
+        }
+      ].map(
+        p => project(p, scale)
+      );
+    }
+
+    /*
+     * Connection within the same mobile row.
+     */
+
+    if (Math.abs(a.y - b.y) < 0.01) {
+      return [
+        {
+          x: a.x + 0.8,
+          y: a.y - 0.12,
+          z: 0
+        },
+        {
+          x: b.x - 0.8,
+          y: b.y - 0.12,
+          z: 0
+        }
+      ].map(
+        p => project(p, scale)
+      );
+    }
+
+    /*
+     * Connection from the right component to
+     * the left component in the next row.
+     *
+     * Route through an exterior corridor
+     * rather than across the model faces.
+     */
+
+    const corridor = 2.66;
 
     return [
-      a0,
-
       {
-        x: bend,
-        y: a0.y,
-        z: a0.z
+        x: a.x + 0.85,
+        y: a.y - 0.12,
+        z: 0
       },
-
       {
-        x: bend,
-        y: b0.y,
-        z: b0.z
+        x: corridor,
+        y: a.y - 0.12,
+        z: 0
       },
-
-      b0
-    ].map(p => project(p, scale));
+      {
+        x: corridor,
+        y: b.y - 0.12,
+        z: 0
+      },
+      {
+        x: b.x - 0.85,
+        y: b.y - 0.12,
+        z: 0
+      }
+    ].map(
+      p => project(p, scale)
+    );
   }
 
   function pointOnPolyline(
@@ -384,17 +495,10 @@
     const lengths = [];
     let total = 0;
 
-    for (
-      let i = 1;
-      i < points.length;
-      i++
-    ) {
+    for (let i = 1; i < points.length; i++) {
       const distance = Math.hypot(
-        points[i].x -
-          points[i - 1].x,
-
-        points[i].y -
-          points[i - 1].y
+        points[i].x - points[i - 1].x,
+        points[i].y - points[i - 1].y
       );
 
       lengths.push(distance);
@@ -402,22 +506,14 @@
     }
 
     let remaining =
-      total *
-      Math.max(
-        0,
-        Math.min(1, t)
-      );
+      total * clamp(t, 0, 1);
 
-    for (
-      let i = 0;
-      i < lengths.length;
-      i++
-    ) {
+    for (let i = 0; i < lengths.length; i++) {
       if (
         remaining <= lengths[i] ||
         i === lengths.length - 1
       ) {
-        const u = lengths[i]
+        const factor = lengths[i]
           ? remaining / lengths[i]
           : 0;
 
@@ -427,173 +523,107 @@
             (
               points[i + 1].x -
               points[i].x
-            ) * u,
+            ) * factor,
 
           y:
             points[i].y +
             (
               points[i + 1].y -
               points[i].y
-            ) * u
+            ) * factor
         };
       }
 
       remaining -= lengths[i];
     }
 
-    return points.at(-1);
+    return points[points.length - 1];
   }
 
-  /* =====================================
+  /* ==========================================
      MOVING ALERT PACKETS
-     ===================================== */
+     ========================================== */
 
   function packet(
-    p,
-    active,
+    point,
     small = false
   ) {
-    if (!p) return;
+    if (!point) return;
 
-    const s = small ? 6 : 8;
+    const size =
+      small ? 6 : 8;
 
     ctx.save();
 
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 11;
+    ctx.shadowColor =
+      "rgba(207,146,77,.45)";
 
-    ctx.shadowColor = active
-      ? "rgba(207,146,77,.45)"
-      : "rgba(166,217,226,.5)";
-
-    ctx.fillStyle = active
-      ? C.amber
-      : "#5eacbe";
+    ctx.fillStyle = colors.amber;
 
     ctx.fillRect(
-      p.x - s / 2,
-      p.y - s / 2,
-      s,
-      s
+      point.x - size / 2,
+      point.y - size / 2,
+      size,
+      size
     );
 
     ctx.restore();
   }
 
-  /* =====================================
-     DRAW ONE THREE-DIMENSIONAL MODULE
-     ===================================== */
+  /* ==========================================
+     THREE-DIMENSIONAL MODEL
+     ========================================== */
 
   function drawNode(
     node,
     scale,
-    isActive,
+    active,
     compact
   ) {
-    const center = {
-      x: node.x,
-      y: node.y,
-      z: node.z
-    };
+    const w = compact
+      ? 1.57
+      : 1.70;
 
-    const w = compact ? 1.65 : 1.70;
-    const h = 1.13;
-    const d = 0.72;
+    const h = compact
+      ? 1.02
+      : 1.13;
 
-    function vertex(
-      dx,
-      dy,
-      dz
-    ) {
-      return project(
-        {
-          x: center.x + dx,
-          y: center.y + dy,
-          z: center.z + dz
-        },
-        scale
-      );
-    }
+    const d = 0.70;
 
-    // Eight physical box corners.
     const v = [
-      vertex(-w / 2, -h / 2, -d / 2),
-      vertex( w / 2, -h / 2, -d / 2),
-      vertex( w / 2,  h / 2, -d / 2),
-      vertex(-w / 2,  h / 2, -d / 2),
+      vertex(node, -w / 2, -h / 2, -d / 2, scale),
+      vertex(node,  w / 2, -h / 2, -d / 2, scale),
+      vertex(node,  w / 2,  h / 2, -d / 2, scale),
+      vertex(node, -w / 2,  h / 2, -d / 2, scale),
 
-      vertex(-w / 2, -h / 2, d / 2),
-      vertex( w / 2, -h / 2, d / 2),
-      vertex( w / 2,  h / 2, d / 2),
-      vertex(-w / 2,  h / 2, d / 2)
+      vertex(node, -w / 2, -h / 2, d / 2, scale),
+      vertex(node,  w / 2, -h / 2, d / 2, scale),
+      vertex(node,  w / 2,  h / 2, d / 2, scale),
+      vertex(node, -w / 2,  h / 2, d / 2, scale)
     ];
 
-    // 3D faces.
-    const faces = [
-      {
-        v: [0, 1, 2, 3],
-        color: "#3b6171"
-      },
-      {
-        v: [0, 4, 7, 3],
-        color: "#486d7e"
-      },
-      {
-        v: [1, 5, 6, 2],
-        color: C.side
-      },
-      {
-        v: [3, 2, 6, 7],
-        color: C.top
-      },
-      {
-        v: [4, 5, 6, 7],
-        color: C.front
-      }
-    ];
+    /* Ground shadow */
 
-    // Painter's algorithm:
-    // draw farther surfaces first.
-    faces.sort((a, b) => {
-      const av =
-        a.v.reduce(
-          (sum, i) =>
-            sum + v[i].depth,
-          0
-        ) / a.v.length;
-
-      const bv =
-        b.v.reduce(
-          (sum, i) =>
-            sum + v[i].depth,
-          0
-        ) / b.v.length;
-
-      return av - bv;
-    });
-
-    /* Soft ground shadow */
-
-    const shadow = project(
-      {
-        x: node.x,
-        y: node.y - h / 2 - 0.15,
-        z: node.z
-      },
+    const shadow = vertex(
+      node,
+      0,
+      -h / 2 - 0.12,
+      0,
       scale
     );
 
     ctx.save();
-
     ctx.fillStyle =
       "rgba(20,43,60,.075)";
 
     ctx.beginPath();
 
     ctx.ellipse(
-      shadow.x + 9,
-      shadow.y + 13,
-      w * scale * 0.40,
-      scale * 0.10,
+      shadow.x + 7,
+      shadow.y + 10,
+      w * scale * 0.39,
+      scale * 0.095,
       0,
       0,
       Math.PI * 2
@@ -602,200 +632,285 @@
     ctx.fill();
     ctx.restore();
 
-    /* Draw shaded box */
+    /* Shaded 3D surfaces */
+
+    const faces = [
+      {
+        ids: [0, 1, 2, 3],
+        color: "#3b6171"
+      },
+      {
+        ids: [0, 4, 7, 3],
+        color: "#486d7e"
+      },
+      {
+        ids: [1, 5, 6, 2],
+        color: colors.side
+      },
+      {
+        ids: [3, 2, 6, 7],
+        color: colors.top
+      },
+      {
+        ids: [4, 5, 6, 7],
+        color: colors.front
+      }
+    ];
+
+    faces.sort((a, b) => {
+      const depthA =
+        a.ids.reduce(
+          (sum, i) => sum + v[i].depth,
+          0
+        ) / 4;
+
+      const depthB =
+        b.ids.reduce(
+          (sum, i) => sum + v[i].depth,
+          0
+        ) / 4;
+
+      return depthA - depthB;
+    });
 
     faces.forEach(face => {
       polygon(
-        face.v.map(i => v[i]),
+        face.ids.map(i => v[i]),
         face.color,
         "rgba(166,217,226,.32)"
       );
     });
 
-    /* Technical traces on front face */
+    /* Front-facing technical traces */
 
-    const fA = vertex(
-      -w * 0.36,
-      h * 0.20,
-      d / 2 + 0.01
+    const frontZ =
+      d / 2 + 0.01;
+
+    function trace(
+      y,
+      left,
+      right
+    ) {
+      line(
+        [
+          vertex(
+            node,
+            left,
+            y,
+            frontZ,
+            scale
+          ),
+          vertex(
+            node,
+            right,
+            y,
+            frontZ,
+            scale
+          )
+        ],
+        active
+          ? colors.amber
+          : colors.cyan,
+        compact ? 1.6 : 2
+      );
+    }
+
+    trace(
+      h * 0.18,
+      -w * 0.33,
+      w * 0.26
     );
 
-    const fB = vertex(
-      w * 0.26,
-      h * 0.20,
-      d / 2 + 0.01
-    );
-
-    const fC = vertex(
-      -w * 0.36,
-      -h * 0.06,
-      d / 2 + 0.01
-    );
-
-    const fD = vertex(
-      w * 0.11,
-      -h * 0.06,
-      d / 2 + 0.01
-    );
-
-    const fE = vertex(
-      -w * 0.36,
-      -h * 0.30,
-      d / 2 + 0.01
-    );
-
-    const fF = vertex(
-      w * 0.34,
-      -h * 0.30,
-      d / 2 + 0.01
-    );
-
-    line(
-      [fA, fB],
-      C.cyan,
-      Math.max(
-        1,
-        scale * 0.028
-      )
-    );
-
-    line(
-      [fC, fD],
-      isActive
-        ? C.amber
-        : C.cyan,
-      Math.max(
-        1,
-        scale * 0.035
-      )
+    trace(
+      -h * 0.05,
+      -w * 0.33,
+      w * 0.11
     );
 
     line(
-      [fE, fF],
-      C.edge,
-      1.5
+      [
+        vertex(
+          node,
+          -w * 0.33,
+          -h * 0.28,
+          frontZ,
+          scale
+        ),
+        vertex(
+          node,
+          w * 0.31,
+          -h * 0.28,
+          frontZ,
+          scale
+        )
+      ],
+      colors.edge,
+      1.4
     );
 
-    /* Status LED */
+    /* Status indicator */
 
     const led = vertex(
-      w * 0.37,
-      -h * 0.28,
-      d / 2 + 0.02
+      node,
+      w * 0.34,
+      -h * 0.27,
+      d / 2 + 0.02,
+      scale
     );
 
-    ctx.fillStyle = isActive
-      ? C.amber
-      : C.cyan;
+    ctx.fillStyle = active
+      ? colors.amber
+      : colors.cyan;
 
     ctx.fillRect(
-      led.x - 3,
-      led.y - 3,
-      6,
-      6
+      led.x - 2.6,
+      led.y - 2.6,
+      5.2,
+      5.2
     );
 
-    /* Floating upper technical layer */
+    /* Separated upper technical plate */
 
-    const top = [
+    const topPlate = [
       vertex(
+        node,
         -w * 0.40,
-        h / 2 + 0.19,
-        -d * 0.36
+        h / 2 + 0.16,
+        -d * 0.36,
+        scale
       ),
-
       vertex(
+        node,
         w * 0.40,
-        h / 2 + 0.19,
-        -d * 0.36
+        h / 2 + 0.16,
+        -d * 0.36,
+        scale
       ),
-
       vertex(
+        node,
         w * 0.40,
-        h / 2 + 0.19,
-        d * 0.36
+        h / 2 + 0.16,
+        d * 0.36,
+        scale
       ),
-
       vertex(
+        node,
         -w * 0.40,
-        h / 2 + 0.19,
-        d * 0.36
+        h / 2 + 0.16,
+        d * 0.36,
+        scale
       )
     ];
 
     polygon(
-      top,
-      isActive
-        ? "#bd9b72"
+      topPlate,
+      active
+        ? "#bc9b76"
         : "#a0b9c5",
-      "#a6d9e2",
-      0.96
+      colors.cyan,
+      0.95
     );
+  }
 
-    /* Screen-facing module label */
+  /* ==========================================
+     CLEAR, NON-OVERLAPPING LABELS
+     ========================================== */
 
-    const label = project(
-      {
-        x: node.x,
-        y: node.y + h / 2 + 0.57,
-        z: node.z
-      },
+  function drawLabels(
+    node,
+    scale,
+    compact
+  ) {
+    /*
+     * The main name is above the model.
+     * Technical notes are displayed only
+     * on larger screens.
+     */
+
+    const namePoint = vertex(
+      node,
+      0,
+      compact ? 0.90 : 1.13,
+      0,
       scale
     );
 
     ctx.save();
 
     ctx.textAlign = "center";
-    ctx.fillStyle = C.ink;
+    ctx.textBaseline = "middle";
 
     ctx.font =
-      `600 ${compact ? 11 : 12}px ` +
-      `"DM Sans",sans-serif`;
+      `600 12px "DM Sans", Arial, sans-serif`;
+
+    /*
+     * A subtle light outline keeps names readable
+     * against crossing technical connectors.
+     */
+
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle =
+      "rgba(247,249,250,.94)";
+
+    ctx.strokeText(
+      node.name,
+      namePoint.x,
+      namePoint.y
+    );
+
+    ctx.fillStyle = colors.ink;
 
     ctx.fillText(
       node.name,
-      label.x,
-      label.y
+      namePoint.x,
+      namePoint.y
     );
 
-    /* Short technical annotation */
+    /*
+     * Hide secondary technical notes on mobile.
+     * They are already described in the page.
+     */
 
-    const annotation = project(
-      {
-        x: node.x,
-        y: node.y - h / 2 - 0.33,
-        z: node.z
-      },
-      scale
-    );
+    if (!compact) {
+      const note = vertex(
+        node,
+        0,
+        -0.92,
+        0,
+        scale
+      );
 
-    ctx.fillStyle = C.muted;
+      const label =
+        `${node.id} / ${node.note}`;
 
-    ctx.font =
-      `${compact ? 9 : 10}px ` +
-      `"IBM Plex Mono",monospace`;
+      ctx.font =
+        '10px "IBM Plex Mono", monospace';
 
-    ctx.fillText(
-      `${node.id} / ${node.note}`,
-      annotation.x,
-      annotation.y
-    );
+      ctx.lineWidth = 3;
+      ctx.strokeText(
+        label,
+        note.x,
+        note.y
+      );
+
+      ctx.fillStyle =
+        colors.muted;
+
+      ctx.fillText(
+        label,
+        note.x,
+        note.y
+      );
+    }
 
     ctx.restore();
   }
 
-  /* =====================================
-     COMPLETE ANIMATED SCENE
-     ===================================== */
+  /* ==========================================
+     ANIMATED SCENE
+     ========================================== */
 
-  function draw(timestamp) {
-    const {
-      items,
-      email,
-      compact,
-      scale
-    } = positions();
-
+  function draw(time) {
     ctx.clearRect(
       0,
       0,
@@ -803,143 +918,155 @@
       height
     );
 
-    const t = reduced
-      ? 0.14
-      : (
-          (timestamp % LOOP) /
-          LOOP
-        );
-
-    const activeIndex = Math.min(
-      5,
-      Math.floor(t * 6)
-    );
-
-    /* Main route */
-
-    const paths = items
-      .slice(0, -1)
-      .map(
-        (item, i) =>
-          pathBetween(
-            item,
-            items[i + 1],
-            compact,
-            scale
-          )
-      );
-
-    /* Notification branch */
-
-    const branch = pathBetween(
-      items[2],
+    const {
+      nodes,
       email,
       compact,
       scale
+    } = scene();
+
+    const progress = reduced
+      ? 0.14
+      : (time % LOOP_MS) / LOOP_MS;
+
+    const activeIndex = Math.min(
+      5,
+      Math.floor(progress * 6)
     );
 
-    // Main signal links and packets.
-    paths.forEach((path, i) => {
-      line(
-        path,
-        "rgba(95,136,153,.45)",
-        1.5,
-        [4, 5]
+    /* Main signal routes */
+
+    const routes = nodes
+      .slice(0, -1)
+      .map((node, i) =>
+        pathBetween(
+          node,
+          nodes[i + 1],
+          compact,
+          scale
+        )
       );
 
-      if (!reduced) {
-        const segment =
-          t * 6 - i;
+    const notification = pathBetween(
+      nodes[2],
+      email,
+      compact,
+      scale,
+      true
+    );
 
-        if (
-          segment >= 0 &&
-          segment < 1
-        ) {
-          packet(
-            pointOnPolyline(
-              path,
-              segment
-            ),
-            true
-          );
-        }
+    routes.forEach((points, i) => {
+      line(
+        points,
+        "rgba(95,136,153,.50)",
+        1.3,
+        [3, 5]
+      );
+
+      const segment =
+        progress * 6 - i;
+
+      if (
+        !reduced &&
+        segment >= 0 &&
+        segment < 1
+      ) {
+        packet(
+          pointOnPolyline(
+            points,
+            segment
+          )
+        );
       }
     });
 
-    // SOC email notification branch.
+    /* Conditional SOC email branch */
+
     line(
-      branch,
-      "rgba(169,116,58,.52)",
-      1.6,
-      [3, 5]
+      notification,
+      "rgba(169,116,58,.43)",
+      1.3,
+      [3, 6]
     );
 
     if (
       !reduced &&
-      t > 0.31 &&
-      t < 0.52
+      progress > 0.31 &&
+      progress < 0.52
     ) {
       packet(
         pointOnPolyline(
-          branch,
-          (t - 0.31) / 0.21
+          notification,
+          (progress - 0.31) / 0.21
         ),
-        true,
         true
       );
     }
 
-    /* Draw physical modules */
+    /*
+     * Draw all 3D geometry first.
+     * Draw all labels afterward.
+     *
+     * This prevents a later component
+     * from covering an earlier label.
+     */
 
-    const sorted = [
-      ...items,
+    const modules = [
+      ...nodes,
       email
-    ].sort(
+    ];
+
+    modules.sort(
       (a, b) =>
         project(a, scale).depth -
         project(b, scale).depth
     );
 
-    sorted.forEach(item => {
-      const isEmail =
-        item === email;
+    for (const node of modules) {
+      const index =
+        nodes.findIndex(
+          item => item.id === node.id
+        );
 
-      const isActive = isEmail
-        ? (
-            t > 0.31 &&
-            t < 0.52
-          )
+      const active = index >= 0
+        ? activeIndex === index
         : (
-            activeIndex ===
-            items.indexOf(item)
+            progress > 0.31 &&
+            progress < 0.52
           );
 
       drawNode(
-        item,
+        node,
         scale,
-        isActive,
+        active,
         compact
       );
-    });
+    }
+
+    for (const node of modules) {
+      drawLabels(
+        node,
+        scale,
+        compact
+      );
+    }
   }
 
-  /* =====================================
-     RESIZE & PIXEL DENSITY
-     ===================================== */
+  /* ==========================================
+     RESIZE
+     ========================================== */
 
   function resize() {
-    const rect =
+    const bounds =
       canvas.getBoundingClientRect();
 
-    width = Math.max(
-      1,
-      rect.width
-    );
+    if (
+      !bounds.width ||
+      !bounds.height
+    ) return;
 
-    height = Math.max(
-      1,
-      rect.height
-    );
+    width = bounds.width;
+    height = bounds.height;
 
     dpr = Math.min(
       devicePixelRatio || 1,
@@ -963,56 +1090,42 @@
       0
     );
 
-    draw(
-      performance.now()
-    );
+    draw(performance.now());
   }
 
-  /* =====================================
-     INDEPENDENT ANIMATION CLOCK
-     ===================================== */
+  /* ==========================================
+     RENDER LOOP
+     ========================================== */
 
-  function frame(timestamp) {
+  function frame(time) {
     if (!running) return;
 
-    // Render at approximately 30 FPS.
-    if (
-      timestamp -
-      lastDraw >
-      33
-    ) {
-      draw(timestamp);
-      lastDraw = timestamp;
+    if (time - lastFrame >= 32) {
+      draw(time);
+      lastFrame = time;
     }
 
     requestAnimationFrame(frame);
   }
 
-  function startStop() {
+  function updateRunning() {
     const shouldRun =
       !reduced &&
       visible &&
       !document.hidden;
 
-    if (
-      shouldRun &&
-      !running
-    ) {
+    if (shouldRun && !running) {
       running = true;
-
       requestAnimationFrame(frame);
     } else if (!shouldRun) {
       running = false;
-
-      draw(
-        performance.now()
-      );
+      draw(performance.now());
     }
   }
 
-  /* =====================================
-     MOUSE / TOUCH ROTATION
-     ===================================== */
+  /* ==========================================
+     DRAG ROTATION
+     ========================================== */
 
   canvas.addEventListener(
     "pointerdown",
@@ -1026,7 +1139,8 @@
         x: event.clientX,
         y: event.clientY,
         yaw,
-        pitch
+        pitch,
+        type: event.pointerType
       };
 
       canvas.setPointerCapture?.(
@@ -1040,63 +1154,62 @@
     event => {
       if (!drag) return;
 
-      yaw = Math.max(
-        -0.85,
-        Math.min(
-          0.85,
-          drag.yaw +
-          (
-            event.clientX -
-            drag.x
-          ) * 0.005
-        )
-      );
+      const dx =
+        event.clientX - drag.x;
 
-      pitch = Math.max(
-        -0.1,
-        Math.min(
-          0.6,
-          drag.pitch +
-          (
-            event.clientY -
-            drag.y
-          ) * 0.004
-        )
-      );
+      const dy =
+        event.clientY - drag.y;
+
+      /*
+       * Allow normal vertical scrolling
+       * on touchscreens.
+       */
 
       if (
-        reduced ||
-        !running
+        drag.type === "touch" &&
+        Math.abs(dy) >
+          Math.abs(dx) * 1.3
       ) {
-        draw(
-          performance.now()
-        );
+        return;
+      }
+
+      const compact =
+        width < 720;
+
+      yaw = clamp(
+        drag.yaw + dx * 0.005,
+        compact ? -0.58 : -0.85,
+        compact ? 0.58 : 0.85
+      );
+
+      pitch = clamp(
+        drag.pitch + dy * 0.004,
+        compact ? -0.04 : -0.1,
+        compact ? 0.42 : 0.6
+      );
+
+      if (reduced || !running) {
+        draw(performance.now());
       }
     }
   );
 
-  function release() {
-    drag = null;
+  for (const name of [
+    "pointerup",
+    "pointercancel",
+    "lostpointercapture"
+  ]) {
+    canvas.addEventListener(
+      name,
+      () => {
+        drag = null;
+      }
+    );
   }
 
-  canvas.addEventListener(
-    "pointerup",
-    release
-  );
-
-  canvas.addEventListener(
-    "pointercancel",
-    release
-  );
-
-  canvas.addEventListener(
-    "lostpointercapture",
-    release
-  );
-
-  /* =====================================
+  /* ==========================================
      KEYBOARD ROTATION
-     ===================================== */
+     ========================================== */
 
   canvas.addEventListener(
     "keydown",
@@ -1109,73 +1222,57 @@
         "Home"
       ];
 
-      if (
-        keys.includes(event.key)
-      ) {
-        event.preventDefault();
+      if (!keys.includes(event.key)) {
+        return;
       }
 
-      if (
-        event.key === "Home"
-      ) {
-        yaw = -0.28;
-        pitch = 0.20;
+      event.preventDefault();
+
+      const step = 0.085;
+      const compact = width < 720;
+
+      if (event.key === "Home") {
+        yaw = compact ? -0.18 : -0.28;
+        pitch = compact ? 0.12 : 0.20;
       }
 
-      if (
-        event.key === "ArrowLeft"
-      ) {
-        yaw = Math.max(
-          -0.85,
-          yaw - 0.09
-        );
+      if (event.key === "ArrowLeft") {
+        yaw -= step;
       }
 
-      if (
-        event.key === "ArrowRight"
-      ) {
-        yaw = Math.min(
-          0.85,
-          yaw + 0.09
-        );
+      if (event.key === "ArrowRight") {
+        yaw += step;
       }
 
-      if (
-        event.key === "ArrowUp"
-      ) {
-        pitch = Math.min(
-          0.6,
-          pitch + 0.07
-        );
+      if (event.key === "ArrowUp") {
+        pitch += step;
       }
 
-      if (
-        event.key === "ArrowDown"
-      ) {
-        pitch = Math.max(
-          -0.1,
-          pitch - 0.07
-        );
+      if (event.key === "ArrowDown") {
+        pitch -= step;
       }
 
-      if (
-        reduced ||
-        !running
-      ) {
-        draw(
-          performance.now()
-        );
-      }
+      yaw = clamp(
+        yaw,
+        compact ? -0.58 : -0.85,
+        compact ? 0.58 : 0.85
+      );
+
+      pitch = clamp(
+        pitch,
+        compact ? -0.04 : -0.1,
+        compact ? 0.42 : 0.6
+      );
+
+      draw(performance.now());
     }
   );
 
-  /* =====================================
-     OBSERVERS & ACCESSIBILITY
-     ===================================== */
+  /* ==========================================
+     OBSERVERS
+     ========================================== */
 
-  if (
-    "ResizeObserver" in window
-  ) {
+  if ("ResizeObserver" in window) {
     new ResizeObserver(
       resize
     ).observe(canvas);
@@ -1186,16 +1283,14 @@
     );
   }
 
-  if (
-    "IntersectionObserver" in window
-  ) {
+  if ("IntersectionObserver" in window) {
     new IntersectionObserver(
       entries => {
         visible =
           entries[0]?.isIntersecting ??
           true;
 
-        startStop();
+        updateRunning();
       },
       {
         threshold: 0.01
@@ -1205,27 +1300,34 @@
 
   document.addEventListener(
     "visibilitychange",
-    startStop
+    updateRunning
   );
 
-  const changed = () => {
-    reduced = motion.matches;
-
-    startStop();
-  };
-
-  if (motion.addEventListener) {
-    motion.addEventListener(
-      "change",
-      changed
-    );
-  } else {
-    motion.addListener(changed);
+  function onMotionChange() {
+    reduced = motionQuery.matches;
+    updateRunning();
   }
 
-  /* Start */
+  if (motionQuery.addEventListener) {
+    motionQuery.addEventListener(
+      "change",
+      onMotionChange
+    );
+  } else {
+    motionQuery.addListener(
+      onMotionChange
+    );
+  }
+
+  /* ==========================================
+     INITIAL CAMERA
+     ========================================== */
+
+  if (window.innerWidth < 720) {
+    yaw = -0.18;
+    pitch = 0.12;
+  }
 
   resize();
-  startStop();
+  updateRunning();
 })();
-
