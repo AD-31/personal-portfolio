@@ -1,0 +1,331 @@
+
+/*
+ * SOC AUTOMATION — PROJECT STYLES
+ *
+ * Existing portfolio design:
+ * White Canvas + Floating Navy
+ * DM Sans + IBM Plex Mono
+ *
+ * Main scene is drawn by soc-automation.js.
+ * No right-hand inspector or extra panels.
+ */
+
+.page-soc {
+  background: var(--color-bg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+}
+
+/* ==========================================
+   INTRODUCTION PREVIEW
+   ========================================== */
+
+.page-soc .soc-mini {
+  width: 100%;
+  max-width: 440px;
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
+
+  justify-self: end;
+  align-self: center;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-soc .soc-mini svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.page-soc .soc-mini svg text {
+  font-family: var(--font-mono);
+  letter-spacing: .04em;
+}
+
+.page-soc .soc-mini-signal {
+  animation: soc-mini-travel 6s linear infinite;
+}
+
+@keyframes soc-mini-travel {
+  0%, 9% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  44% {
+    transform: translateX(115px);
+    opacity: 1;
+  }
+
+  78% {
+    transform: translateX(221px);
+    opacity: 1;
+  }
+
+  85%, 100% {
+    transform: translateX(221px);
+    opacity: 0;
+  }
+}
+
+/* Match existing terminal introduction reveal */
+
+html.hero-intro-pending .page-soc .soc-mini {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+html.hero-intro-finished .page-soc .soc-mini {
+  animation: soc-mini-enter .75s ease-out both;
+}
+
+@keyframes soc-mini-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   CENTERED 3D CANVAS
+   ========================================== */
+
+.page-soc .soc-system {
+  width: 100%;
+  max-width: var(--page-max);
+
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+
+  min-width: 0;
+}
+
+.page-soc .soc-render-stage {
+  position: relative;
+
+  width: 100%;
+  max-width: 1180px;
+  height: clamp(430px, 45vw, 610px);
+
+  min-height: 0;
+
+  margin: 0 auto;
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+}
+
+/*
+ * A clean white 3D environment.
+ * No visible card, frame, or background box.
+ */
+
+.page-soc .soc-render-stage canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  max-width: 100%;
+  margin: 0 auto;
+
+  background: transparent;
+
+  cursor: grab;
+  outline-offset: -5px;
+
+  touch-action: pan-y pinch-zoom;
+}
+
+.page-soc .soc-render-stage canvas:active {
+  cursor: grabbing;
+}
+
+.page-soc .soc-render-stage canvas:focus-visible {
+  outline: 2px solid var(--color-cyan);
+}
+
+.page-soc .soc-render-fallback,
+.page-soc .soc-nojs {
+  max-width: var(--reading-width);
+
+  margin: var(--space-5) auto;
+
+  color: var(--color-muted);
+
+  font:
+    var(--weight-body)
+    var(--text-base)/var(--leading-body)
+    var(--font-body);
+}
+
+/* ==========================================
+   CONTENT
+   ========================================== */
+
+/*
+ * What I Built and What I Learned
+ * inherit layout and typography from
+ * case-studies.css.
+ */
+
+.page-soc .case-learning-copy {
+  max-width: var(--reading-width);
+}
+
+/* ==========================================
+   WORKFLOW SCREENSHOTS
+   ========================================== */
+
+.page-soc .soc-proof-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  align-items: start;
+  gap: var(--layout-gap);
+}
+
+.page-soc .soc-proof {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  box-shadow: none;
+
+  outline-offset: 5px;
+}
+
+.page-soc .soc-proof img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+
+  object-fit: contain;
+  object-position: top left;
+
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.page-soc .soc-proof:hover img {
+  opacity: .88;
+}
+
+.page-soc .soc-proof:focus-visible {
+  outline: 2px solid var(--color-cyan);
+}
+
+.page-soc .soc-source-note {
+  max-width: var(--reading-width);
+
+  margin-top: var(--space-5);
+
+  color: var(--color-muted);
+
+  font:
+    400 var(--text-sm)/1.7
+    var(--font-body);
+}
+
+/* ==========================================
+   TABLET
+   ========================================== */
+
+@media (max-width: 900px) {
+  .page-soc .soc-mini {
+    justify-self: start;
+    max-width: 440px;
+  }
+
+  .page-soc .soc-render-stage {
+    height: 610px;
+  }
+
+  .page-soc .soc-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .page-soc .soc-proof img {
+    max-height: 350px;
+  }
+}
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 600px) {
+  .page-soc .soc-mini {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .page-soc .soc-render-stage {
+    width: 100%;
+    height: 610px;
+  }
+
+  .page-soc .soc-proof img {
+    max-height: 280px;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .page-soc .soc-mini,
+  .page-soc .soc-mini-signal {
+    animation: none !important;
+  }
+
+  .page-soc .soc-mini {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .page-soc .soc-mini-signal {
+    opacity: 0 !important;
+  }
+
+  .page-soc .soc-render-stage canvas {
+    cursor: default;
+  }
+}

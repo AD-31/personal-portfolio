@@ -1,7 +1,229 @@
-/* No scroll reveals, parallax, progress wipes, or hidden reading content. */
-html { scrollbar-gutter:stable; }
-.case-dialog { transform-origin:center; }
-.motion-off *,.motion-off *::before,.motion-off *::after { transition:none!important; animation:none!important; }
-@media(prefers-reduced-motion:reduce) {
-  *,*::before,*::after { transition:none!important; animation:none!important; scroll-behavior:auto!important; }
+
+/*
+ * PORTFOLIO MOTION SYSTEM
+ *
+ * Only the terminal command uses typing.
+ * Headings and text use quick float-up reveals.
+ *
+ * IMPORTANT:
+ * Prevent initial content flash before
+ * deferred JavaScript initializes.
+ */
+
+/* ==========================================
+   1. PREVENT INITIAL CONTENT FLASH
+   ========================================== */
+
+/*
+ * Every portfolio page adds hero-intro-pending
+ * synchronously in its document <head>.
+ *
+ * This CSS therefore applies before the browser
+ * paints the initial body content.
+ *
+ * Only text and appropriate UI elements are hidden.
+ * The terminal command stays visible for typing.
+ */
+
+html.hero-intro-pending:not(.hero-intro-finished) :is(
+
+  /* Homepage */
+  .page-home .hero-eyebrow,
+  .page-home .hero h1,
+  .page-home .hero-intro,
+  .page-home .hero-actions,
+  .page-home .hero-location,
+
+  /* My Work introduction */
+  .page-work .work-intro h1,
+  .page-work .work-lede,
+
+  /* My Work gallery */
+  .page-work .work-project,
+
+  /* Wazuh introduction */
+  .page-wazuh .wazuh-intro h1,
+  .page-wazuh .wazuh-lede,
+
+  /* SME, DDoS and SOC introductions */
+  .page-case .case-intro h1,
+  .page-case .case-lede,
+
+  /* Contribution sections */
+  .wazuh-columns > section,
+  .case-columns > section,
+
+  /* Lessons */
+  .wazuh-learning-copy,
+  .case-learning-copy,
+
+  /* Evidence */
+  .wazuh-proof,
+  .case-proof,
+  .soc-proof,
+  .soc-source-note,
+
+  /* Footer reading content */
+  .contact-copy > h2,
+  .contact-actions,
+  .email-address
+
+) {
+  opacity: 0;
+
+  transform: translate3d(
+    0,
+    14px,
+    0
+  );
+}
+
+/* ==========================================
+   2. SHARED FLOAT-UP REVEAL
+   ========================================== */
+
+/*
+ * JavaScript adds portfolio-reveal to eligible
+ * elements and is-visible when they should appear.
+ *
+ * No elements are hidden by this rule until
+ * the reveal system is initialized.
+ */
+
+.portfolio-reveal {
+  transition:
+    opacity .36s ease,
+    transform .40s
+      cubic-bezier(.22, 1, .36, 1);
+
+  transition-delay:
+    var(--portfolio-reveal-delay, 0ms);
+}
+
+/* Initial reveal position */
+
+html.portfolio-reveal-ready
+.portfolio-reveal:not(.is-visible) {
+  opacity: 0;
+
+  transform: translate3d(
+    0,
+    14px,
+    0
+  );
+}
+
+/* Revealed position */
+
+html.portfolio-reveal-ready
+.portfolio-reveal.is-visible {
+  opacity: 1;
+
+  transform: translate3d(
+    0,
+    0,
+    0
+  );
+}
+
+/* ==========================================
+   3. FAST HERO VISUAL ENTRANCES
+   ========================================== */
+
+/*
+ * These rules shorten only the supporting
+ * hero illustration's entrance.
+ *
+ * Main technical 3D animation timelines
+ * are not modified.
+ */
+
+html.hero-intro-finished
+.page-wazuh .wazuh-pipeline,
+
+html.hero-intro-finished
+.page-case .case-mini,
+
+html.hero-intro-finished
+.page-soc .soc-mini {
+  animation-duration: .40s;
+}
+
+/* ==========================================
+   4. ORIGINAL DIALOG MOTION
+   ========================================== */
+
+.case-dialog {
+  transform-origin: center;
+}
+
+/* ==========================================
+   5. MOTION PREFERENCES
+   ========================================== */
+
+.motion-off *,
+.motion-off *::before,
+.motion-off *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ==========================================
+   6. REDUCED MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.hero-intro-pending
+  .portfolio-reveal,
+
+  html.portfolio-reveal-ready
+  .portfolio-reveal,
+
+  .portfolio-reveal:not(.is-visible) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /*
+   * Ensure all reading content is visible,
+   * even when reduced motion is activated.
+   */
+
+  html.hero-intro-pending:not(.hero-intro-finished) :is(
+    .page-home .hero-eyebrow,
+    .page-home .hero h1,
+    .page-home .hero-intro,
+    .page-home .hero-actions,
+    .page-home .hero-location,
+    .page-work .work-intro h1,
+    .page-work .work-lede,
+    .page-work .work-project,
+    .page-wazuh .wazuh-intro h1,
+    .page-wazuh .wazuh-lede,
+    .page-case .case-intro h1,
+    .page-case .case-lede,
+    .wazuh-columns > section,
+    .case-columns > section,
+    .wazuh-learning-copy,
+    .case-learning-copy,
+    .wazuh-proof,
+    .case-proof,
+    .soc-proof,
+    .soc-source-note,
+    .contact-copy > h2,
+    .contact-actions,
+    .email-address
+  ) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
