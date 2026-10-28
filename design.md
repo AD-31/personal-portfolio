@@ -1671,3 +1671,168 @@ For every element, ask:
 3. Is it visually consistent with the rest of the site?
 
 If the answer is no to all three, remove it.
+
+## 35. Final Portfolio-Wide Motion System
+
+**Approved: 23 October 2026**
+
+This section supersedes previous instructions that
+specified typewriter animations for headings,
+introductions, section titles or body copy.
+
+### 35.1 Core principle
+
+Terminal typing is reserved exclusively for the
+Linux-style command prompt at the beginning of
+each page.
+
+All other text uses short, restrained float-up
+entrance animations.
+
+Motion should help visitors understand the
+interface without delaying access to content.
+
+### 35.2 Terminal animation
+
+The only element permitted to use a typewriter
+animation is:
+
+`.terminal-command[data-terminal]`
+
+Examples:
+
+- Home: `cat intro.txt`
+- My Work: `cat work.txt`
+- Wazuh: `cat detection.txt`
+- SME Assessment: `cat assessment.txt`
+- DDoS: `cat classification.txt`
+- SOC Automation: `cat soc-automation.txt`
+
+Requirements:
+
+- Run once on page entry.
+- Use IBM Plex Mono.
+- Preserve existing user and path colors.
+- Complete in approximately one second.
+- Do not type headings or paragraphs.
+- Do not replay typing while scrolling.
+- Preserve the `hero:intro-complete` event.
+- Never delay content for the old long
+  sequential typing animation.
+
+### 35.3 Heading and introduction motion
+
+Use the shared float-up system.
+
+- Starting offset: 14px downward.
+- Opacity transition: 360ms.
+- Transform transition: 400ms.
+- Easing: cubic-bezier(.22, 1, .36, 1).
+- Stagger between intro elements: 55ms.
+- Direction: vertical only.
+- No bounce, parallax or horizontal movement.
+
+Reveal elements as complete semantic units.
+
+Examples:
+
+- Entire H1, not one character at a time.
+- Entire introductory paragraph.
+- Entire project card.
+- Entire contribution item.
+
+### 35.4 Section motion
+
+Section content may reveal once when entering
+the viewport.
+
+Applicable elements:
+
+- Section headings
+- Project summaries
+- Contribution blocks
+- Lessons learned
+- Evidence screenshots
+- Footer contact content
+
+Requirements:
+
+- One entrance per element.
+- No scroll-scrubbing or repeated animation.
+- No large movement.
+- Maximum stagger: 90ms.
+- Never animate each paragraph word separately.
+- Never delay interactive functionality.
+
+### 35.5 Technical 3D models
+
+Do not change the existing model architecture
+or internal animation timelines.
+
+Preserve:
+
+- Homepage spherical/network animation.
+- Wazuh mini detection pipeline.
+- Wazuh interactive System Anatomy.
+- SME Network Zones model.
+- SME Directory Privileges model.
+- DDoS classification model.
+- SOC Automation 3D orchestration model.
+
+The 3D renderers maintain their independent
+timelines and controls.
+
+Scroll-based reading-content reveals must not
+pause or reset a technical renderer.
+
+Do not introduce component inspector panels,
+play/pause buttons or decorative UI.
+
+### 35.6 Accessibility and performance
+
+- Respect prefers-reduced-motion.
+- All content must remain readable without JS.
+- Do not animate the actual Canvas geometry
+  using the shared text reveal classes.
+- Preserve keyboard focus and interaction.
+- Reveal an element when keyboard focus enters it.
+- Use IntersectionObserver only for lightweight
+  reading-content entrances.
+- Keep animations short and inexpensive.
+- Never invent telemetry or system activity
+  to justify an animation.
+
+### 35.7 Implementation ownership
+
+- terminal-type.js:
+  command typing and reveal coordination.
+- terminal-type.css:
+  command and caret styling.
+- motion.css:
+  shared float-up presentation.
+- motion.js:
+  motion preferences and dialog transitions.
+
+Project-specific CSS and JavaScript remain
+responsible for their own technical visualizations.
+
+New portfolio pages must inherit the global
+motion system rather than creating separate
+typewriter or reveal implementations.
+
+### 35.8 Non-regression requirements
+
+Do not modify previously approved:
+
+- Floating navy header and footer
+- Off-white page canvas
+- DM Sans and IBM Plex Mono typography
+- Project navigation
+- Source-backed evidence
+- Interactive 3D models
+- Independent renderer clocks
+- Responsive model layouts
+- Reduced-motion behavior
+
+This motion policy applies to every current
+and future portfolio page.
